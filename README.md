@@ -84,6 +84,3 @@ To regenerate from the latest V3.1 meta-model:
 - Meta-model from [aas-core-meta](https://github.com/aas-core-works/aas-core-meta)
 - Based on the work of [aas-core-works](https://github.com/aas-core-works)
 
-## License
-
-Apache-2.0
