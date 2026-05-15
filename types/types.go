@@ -15,22 +15,23 @@
 // be formalized as part of the core library, but affects external components such as
 // AAS registry or AAS server:
 //
-//   • Constraint AASd-022
+//   - Constraint AASd-022
 //
 // We did not implement the following constraints since they depend on registry and
 // de-referencing of [IReference] objects:
 //
-//   • Constraint AASd-006
-//   • Constraint AASd-007
-//   • Constraint AASc-3a-003
+//   - Constraint AASd-006
+//   - Constraint AASd-007
+//   - Constraint AASc-3a-003
 //
 // Some constraints are not enforceable as they depend on the wider context
 // such as language understanding, so we could not formalize them:
 //
-//   • Constraint AASd-012: This constraint requires that the texts inside
+//   - Constraint AASd-012: This constraint requires that the texts inside
 //     `Multi_language_property` shall have the same meanings in the separate languages.
 //     This cannot be tested.
-//   • Constraint AASd-116: In the book, Constraint AASd-116 imposes a
+//
+//   - Constraint AASd-116: In the book, Constraint AASd-116 imposes a
 //     case-insensitive equality against `globalAssetId`. This is culturally-dependent,
 //     and depends on the system settings. For example, the case-folding
 //     for the letters "i" and "I" is different in Turkish from English.
@@ -44,11 +45,12 @@
 // between the properties and the sets is defined through invariants. This causes
 // the following divergences:
 //
-//   • We decided therefore to remove the enumeration `DataTypeDefRDF`
+//   - We decided therefore to remove the enumeration `DataTypeDefRDF`
 //     and keep only [DataTypeDefXSD] as enumeration. Otherwise, we would have
 //     to write redundant invariants all over the meta-model because `DataTypeDefRDF`
 //     is actually never used in any type definition.
-//   • The enumeration [AASSubmodelElements] is used in two different contexts.
+//
+//   - The enumeration [AASSubmodelElements] is used in two different contexts.
 //     One context is the definition of key types in a reference. Another context is
 //     the definition of element types in a [ISubmodelElementList].
 //
@@ -57,7 +59,8 @@
 //     represent the first context (key type in a reference).
 //     Secondly, the enumeration [AASSubmodelElements] is kept as designator
 //     for [ISubmodelElementList.TypeValueListElement].
-//   • The specification introduces several types of `Lang_string_set`.
+//
+//   - The specification introduces several types of `Lang_string_set`.
 //     These types differ between the allowed length of their text inside the singular
 //     `Lang_string` objects. Since the native representation of `Lang_string_set` as
 //     `List` of `Lang_string` is required by specification, it is impossible to
@@ -98,6 +101,7 @@ package types
 // For example, you can use an array of function pointers to
 // implement such a switch.
 type ModelType int
+
 const (
 	ModelTypeExtension ModelType = iota
 	ModelTypeAdministrativeInformation
@@ -137,6 +141,9 @@ const (
 	ModelTypeLangStringShortNameTypeIEC61360
 	ModelTypeLangStringDefinitionTypeIEC61360
 	ModelTypeDataSpecificationIEC61360
+	ModelTypeLangStringUOM
+	ModelTypeLangStringDefinitionTypeUOM
+	ModelTypeDataSpecificationUOM
 )
 
 // Represent the most general interface of an AAS model.
@@ -180,21 +187,21 @@ type IHasSemantics interface {
 	// of the element or also main semantic ID of the element.
 	//
 	// NOTE: It is recommended to use a global reference.
-	SemanticID() IReference;
+	SemanticID() IReference
 
 	SetSemanticID(
 		value IReference,
-	);
+	)
 
 	// Identifier of a supplemental semantic definition of the element.
 	// It is called supplemental semantic ID of the element.
 	//
 	// NOTE: It is recommended to use a global reference.
-	SupplementalSemanticIDs() []IReference;
+	SupplementalSemanticIDs() []IReference
 
 	SetSupplementalSemanticIDs(
 		value []IReference,
-	);
+	)
 }
 
 // Check whether the instance corresponds to [aastypes.IHasSemantics]
@@ -255,36 +262,36 @@ type IExtension interface {
 	// Constraint AASd-077:
 	// The name of an extension (Extension/name) within [IHasExtensions] needs
 	// to be unique.
-	Name() string;
+	Name() string
 
 	SetName(
 		value string,
-	);
+	)
 
 	// Type of the value of the extension.
 	//
 	// Default: [DataTypeDefXSDString]
-	ValueType() *DataTypeDefXSD;
+	ValueType() *DataTypeDefXSD
 
 	SetValueType(
 		value *DataTypeDefXSD,
-	);
+	)
 
 	// Value of the extension
-	Value() *string;
+	Value() *string
 
 	SetValue(
 		value *string,
-	);
+	)
 
 	// Reference to an element the extension refers to.
-	RefersTo() []IReference;
+	RefersTo() []IReference
 
 	SetRefersTo(
 		value []IReference,
-	);
+	)
 
-	ValueTypeOrDefault() DataTypeDefXSD;
+	ValueTypeOrDefault() DataTypeDefXSD
 }
 
 // Check whether the instance corresponds to [aastypes.IExtension]
@@ -301,16 +308,15 @@ func IsExtension(
 
 // Implements IExtension.
 type Extension struct {
-	semanticID IReference
+	semanticID              IReference
 	supplementalSemanticIDs []IReference
-	name string
-	valueType *DataTypeDefXSD
-	value *string
-	refersTo []IReference
+	name                    string
+	valueType               *DataTypeDefXSD
+	value                   *string
+	refersTo                []IReference
 }
 
-func (e *Extension) SemanticID(
-) IReference {
+func (e *Extension) SemanticID() IReference {
 	return e.semanticID
 }
 
@@ -320,8 +326,7 @@ func (e *Extension) SetSemanticID(
 	e.semanticID = value
 }
 
-func (e *Extension) SupplementalSemanticIDs(
-) []IReference {
+func (e *Extension) SupplementalSemanticIDs() []IReference {
 	return e.supplementalSemanticIDs
 }
 
@@ -331,8 +336,7 @@ func (e *Extension) SetSupplementalSemanticIDs(
 	e.supplementalSemanticIDs = value
 }
 
-func (e *Extension) Name(
-) string {
+func (e *Extension) Name() string {
 	return e.name
 }
 
@@ -342,8 +346,7 @@ func (e *Extension) SetName(
 	e.name = value
 }
 
-func (e *Extension) ValueType(
-) *DataTypeDefXSD {
+func (e *Extension) ValueType() *DataTypeDefXSD {
 	return e.valueType
 }
 
@@ -353,8 +356,7 @@ func (e *Extension) SetValueType(
 	e.valueType = value
 }
 
-func (e *Extension) Value(
-) *string {
+func (e *Extension) Value() *string {
 	return e.value
 }
 
@@ -364,8 +366,7 @@ func (e *Extension) SetValue(
 	e.value = value
 }
 
-func (e *Extension) RefersTo(
-) []IReference {
+func (e *Extension) RefersTo() []IReference {
 	return e.refersTo
 }
 
@@ -375,8 +376,7 @@ func (e *Extension) SetRefersTo(
 	e.refersTo = value
 }
 
-func (e *Extension) ModelType(
-) ModelType {
+func (e *Extension) ModelType() ModelType {
 	return ModelTypeExtension
 }
 
@@ -413,7 +413,7 @@ func (e *Extension) DescendOnce(
 
 	if e.supplementalSemanticIDs != nil {
 		for _, v := range e.supplementalSemanticIDs {
-			abort = action(v);
+			abort = action(v)
 			if abort {
 				return
 			}
@@ -422,7 +422,7 @@ func (e *Extension) DescendOnce(
 
 	if e.refersTo != nil {
 		for _, v1 := range e.refersTo {
-			abort = action(v1);
+			abort = action(v1)
 			if abort {
 				return
 			}
@@ -458,14 +458,14 @@ func (e *Extension) Descend(
 
 	if e.supplementalSemanticIDs != nil {
 		for _, v := range e.supplementalSemanticIDs {
-			abort = action(v);
+			abort = action(v)
 			if abort {
 				return
 			}
 
 			abort = v.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -474,14 +474,14 @@ func (e *Extension) Descend(
 
 	if e.refersTo != nil {
 		for _, v1 := range e.refersTo {
-			abort = action(v1);
+			abort = action(v1)
 			if abort {
 				return
 			}
 
 			abort = v1.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -497,12 +497,12 @@ func NewExtension(
 	name string,
 ) *Extension {
 	return &Extension{
-		name: name,
-		semanticID: nil,
+		name:                    name,
+		semanticID:              nil,
 		supplementalSemanticIDs: nil,
-		valueType: nil,
-		value: nil,
-		refersTo: nil,
+		valueType:               nil,
+		value:                   nil,
+		refersTo:                nil,
 	}
 }
 
@@ -513,11 +513,11 @@ type IHasExtensions interface {
 	IClass
 
 	// An extension of the element.
-	Extensions() []IExtension;
+	Extensions() []IExtension
 
 	SetExtensions(
 		value []IExtension,
-	);
+	)
 }
 
 // Check whether the instance corresponds to [aastypes.IHasExtensions]
@@ -587,11 +587,11 @@ type IReferable interface {
 	// ([IHasSemantics]) of an element. The category e.g. could denote that
 	// the element is a measurement value whereas the semantic definition of
 	// the element would denote that it is the measured temperature.
-	Category() *string;
+	Category() *string
 
 	SetCategory(
 		value *string,
-	);
+	)
 
 	// In case of identifiables this attribute is a short name of the element.
 	// In case of referable this ID is an identifying string of the element within
@@ -600,18 +600,18 @@ type IReferable interface {
 	// NOTE: In case the element is a property and the property has a semantic definition
 	// ([IHasSemantics.SemanticID]) conformant to IEC61360
 	// the [IReferable.IDShort] is typically identical to the short name in English.
-	IDShort() *string;
+	IDShort() *string
 
 	SetIDShort(
 		value *string,
-	);
+	)
 
 	// Display name. Can be provided in several languages.
-	DisplayName() []ILangStringNameType;
+	DisplayName() []ILangStringNameType
 
 	SetDisplayName(
 		value []ILangStringNameType,
-	);
+	)
 
 	// Description or comments on the element.
 	//
@@ -624,11 +624,11 @@ type IReferable interface {
 	// qualified and which qualifier types can be expected in which
 	// context or which additional data specification templates are
 	// provided.
-	Description() []ILangStringTextType;
+	Description() []ILangStringTextType
 
 	SetDescription(
 		value []ILangStringTextType,
-	);
+	)
 }
 
 // Check whether the instance corresponds to [aastypes.IReferable]
@@ -686,18 +686,18 @@ type IIdentifiable interface {
 	//
 	// NOTE: Some of the administrative information like the version number might need to
 	// be part of the identification.
-	Administration() IAdministrativeInformation;
+	Administration() IAdministrativeInformation
 
 	SetAdministration(
 		value IAdministrativeInformation,
-	);
+	)
 
 	// The globally unique identification of the element.
-	ID() string;
+	ID() string
 
 	SetID(
 		value string,
-	);
+	)
 }
 
 // Check whether the instance corresponds to [aastypes.IIdentifiable]
@@ -720,7 +720,9 @@ func IsIdentifiable(
 }
 
 // Enumeration for denoting whether an element is a template or an instance.
-type ModellingKind int;const (
+type ModellingKind int
+
+const (
 	// Specification of the common features of a structured element in sufficient detail
 	// that such a instance can be instantiated using it
 	ModellingKindTemplate ModellingKind = iota
@@ -735,7 +737,7 @@ type ModellingKind int;const (
 // this array helps you avoid common errors and pitfalls.
 //
 // Please do not modify the array in the caller's code.
-var LiteralsOfModellingKind = [...]ModellingKind {
+var LiteralsOfModellingKind = [...]ModellingKind{
 	ModellingKindTemplate,
 	ModellingKindInstance,
 }
@@ -750,13 +752,13 @@ type IHasKind interface {
 	// Kind of the element: either template or instance.
 	//
 	// Default: [ModellingKindInstance]
-	Kind() *ModellingKind;
+	Kind() *ModellingKind
 
 	SetKind(
 		value *ModellingKind,
-	);
+	)
 
-	KindOrDefault() ModellingKind;
+	KindOrDefault() ModellingKind
 }
 
 // Check whether the instance corresponds to [aastypes.IHasKind]
@@ -783,11 +785,11 @@ type IHasDataSpecification interface {
 	IClass
 
 	// Embedded data specification.
-	EmbeddedDataSpecifications() []IEmbeddedDataSpecification;
+	EmbeddedDataSpecifications() []IEmbeddedDataSpecification
 
 	SetEmbeddedDataSpecifications(
 		value []IEmbeddedDataSpecification,
-	);
+	)
 }
 
 // Check whether the instance corresponds to [aastypes.IHasDataSpecification]
@@ -850,25 +852,39 @@ type IAdministrativeInformation interface {
 	IHasDataSpecification
 
 	// Version of the element.
-	Version() *string;
+	Version() *string
 
 	SetVersion(
 		value *string,
-	);
+	)
 
 	// Revision of the element.
-	Revision() *string;
+	Revision() *string
 
 	SetRevision(
 		value *string,
-	);
+	)
 
 	// The subject ID of the subject responsible for making the element.
-	Creator() IReference;
+	Creator() IReference
 
 	SetCreator(
 		value IReference,
-	);
+	)
+
+	// Date and time of creation.
+	CreatedAt() *string
+
+	SetCreatedAt(
+		value *string,
+	)
+
+	// Date and time of last update.
+	UpdatedAt() *string
+
+	SetUpdatedAt(
+		value *string,
+	)
 
 	// Identifier of the template that guided the creation of the element.
 	//
@@ -880,11 +896,11 @@ type IAdministrativeInformation interface {
 	//
 	// NOTE: Usage of [IAdministrativeInformation.TemplateID] is not restricted to submodel instances. So also
 	// the creation of submodel templates can be guided by another submodel template.
-	TemplateID() *string;
+	TemplateID() *string
 
 	SetTemplateID(
 		value *string,
-	);
+	)
 }
 
 // Check whether the instance corresponds to [aastypes.IAdministrativeInformation]
@@ -902,14 +918,15 @@ func IsAdministrativeInformation(
 // Implements IAdministrativeInformation.
 type AdministrativeInformation struct {
 	embeddedDataSpecifications []IEmbeddedDataSpecification
-	version *string
-	revision *string
-	creator IReference
-	templateID *string
+	version                    *string
+	revision                   *string
+	creator                    IReference
+	createdAt                  *string
+	updatedAt                  *string
+	templateID                 *string
 }
 
-func (ai *AdministrativeInformation) EmbeddedDataSpecifications(
-) []IEmbeddedDataSpecification {
+func (ai *AdministrativeInformation) EmbeddedDataSpecifications() []IEmbeddedDataSpecification {
 	return ai.embeddedDataSpecifications
 }
 
@@ -919,8 +936,7 @@ func (ai *AdministrativeInformation) SetEmbeddedDataSpecifications(
 	ai.embeddedDataSpecifications = value
 }
 
-func (ai *AdministrativeInformation) Version(
-) *string {
+func (ai *AdministrativeInformation) Version() *string {
 	return ai.version
 }
 
@@ -930,8 +946,7 @@ func (ai *AdministrativeInformation) SetVersion(
 	ai.version = value
 }
 
-func (ai *AdministrativeInformation) Revision(
-) *string {
+func (ai *AdministrativeInformation) Revision() *string {
 	return ai.revision
 }
 
@@ -941,8 +956,7 @@ func (ai *AdministrativeInformation) SetRevision(
 	ai.revision = value
 }
 
-func (ai *AdministrativeInformation) Creator(
-) IReference {
+func (ai *AdministrativeInformation) Creator() IReference {
 	return ai.creator
 }
 
@@ -952,8 +966,27 @@ func (ai *AdministrativeInformation) SetCreator(
 	ai.creator = value
 }
 
-func (ai *AdministrativeInformation) TemplateID(
-) *string {
+func (ai *AdministrativeInformation) CreatedAt() *string {
+	return ai.createdAt
+}
+
+func (ai *AdministrativeInformation) SetCreatedAt(
+	value *string,
+) {
+	ai.createdAt = value
+}
+
+func (ai *AdministrativeInformation) UpdatedAt() *string {
+	return ai.updatedAt
+}
+
+func (ai *AdministrativeInformation) SetUpdatedAt(
+	value *string,
+) {
+	ai.updatedAt = value
+}
+
+func (ai *AdministrativeInformation) TemplateID() *string {
 	return ai.templateID
 }
 
@@ -963,8 +996,7 @@ func (ai *AdministrativeInformation) SetTemplateID(
 	ai.templateID = value
 }
 
-func (ai *AdministrativeInformation) ModelType(
-) ModelType {
+func (ai *AdministrativeInformation) ModelType() ModelType {
 	return ModelTypeAdministrativeInformation
 }
 
@@ -981,7 +1013,7 @@ func (ai *AdministrativeInformation) DescendOnce(
 ) (abort bool) {
 	if ai.embeddedDataSpecifications != nil {
 		for _, v := range ai.embeddedDataSpecifications {
-			abort = action(v);
+			abort = action(v)
 			if abort {
 				return
 			}
@@ -1011,14 +1043,14 @@ func (ai *AdministrativeInformation) Descend(
 ) (abort bool) {
 	if ai.embeddedDataSpecifications != nil {
 		for _, v := range ai.embeddedDataSpecifications {
-			abort = action(v);
+			abort = action(v)
 			if abort {
 				return
 			}
 
 			abort = v.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -1048,10 +1080,12 @@ func (ai *AdministrativeInformation) Descend(
 func NewAdministrativeInformation() *AdministrativeInformation {
 	return &AdministrativeInformation{
 		embeddedDataSpecifications: nil,
-		version: nil,
-		revision: nil,
-		creator: nil,
-		templateID: nil,
+		version:                    nil,
+		revision:                   nil,
+		creator:                    nil,
+		createdAt:                  nil,
+		updatedAt:                  nil,
+		templateID:                 nil,
 	}
 }
 
@@ -1073,11 +1107,11 @@ type IQualifiable interface {
 	// Constraint AASd-021:
 	// Every qualifiable can only have one qualifier with the same
 	// [IQualifier.Type].
-	Qualifiers() []IQualifier;
+	Qualifiers() []IQualifier
 
 	SetQualifiers(
 		value []IQualifier,
-	);
+	)
 }
 
 // Check whether the instance corresponds to [aastypes.IQualifiable]
@@ -1127,7 +1161,9 @@ func IsQualifiable(
 //
 // NOTE: This element is experimental and therefore may be subject to change or may be
 // removed completely in future versions of the meta-model.
-type QualifierKind int;const (
+type QualifierKind int
+
+const (
 	// qualifies the value of the element and can change during run-time.
 	//
 	// Value qualifiers are only applicable to elements with kind
@@ -1149,7 +1185,7 @@ type QualifierKind int;const (
 // this array helps you avoid common errors and pitfalls.
 //
 // Please do not modify the array in the caller's code.
-var LiteralsOfQualifierKind = [...]QualifierKind {
+var LiteralsOfQualifierKind = [...]QualifierKind{
 	QualifierKindValueQualifier,
 	QualifierKindConceptQualifier,
 	QualifierKindTemplateQualifier,
@@ -1174,44 +1210,44 @@ type IQualifier interface {
 	// element.
 	//
 	// Default: [QualifierKindConceptQualifier]
-	Kind() *QualifierKind;
+	Kind() *QualifierKind
 
 	SetKind(
 		value *QualifierKind,
-	);
+	)
 
 	// The qualifier type describes the type of the qualifier that is applied to
 	// the element.
-	Type() string;
+	Type() string
 
 	SetType(
 		value string,
-	);
+	)
 
 	// Data type of the qualifier value.
-	ValueType() DataTypeDefXSD;
+	ValueType() DataTypeDefXSD
 
 	SetValueType(
 		value DataTypeDefXSD,
-	);
+	)
 
 	// The qualifier value is the value of the qualifier.
-	Value() *string;
+	Value() *string
 
 	SetValue(
 		value *string,
-	);
+	)
 
 	// Reference to the global unique ID of a coded value.
 	//
 	// NOTE: It is recommended to use a global reference.
-	ValueID() IReference;
+	ValueID() IReference
 
 	SetValueID(
 		value IReference,
-	);
+	)
 
-	KindOrDefault() QualifierKind;
+	KindOrDefault() QualifierKind
 }
 
 // Check whether the instance corresponds to [aastypes.IQualifier]
@@ -1228,17 +1264,16 @@ func IsQualifier(
 
 // Implements IQualifier.
 type Qualifier struct {
-	semanticID IReference
+	semanticID              IReference
 	supplementalSemanticIDs []IReference
-	kind *QualifierKind
-	typE string
-	valueType DataTypeDefXSD
-	value *string
-	valueID IReference
+	kind                    *QualifierKind
+	typE                    string
+	valueType               DataTypeDefXSD
+	value                   *string
+	valueID                 IReference
 }
 
-func (q *Qualifier) SemanticID(
-) IReference {
+func (q *Qualifier) SemanticID() IReference {
 	return q.semanticID
 }
 
@@ -1248,8 +1283,7 @@ func (q *Qualifier) SetSemanticID(
 	q.semanticID = value
 }
 
-func (q *Qualifier) SupplementalSemanticIDs(
-) []IReference {
+func (q *Qualifier) SupplementalSemanticIDs() []IReference {
 	return q.supplementalSemanticIDs
 }
 
@@ -1259,8 +1293,7 @@ func (q *Qualifier) SetSupplementalSemanticIDs(
 	q.supplementalSemanticIDs = value
 }
 
-func (q *Qualifier) Kind(
-) *QualifierKind {
+func (q *Qualifier) Kind() *QualifierKind {
 	return q.kind
 }
 
@@ -1270,8 +1303,7 @@ func (q *Qualifier) SetKind(
 	q.kind = value
 }
 
-func (q *Qualifier) Type(
-) string {
+func (q *Qualifier) Type() string {
 	return q.typE
 }
 
@@ -1281,8 +1313,7 @@ func (q *Qualifier) SetType(
 	q.typE = value
 }
 
-func (q *Qualifier) ValueType(
-) DataTypeDefXSD {
+func (q *Qualifier) ValueType() DataTypeDefXSD {
 	return q.valueType
 }
 
@@ -1292,8 +1323,7 @@ func (q *Qualifier) SetValueType(
 	q.valueType = value
 }
 
-func (q *Qualifier) Value(
-) *string {
+func (q *Qualifier) Value() *string {
 	return q.value
 }
 
@@ -1303,8 +1333,7 @@ func (q *Qualifier) SetValue(
 	q.value = value
 }
 
-func (q *Qualifier) ValueID(
-) IReference {
+func (q *Qualifier) ValueID() IReference {
 	return q.valueID
 }
 
@@ -1314,8 +1343,7 @@ func (q *Qualifier) SetValueID(
 	q.valueID = value
 }
 
-func (q *Qualifier) ModelType(
-) ModelType {
+func (q *Qualifier) ModelType() ModelType {
 	return ModelTypeQualifier
 }
 
@@ -1352,7 +1380,7 @@ func (q *Qualifier) DescendOnce(
 
 	if q.supplementalSemanticIDs != nil {
 		for _, v := range q.supplementalSemanticIDs {
-			abort = action(v);
+			abort = action(v)
 			if abort {
 				return
 			}
@@ -1397,14 +1425,14 @@ func (q *Qualifier) Descend(
 
 	if q.supplementalSemanticIDs != nil {
 		for _, v := range q.supplementalSemanticIDs {
-			abort = action(v);
+			abort = action(v)
 			if abort {
 				return
 			}
 
 			abort = v.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -1436,13 +1464,13 @@ func NewQualifier(
 	valueType DataTypeDefXSD,
 ) *Qualifier {
 	return &Qualifier{
-		typE: typE,
-		valueType: valueType,
-		semanticID: nil,
+		typE:                    typE,
+		valueType:               valueType,
+		semanticID:              nil,
 		supplementalSemanticIDs: nil,
-		kind: nil,
-		value: nil,
-		valueID: nil,
+		kind:                    nil,
+		value:                   nil,
+		valueID:                 nil,
 	}
 }
 
@@ -1453,18 +1481,18 @@ type IAssetAdministrationShell interface {
 	IHasDataSpecification
 
 	// The reference to the AAS the AAS was derived from.
-	DerivedFrom() IReference;
+	DerivedFrom() IReference
 
 	SetDerivedFrom(
 		value IReference,
-	);
+	)
 
 	// Meta-information about the asset the AAS is representing.
-	AssetInformation() IAssetInformation;
+	AssetInformation() IAssetInformation
 
 	SetAssetInformation(
 		value IAssetInformation,
-	);
+	)
 
 	// References to submodels of the AAS.
 	//
@@ -1473,11 +1501,11 @@ type IAssetAdministrationShell interface {
 	// The asset of an AAS is typically described by one or more submodels.
 	//
 	// Temporarily no submodel might be assigned to the AAS.
-	Submodels() []IReference;
+	Submodels() []IReference
 
 	SetSubmodels(
 		value []IReference,
-	);
+	)
 }
 
 // Check whether the instance corresponds to [aastypes.IAssetAdministrationShell]
@@ -1494,21 +1522,20 @@ func IsAssetAdministrationShell(
 
 // Implements IAssetAdministrationShell.
 type AssetAdministrationShell struct {
-	extensions []IExtension
-	category *string
-	idShort *string
-	displayName []ILangStringNameType
-	description []ILangStringTextType
-	administration IAdministrativeInformation
-	id string
+	extensions                 []IExtension
+	category                   *string
+	idShort                    *string
+	displayName                []ILangStringNameType
+	description                []ILangStringTextType
+	administration             IAdministrativeInformation
+	id                         string
 	embeddedDataSpecifications []IEmbeddedDataSpecification
-	derivedFrom IReference
-	assetInformation IAssetInformation
-	submodels []IReference
+	derivedFrom                IReference
+	assetInformation           IAssetInformation
+	submodels                  []IReference
 }
 
-func (aas *AssetAdministrationShell) Extensions(
-) []IExtension {
+func (aas *AssetAdministrationShell) Extensions() []IExtension {
 	return aas.extensions
 }
 
@@ -1518,8 +1545,7 @@ func (aas *AssetAdministrationShell) SetExtensions(
 	aas.extensions = value
 }
 
-func (aas *AssetAdministrationShell) Category(
-) *string {
+func (aas *AssetAdministrationShell) Category() *string {
 	return aas.category
 }
 
@@ -1529,8 +1555,7 @@ func (aas *AssetAdministrationShell) SetCategory(
 	aas.category = value
 }
 
-func (aas *AssetAdministrationShell) IDShort(
-) *string {
+func (aas *AssetAdministrationShell) IDShort() *string {
 	return aas.idShort
 }
 
@@ -1540,8 +1565,7 @@ func (aas *AssetAdministrationShell) SetIDShort(
 	aas.idShort = value
 }
 
-func (aas *AssetAdministrationShell) DisplayName(
-) []ILangStringNameType {
+func (aas *AssetAdministrationShell) DisplayName() []ILangStringNameType {
 	return aas.displayName
 }
 
@@ -1551,8 +1575,7 @@ func (aas *AssetAdministrationShell) SetDisplayName(
 	aas.displayName = value
 }
 
-func (aas *AssetAdministrationShell) Description(
-) []ILangStringTextType {
+func (aas *AssetAdministrationShell) Description() []ILangStringTextType {
 	return aas.description
 }
 
@@ -1562,8 +1585,7 @@ func (aas *AssetAdministrationShell) SetDescription(
 	aas.description = value
 }
 
-func (aas *AssetAdministrationShell) Administration(
-) IAdministrativeInformation {
+func (aas *AssetAdministrationShell) Administration() IAdministrativeInformation {
 	return aas.administration
 }
 
@@ -1573,8 +1595,7 @@ func (aas *AssetAdministrationShell) SetAdministration(
 	aas.administration = value
 }
 
-func (aas *AssetAdministrationShell) ID(
-) string {
+func (aas *AssetAdministrationShell) ID() string {
 	return aas.id
 }
 
@@ -1584,8 +1605,7 @@ func (aas *AssetAdministrationShell) SetID(
 	aas.id = value
 }
 
-func (aas *AssetAdministrationShell) EmbeddedDataSpecifications(
-) []IEmbeddedDataSpecification {
+func (aas *AssetAdministrationShell) EmbeddedDataSpecifications() []IEmbeddedDataSpecification {
 	return aas.embeddedDataSpecifications
 }
 
@@ -1595,8 +1615,7 @@ func (aas *AssetAdministrationShell) SetEmbeddedDataSpecifications(
 	aas.embeddedDataSpecifications = value
 }
 
-func (aas *AssetAdministrationShell) DerivedFrom(
-) IReference {
+func (aas *AssetAdministrationShell) DerivedFrom() IReference {
 	return aas.derivedFrom
 }
 
@@ -1606,8 +1625,7 @@ func (aas *AssetAdministrationShell) SetDerivedFrom(
 	aas.derivedFrom = value
 }
 
-func (aas *AssetAdministrationShell) AssetInformation(
-) IAssetInformation {
+func (aas *AssetAdministrationShell) AssetInformation() IAssetInformation {
 	return aas.assetInformation
 }
 
@@ -1617,8 +1635,7 @@ func (aas *AssetAdministrationShell) SetAssetInformation(
 	aas.assetInformation = value
 }
 
-func (aas *AssetAdministrationShell) Submodels(
-) []IReference {
+func (aas *AssetAdministrationShell) Submodels() []IReference {
 	return aas.submodels
 }
 
@@ -1628,8 +1645,7 @@ func (aas *AssetAdministrationShell) SetSubmodels(
 	aas.submodels = value
 }
 
-func (aas *AssetAdministrationShell) ModelType(
-) ModelType {
+func (aas *AssetAdministrationShell) ModelType() ModelType {
 	return ModelTypeAssetAdministrationShell
 }
 
@@ -1646,7 +1662,7 @@ func (aas *AssetAdministrationShell) DescendOnce(
 ) (abort bool) {
 	if aas.extensions != nil {
 		for _, v := range aas.extensions {
-			abort = action(v);
+			abort = action(v)
 			if abort {
 				return
 			}
@@ -1655,7 +1671,7 @@ func (aas *AssetAdministrationShell) DescendOnce(
 
 	if aas.displayName != nil {
 		for _, v1 := range aas.displayName {
-			abort = action(v1);
+			abort = action(v1)
 			if abort {
 				return
 			}
@@ -1664,7 +1680,7 @@ func (aas *AssetAdministrationShell) DescendOnce(
 
 	if aas.description != nil {
 		for _, v2 := range aas.description {
-			abort = action(v2);
+			abort = action(v2)
 			if abort {
 				return
 			}
@@ -1682,7 +1698,7 @@ func (aas *AssetAdministrationShell) DescendOnce(
 
 	if aas.embeddedDataSpecifications != nil {
 		for _, v3 := range aas.embeddedDataSpecifications {
-			abort = action(v3);
+			abort = action(v3)
 			if abort {
 				return
 			}
@@ -1707,7 +1723,7 @@ func (aas *AssetAdministrationShell) DescendOnce(
 
 	if aas.submodels != nil {
 		for _, v4 := range aas.submodels {
-			abort = action(v4);
+			abort = action(v4)
 			if abort {
 				return
 			}
@@ -1728,14 +1744,14 @@ func (aas *AssetAdministrationShell) Descend(
 ) (abort bool) {
 	if aas.extensions != nil {
 		for _, v := range aas.extensions {
-			abort = action(v);
+			abort = action(v)
 			if abort {
 				return
 			}
 
 			abort = v.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -1744,14 +1760,14 @@ func (aas *AssetAdministrationShell) Descend(
 
 	if aas.displayName != nil {
 		for _, v1 := range aas.displayName {
-			abort = action(v1);
+			abort = action(v1)
 			if abort {
 				return
 			}
 
 			abort = v1.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -1760,14 +1776,14 @@ func (aas *AssetAdministrationShell) Descend(
 
 	if aas.description != nil {
 		for _, v2 := range aas.description {
-			abort = action(v2);
+			abort = action(v2)
 			if abort {
 				return
 			}
 
 			abort = v2.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -1791,14 +1807,14 @@ func (aas *AssetAdministrationShell) Descend(
 
 	if aas.embeddedDataSpecifications != nil {
 		for _, v3 := range aas.embeddedDataSpecifications {
-			abort = action(v3);
+			abort = action(v3)
 			if abort {
 				return
 			}
 
 			abort = v3.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -1835,14 +1851,14 @@ func (aas *AssetAdministrationShell) Descend(
 
 	if aas.submodels != nil {
 		for _, v4 := range aas.submodels {
-			abort = action(v4);
+			abort = action(v4)
 			if abort {
 				return
 			}
 
 			abort = v4.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -1859,17 +1875,17 @@ func NewAssetAdministrationShell(
 	assetInformation IAssetInformation,
 ) *AssetAdministrationShell {
 	return &AssetAdministrationShell{
-		id: id,
-		assetInformation: assetInformation,
-		extensions: nil,
-		category: nil,
-		idShort: nil,
-		displayName: nil,
-		description: nil,
-		administration: nil,
+		id:                         id,
+		assetInformation:           assetInformation,
+		extensions:                 nil,
+		category:                   nil,
+		idShort:                    nil,
+		displayName:                nil,
+		description:                nil,
+		administration:             nil,
 		embeddedDataSpecifications: nil,
-		derivedFrom: nil,
-		submodels: nil,
+		derivedFrom:                nil,
+		submodels:                  nil,
 	}
 }
 
@@ -1909,11 +1925,11 @@ type IAssetInformation interface {
 	// Denotes whether the Asset is of kind [AssetKindType],
 	// [AssetKindInstance], [AssetKindRole], or
 	// [AssetKindNotApplicable].
-	AssetKind() AssetKind;
+	AssetKind() AssetKind
 
 	SetAssetKind(
 		value AssetKind,
-	);
+	)
 
 	// Global identifier of the asset the AAS is representing.
 	//
@@ -1923,19 +1939,19 @@ type IAssetInformation interface {
 	// modelled via [IAssetInformation.SpecificAssetIDs].
 	//
 	// NOTE: This is a global reference.
-	GlobalAssetID() *string;
+	GlobalAssetID() *string
 
 	SetGlobalAssetID(
 		value *string,
-	);
+	)
 
 	// Additional domain-specific, typically proprietary identifier for the asset like
 	// e.g., serial number etc.
-	SpecificAssetIDs() []ISpecificAssetID;
+	SpecificAssetIDs() []ISpecificAssetID
 
 	SetSpecificAssetIDs(
 		value []ISpecificAssetID,
-	);
+	)
 
 	// In case [IAssetInformation.AssetKind] is [AssetKindNotApplicable] the
 	// [IAssetInformation.AssetType] is the asset ID of the type asset of the asset under
@@ -1944,20 +1960,20 @@ type IAssetInformation interface {
 	// NOTE: In case [IAssetInformation.AssetKind] is "Instance" then the [IAssetInformation.AssetType] denotes
 	// which "Type" the asset is of. But it is also possible
 	// to have an [IAssetInformation.AssetType] of an asset of kind "Type".
-	AssetType() *string;
+	AssetType() *string
 
 	SetAssetType(
 		value *string,
-	);
+	)
 
 	// Thumbnail of the asset represented by the Asset Administration Shell.
 	//
 	// Used as default.
-	DefaultThumbnail() IResource;
+	DefaultThumbnail() IResource
 
 	SetDefaultThumbnail(
 		value IResource,
-	);
+	)
 }
 
 // Check whether the instance corresponds to [aastypes.IAssetInformation]
@@ -1974,15 +1990,14 @@ func IsAssetInformation(
 
 // Implements IAssetInformation.
 type AssetInformation struct {
-	assetKind AssetKind
-	globalAssetID *string
+	assetKind        AssetKind
+	globalAssetID    *string
 	specificAssetIDs []ISpecificAssetID
-	assetType *string
+	assetType        *string
 	defaultThumbnail IResource
 }
 
-func (ai *AssetInformation) AssetKind(
-) AssetKind {
+func (ai *AssetInformation) AssetKind() AssetKind {
 	return ai.assetKind
 }
 
@@ -1992,8 +2007,7 @@ func (ai *AssetInformation) SetAssetKind(
 	ai.assetKind = value
 }
 
-func (ai *AssetInformation) GlobalAssetID(
-) *string {
+func (ai *AssetInformation) GlobalAssetID() *string {
 	return ai.globalAssetID
 }
 
@@ -2003,8 +2017,7 @@ func (ai *AssetInformation) SetGlobalAssetID(
 	ai.globalAssetID = value
 }
 
-func (ai *AssetInformation) SpecificAssetIDs(
-) []ISpecificAssetID {
+func (ai *AssetInformation) SpecificAssetIDs() []ISpecificAssetID {
 	return ai.specificAssetIDs
 }
 
@@ -2014,8 +2027,7 @@ func (ai *AssetInformation) SetSpecificAssetIDs(
 	ai.specificAssetIDs = value
 }
 
-func (ai *AssetInformation) AssetType(
-) *string {
+func (ai *AssetInformation) AssetType() *string {
 	return ai.assetType
 }
 
@@ -2025,8 +2037,7 @@ func (ai *AssetInformation) SetAssetType(
 	ai.assetType = value
 }
 
-func (ai *AssetInformation) DefaultThumbnail(
-) IResource {
+func (ai *AssetInformation) DefaultThumbnail() IResource {
 	return ai.defaultThumbnail
 }
 
@@ -2036,8 +2047,7 @@ func (ai *AssetInformation) SetDefaultThumbnail(
 	ai.defaultThumbnail = value
 }
 
-func (ai *AssetInformation) ModelType(
-) ModelType {
+func (ai *AssetInformation) ModelType() ModelType {
 	return ModelTypeAssetInformation
 }
 
@@ -2054,7 +2064,7 @@ func (ai *AssetInformation) DescendOnce(
 ) (abort bool) {
 	if ai.specificAssetIDs != nil {
 		for _, v := range ai.specificAssetIDs {
-			abort = action(v);
+			abort = action(v)
 			if abort {
 				return
 			}
@@ -2084,14 +2094,14 @@ func (ai *AssetInformation) Descend(
 ) (abort bool) {
 	if ai.specificAssetIDs != nil {
 		for _, v := range ai.specificAssetIDs {
-			abort = action(v);
+			abort = action(v)
 			if abort {
 				return
 			}
 
 			abort = v.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -2122,10 +2132,10 @@ func NewAssetInformation(
 	assetKind AssetKind,
 ) *AssetInformation {
 	return &AssetInformation{
-		assetKind: assetKind,
-		globalAssetID: nil,
+		assetKind:        assetKind,
+		globalAssetID:    nil,
 		specificAssetIDs: nil,
-		assetType: nil,
+		assetType:        nil,
 		defaultThumbnail: nil,
 	}
 }
@@ -2138,20 +2148,20 @@ type IResource interface {
 	// Path and name of the resource (with file extension).
 	//
 	// The path can be absolute or relative.
-	Path() string;
+	Path() string
 
 	SetPath(
 		value string,
-	);
+	)
 
 	// Content type of the content of the file.
 	//
 	// The content type states which file extensions the file can have.
-	ContentType() *string;
+	ContentType() *string
 
 	SetContentType(
 		value *string,
-	);
+	)
 }
 
 // Check whether the instance corresponds to [aastypes.IResource]
@@ -2168,12 +2178,11 @@ func IsResource(
 
 // Implements IResource.
 type Resource struct {
-	path string
+	path        string
 	contentType *string
 }
 
-func (r *Resource) Path(
-) string {
+func (r *Resource) Path() string {
 	return r.path
 }
 
@@ -2183,8 +2192,7 @@ func (r *Resource) SetPath(
 	r.path = value
 }
 
-func (r *Resource) ContentType(
-) *string {
+func (r *Resource) ContentType() *string {
 	return r.contentType
 }
 
@@ -2194,8 +2202,7 @@ func (r *Resource) SetContentType(
 	r.contentType = value
 }
 
-func (r *Resource) ModelType(
-) ModelType {
+func (r *Resource) ModelType() ModelType {
 	return ModelTypeResource
 }
 
@@ -2235,20 +2242,24 @@ func NewResource(
 	path string,
 ) *Resource {
 	return &Resource{
-		path: path,
+		path:        path,
 		contentType: nil,
 	}
 }
 
 // Enumeration for denoting whether an asset is a type asset or an instance
 // asset or is a role or whether this kind of classification is not applicable.
-type AssetKind int;const (
+type AssetKind int
+
+const (
 	// Type asset
 	AssetKindType AssetKind = iota
 	// Instance asset
 	AssetKindInstance
 	// Role asset
 	AssetKindRole
+	// Batch asset
+	AssetKindBatch
 	// Neither a type asset nor an instance asset nor a role asset
 	AssetKindNotApplicable
 )
@@ -2259,10 +2270,11 @@ type AssetKind int;const (
 // this array helps you avoid common errors and pitfalls.
 //
 // Please do not modify the array in the caller's code.
-var LiteralsOfAssetKind = [...]AssetKind {
+var LiteralsOfAssetKind = [...]AssetKind{
 	AssetKindType,
 	AssetKindInstance,
 	AssetKindRole,
+	AssetKindBatch,
 	AssetKindNotApplicable,
 }
 
@@ -2278,27 +2290,27 @@ type ISpecificAssetID interface {
 	IHasSemantics
 
 	// Name of the identifier
-	Name() string;
+	Name() string
 
 	SetName(
 		value string,
-	);
+	)
 
 	// The value of the specific asset identifier with the corresponding name.
-	Value() string;
+	Value() string
 
 	SetValue(
 		value string,
-	);
+	)
 
 	// The (external) subject the key belongs to or has meaning to.
 	//
 	// NOTE: This is a global reference.
-	ExternalSubjectID() IReference;
+	ExternalSubjectID() IReference
 
 	SetExternalSubjectID(
 		value IReference,
-	);
+	)
 }
 
 // Check whether the instance corresponds to [aastypes.ISpecificAssetID]
@@ -2315,15 +2327,14 @@ func IsSpecificAssetID(
 
 // Implements ISpecificAssetID.
 type SpecificAssetID struct {
-	semanticID IReference
+	semanticID              IReference
 	supplementalSemanticIDs []IReference
-	name string
-	value string
-	externalSubjectID IReference
+	name                    string
+	value                   string
+	externalSubjectID       IReference
 }
 
-func (sai *SpecificAssetID) SemanticID(
-) IReference {
+func (sai *SpecificAssetID) SemanticID() IReference {
 	return sai.semanticID
 }
 
@@ -2333,8 +2344,7 @@ func (sai *SpecificAssetID) SetSemanticID(
 	sai.semanticID = value
 }
 
-func (sai *SpecificAssetID) SupplementalSemanticIDs(
-) []IReference {
+func (sai *SpecificAssetID) SupplementalSemanticIDs() []IReference {
 	return sai.supplementalSemanticIDs
 }
 
@@ -2344,8 +2354,7 @@ func (sai *SpecificAssetID) SetSupplementalSemanticIDs(
 	sai.supplementalSemanticIDs = value
 }
 
-func (sai *SpecificAssetID) Name(
-) string {
+func (sai *SpecificAssetID) Name() string {
 	return sai.name
 }
 
@@ -2355,8 +2364,7 @@ func (sai *SpecificAssetID) SetName(
 	sai.name = value
 }
 
-func (sai *SpecificAssetID) Value(
-) string {
+func (sai *SpecificAssetID) Value() string {
 	return sai.value
 }
 
@@ -2366,8 +2374,7 @@ func (sai *SpecificAssetID) SetValue(
 	sai.value = value
 }
 
-func (sai *SpecificAssetID) ExternalSubjectID(
-) IReference {
+func (sai *SpecificAssetID) ExternalSubjectID() IReference {
 	return sai.externalSubjectID
 }
 
@@ -2377,8 +2384,7 @@ func (sai *SpecificAssetID) SetExternalSubjectID(
 	sai.externalSubjectID = value
 }
 
-func (sai *SpecificAssetID) ModelType(
-) ModelType {
+func (sai *SpecificAssetID) ModelType() ModelType {
 	return ModelTypeSpecificAssetID
 }
 
@@ -2404,7 +2410,7 @@ func (sai *SpecificAssetID) DescendOnce(
 
 	if sai.supplementalSemanticIDs != nil {
 		for _, v := range sai.supplementalSemanticIDs {
-			abort = action(v);
+			abort = action(v)
 			if abort {
 				return
 			}
@@ -2449,14 +2455,14 @@ func (sai *SpecificAssetID) Descend(
 
 	if sai.supplementalSemanticIDs != nil {
 		for _, v := range sai.supplementalSemanticIDs {
-			abort = action(v);
+			abort = action(v)
 			if abort {
 				return
 			}
 
 			abort = v.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -2488,11 +2494,11 @@ func NewSpecificAssetID(
 	value string,
 ) *SpecificAssetID {
 	return &SpecificAssetID{
-		name: name,
-		value: value,
-		semanticID: nil,
+		name:                    name,
+		value:                   value,
+		semanticID:              nil,
 		supplementalSemanticIDs: nil,
-		externalSubjectID: nil,
+		externalSubjectID:       nil,
 	}
 }
 
@@ -2514,13 +2520,13 @@ type ISubmodel interface {
 	IHasDataSpecification
 
 	// A submodel consists of zero or more submodel elements.
-	SubmodelElements() []ISubmodelElement;
+	SubmodelElements() []ISubmodelElement
 
 	SetSubmodelElements(
 		value []ISubmodelElement,
-	);
+	)
 
-	KindOrDefault() ModellingKind;
+	KindOrDefault() ModellingKind
 }
 
 // Check whether the instance corresponds to [aastypes.ISubmodel]
@@ -2537,23 +2543,22 @@ func IsSubmodel(
 
 // Implements ISubmodel.
 type Submodel struct {
-	extensions []IExtension
-	category *string
-	idShort *string
-	displayName []ILangStringNameType
-	description []ILangStringTextType
-	administration IAdministrativeInformation
-	id string
-	kind *ModellingKind
-	semanticID IReference
-	supplementalSemanticIDs []IReference
-	qualifiers []IQualifier
+	extensions                 []IExtension
+	category                   *string
+	idShort                    *string
+	displayName                []ILangStringNameType
+	description                []ILangStringTextType
+	administration             IAdministrativeInformation
+	id                         string
+	kind                       *ModellingKind
+	semanticID                 IReference
+	supplementalSemanticIDs    []IReference
+	qualifiers                 []IQualifier
 	embeddedDataSpecifications []IEmbeddedDataSpecification
-	submodelElements []ISubmodelElement
+	submodelElements           []ISubmodelElement
 }
 
-func (s *Submodel) Extensions(
-) []IExtension {
+func (s *Submodel) Extensions() []IExtension {
 	return s.extensions
 }
 
@@ -2563,8 +2568,7 @@ func (s *Submodel) SetExtensions(
 	s.extensions = value
 }
 
-func (s *Submodel) Category(
-) *string {
+func (s *Submodel) Category() *string {
 	return s.category
 }
 
@@ -2574,8 +2578,7 @@ func (s *Submodel) SetCategory(
 	s.category = value
 }
 
-func (s *Submodel) IDShort(
-) *string {
+func (s *Submodel) IDShort() *string {
 	return s.idShort
 }
 
@@ -2585,8 +2588,7 @@ func (s *Submodel) SetIDShort(
 	s.idShort = value
 }
 
-func (s *Submodel) DisplayName(
-) []ILangStringNameType {
+func (s *Submodel) DisplayName() []ILangStringNameType {
 	return s.displayName
 }
 
@@ -2596,8 +2598,7 @@ func (s *Submodel) SetDisplayName(
 	s.displayName = value
 }
 
-func (s *Submodel) Description(
-) []ILangStringTextType {
+func (s *Submodel) Description() []ILangStringTextType {
 	return s.description
 }
 
@@ -2607,8 +2608,7 @@ func (s *Submodel) SetDescription(
 	s.description = value
 }
 
-func (s *Submodel) Administration(
-) IAdministrativeInformation {
+func (s *Submodel) Administration() IAdministrativeInformation {
 	return s.administration
 }
 
@@ -2618,8 +2618,7 @@ func (s *Submodel) SetAdministration(
 	s.administration = value
 }
 
-func (s *Submodel) ID(
-) string {
+func (s *Submodel) ID() string {
 	return s.id
 }
 
@@ -2629,8 +2628,7 @@ func (s *Submodel) SetID(
 	s.id = value
 }
 
-func (s *Submodel) Kind(
-) *ModellingKind {
+func (s *Submodel) Kind() *ModellingKind {
 	return s.kind
 }
 
@@ -2640,8 +2638,7 @@ func (s *Submodel) SetKind(
 	s.kind = value
 }
 
-func (s *Submodel) SemanticID(
-) IReference {
+func (s *Submodel) SemanticID() IReference {
 	return s.semanticID
 }
 
@@ -2651,8 +2648,7 @@ func (s *Submodel) SetSemanticID(
 	s.semanticID = value
 }
 
-func (s *Submodel) SupplementalSemanticIDs(
-) []IReference {
+func (s *Submodel) SupplementalSemanticIDs() []IReference {
 	return s.supplementalSemanticIDs
 }
 
@@ -2662,8 +2658,7 @@ func (s *Submodel) SetSupplementalSemanticIDs(
 	s.supplementalSemanticIDs = value
 }
 
-func (s *Submodel) Qualifiers(
-) []IQualifier {
+func (s *Submodel) Qualifiers() []IQualifier {
 	return s.qualifiers
 }
 
@@ -2673,8 +2668,7 @@ func (s *Submodel) SetQualifiers(
 	s.qualifiers = value
 }
 
-func (s *Submodel) EmbeddedDataSpecifications(
-) []IEmbeddedDataSpecification {
+func (s *Submodel) EmbeddedDataSpecifications() []IEmbeddedDataSpecification {
 	return s.embeddedDataSpecifications
 }
 
@@ -2684,8 +2678,7 @@ func (s *Submodel) SetEmbeddedDataSpecifications(
 	s.embeddedDataSpecifications = value
 }
 
-func (s *Submodel) SubmodelElements(
-) []ISubmodelElement {
+func (s *Submodel) SubmodelElements() []ISubmodelElement {
 	return s.submodelElements
 }
 
@@ -2695,8 +2688,7 @@ func (s *Submodel) SetSubmodelElements(
 	s.submodelElements = value
 }
 
-func (s *Submodel) ModelType(
-) ModelType {
+func (s *Submodel) ModelType() ModelType {
 	return ModelTypeSubmodel
 }
 
@@ -2724,7 +2716,7 @@ func (s *Submodel) DescendOnce(
 ) (abort bool) {
 	if s.extensions != nil {
 		for _, v := range s.extensions {
-			abort = action(v);
+			abort = action(v)
 			if abort {
 				return
 			}
@@ -2733,7 +2725,7 @@ func (s *Submodel) DescendOnce(
 
 	if s.displayName != nil {
 		for _, v1 := range s.displayName {
-			abort = action(v1);
+			abort = action(v1)
 			if abort {
 				return
 			}
@@ -2742,7 +2734,7 @@ func (s *Submodel) DescendOnce(
 
 	if s.description != nil {
 		for _, v2 := range s.description {
-			abort = action(v2);
+			abort = action(v2)
 			if abort {
 				return
 			}
@@ -2769,7 +2761,7 @@ func (s *Submodel) DescendOnce(
 
 	if s.supplementalSemanticIDs != nil {
 		for _, v3 := range s.supplementalSemanticIDs {
-			abort = action(v3);
+			abort = action(v3)
 			if abort {
 				return
 			}
@@ -2778,7 +2770,7 @@ func (s *Submodel) DescendOnce(
 
 	if s.qualifiers != nil {
 		for _, v4 := range s.qualifiers {
-			abort = action(v4);
+			abort = action(v4)
 			if abort {
 				return
 			}
@@ -2787,7 +2779,7 @@ func (s *Submodel) DescendOnce(
 
 	if s.embeddedDataSpecifications != nil {
 		for _, v5 := range s.embeddedDataSpecifications {
-			abort = action(v5);
+			abort = action(v5)
 			if abort {
 				return
 			}
@@ -2796,7 +2788,7 @@ func (s *Submodel) DescendOnce(
 
 	if s.submodelElements != nil {
 		for _, v6 := range s.submodelElements {
-			abort = action(v6);
+			abort = action(v6)
 			if abort {
 				return
 			}
@@ -2817,14 +2809,14 @@ func (s *Submodel) Descend(
 ) (abort bool) {
 	if s.extensions != nil {
 		for _, v := range s.extensions {
-			abort = action(v);
+			abort = action(v)
 			if abort {
 				return
 			}
 
 			abort = v.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -2833,14 +2825,14 @@ func (s *Submodel) Descend(
 
 	if s.displayName != nil {
 		for _, v1 := range s.displayName {
-			abort = action(v1);
+			abort = action(v1)
 			if abort {
 				return
 			}
 
 			abort = v1.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -2849,14 +2841,14 @@ func (s *Submodel) Descend(
 
 	if s.description != nil {
 		for _, v2 := range s.description {
-			abort = action(v2);
+			abort = action(v2)
 			if abort {
 				return
 			}
 
 			abort = v2.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -2895,14 +2887,14 @@ func (s *Submodel) Descend(
 
 	if s.supplementalSemanticIDs != nil {
 		for _, v3 := range s.supplementalSemanticIDs {
-			abort = action(v3);
+			abort = action(v3)
 			if abort {
 				return
 			}
 
 			abort = v3.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -2911,14 +2903,14 @@ func (s *Submodel) Descend(
 
 	if s.qualifiers != nil {
 		for _, v4 := range s.qualifiers {
-			abort = action(v4);
+			abort = action(v4)
 			if abort {
 				return
 			}
 
 			abort = v4.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -2927,14 +2919,14 @@ func (s *Submodel) Descend(
 
 	if s.embeddedDataSpecifications != nil {
 		for _, v5 := range s.embeddedDataSpecifications {
-			abort = action(v5);
+			abort = action(v5)
 			if abort {
 				return
 			}
 
 			abort = v5.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -2943,14 +2935,14 @@ func (s *Submodel) Descend(
 
 	if s.submodelElements != nil {
 		for _, v6 := range s.submodelElements {
-			abort = action(v6);
+			abort = action(v6)
 			if abort {
 				return
 			}
 
 			abort = v6.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -2966,19 +2958,19 @@ func NewSubmodel(
 	id string,
 ) *Submodel {
 	return &Submodel{
-		id: id,
-		extensions: nil,
-		category: nil,
-		idShort: nil,
-		displayName: nil,
-		description: nil,
-		administration: nil,
-		kind: nil,
-		semanticID: nil,
-		supplementalSemanticIDs: nil,
-		qualifiers: nil,
+		id:                         id,
+		extensions:                 nil,
+		category:                   nil,
+		idShort:                    nil,
+		displayName:                nil,
+		description:                nil,
+		administration:             nil,
+		kind:                       nil,
+		semanticID:                 nil,
+		supplementalSemanticIDs:    nil,
+		qualifiers:                 nil,
 		embeddedDataSpecifications: nil,
-		submodelElements: nil,
+		submodelElements:           nil,
 	}
 }
 
@@ -3050,18 +3042,18 @@ type IRelationshipElement interface {
 	ISubmodelElement
 
 	// Reference to the first element in the relationship taking the role of the subject.
-	First() IReference;
+	First() IReference
 
 	SetFirst(
 		value IReference,
-	);
+	)
 
 	// Reference to the second element in the relationship taking the role of the object.
-	Second() IReference;
+	Second() IReference
 
 	SetSecond(
 		value IReference,
-	);
+	)
 }
 
 // Check whether the instance corresponds to [aastypes.IRelationshipElement]
@@ -3083,21 +3075,20 @@ func IsRelationshipElement(
 
 // Implements IRelationshipElement.
 type RelationshipElement struct {
-	extensions []IExtension
-	category *string
-	idShort *string
-	displayName []ILangStringNameType
-	description []ILangStringTextType
-	semanticID IReference
-	supplementalSemanticIDs []IReference
-	qualifiers []IQualifier
+	extensions                 []IExtension
+	category                   *string
+	idShort                    *string
+	displayName                []ILangStringNameType
+	description                []ILangStringTextType
+	semanticID                 IReference
+	supplementalSemanticIDs    []IReference
+	qualifiers                 []IQualifier
 	embeddedDataSpecifications []IEmbeddedDataSpecification
-	first IReference
-	second IReference
+	first                      IReference
+	second                     IReference
 }
 
-func (re *RelationshipElement) Extensions(
-) []IExtension {
+func (re *RelationshipElement) Extensions() []IExtension {
 	return re.extensions
 }
 
@@ -3107,8 +3098,7 @@ func (re *RelationshipElement) SetExtensions(
 	re.extensions = value
 }
 
-func (re *RelationshipElement) Category(
-) *string {
+func (re *RelationshipElement) Category() *string {
 	return re.category
 }
 
@@ -3118,8 +3108,7 @@ func (re *RelationshipElement) SetCategory(
 	re.category = value
 }
 
-func (re *RelationshipElement) IDShort(
-) *string {
+func (re *RelationshipElement) IDShort() *string {
 	return re.idShort
 }
 
@@ -3129,8 +3118,7 @@ func (re *RelationshipElement) SetIDShort(
 	re.idShort = value
 }
 
-func (re *RelationshipElement) DisplayName(
-) []ILangStringNameType {
+func (re *RelationshipElement) DisplayName() []ILangStringNameType {
 	return re.displayName
 }
 
@@ -3140,8 +3128,7 @@ func (re *RelationshipElement) SetDisplayName(
 	re.displayName = value
 }
 
-func (re *RelationshipElement) Description(
-) []ILangStringTextType {
+func (re *RelationshipElement) Description() []ILangStringTextType {
 	return re.description
 }
 
@@ -3151,8 +3138,7 @@ func (re *RelationshipElement) SetDescription(
 	re.description = value
 }
 
-func (re *RelationshipElement) SemanticID(
-) IReference {
+func (re *RelationshipElement) SemanticID() IReference {
 	return re.semanticID
 }
 
@@ -3162,8 +3148,7 @@ func (re *RelationshipElement) SetSemanticID(
 	re.semanticID = value
 }
 
-func (re *RelationshipElement) SupplementalSemanticIDs(
-) []IReference {
+func (re *RelationshipElement) SupplementalSemanticIDs() []IReference {
 	return re.supplementalSemanticIDs
 }
 
@@ -3173,8 +3158,7 @@ func (re *RelationshipElement) SetSupplementalSemanticIDs(
 	re.supplementalSemanticIDs = value
 }
 
-func (re *RelationshipElement) Qualifiers(
-) []IQualifier {
+func (re *RelationshipElement) Qualifiers() []IQualifier {
 	return re.qualifiers
 }
 
@@ -3184,8 +3168,7 @@ func (re *RelationshipElement) SetQualifiers(
 	re.qualifiers = value
 }
 
-func (re *RelationshipElement) EmbeddedDataSpecifications(
-) []IEmbeddedDataSpecification {
+func (re *RelationshipElement) EmbeddedDataSpecifications() []IEmbeddedDataSpecification {
 	return re.embeddedDataSpecifications
 }
 
@@ -3195,8 +3178,7 @@ func (re *RelationshipElement) SetEmbeddedDataSpecifications(
 	re.embeddedDataSpecifications = value
 }
 
-func (re *RelationshipElement) First(
-) IReference {
+func (re *RelationshipElement) First() IReference {
 	return re.first
 }
 
@@ -3206,8 +3188,7 @@ func (re *RelationshipElement) SetFirst(
 	re.first = value
 }
 
-func (re *RelationshipElement) Second(
-) IReference {
+func (re *RelationshipElement) Second() IReference {
 	return re.second
 }
 
@@ -3217,8 +3198,7 @@ func (re *RelationshipElement) SetSecond(
 	re.second = value
 }
 
-func (re *RelationshipElement) ModelType(
-) ModelType {
+func (re *RelationshipElement) ModelType() ModelType {
 	return ModelTypeRelationshipElement
 }
 
@@ -3235,7 +3215,7 @@ func (re *RelationshipElement) DescendOnce(
 ) (abort bool) {
 	if re.extensions != nil {
 		for _, v := range re.extensions {
-			abort = action(v);
+			abort = action(v)
 			if abort {
 				return
 			}
@@ -3244,7 +3224,7 @@ func (re *RelationshipElement) DescendOnce(
 
 	if re.displayName != nil {
 		for _, v1 := range re.displayName {
-			abort = action(v1);
+			abort = action(v1)
 			if abort {
 				return
 			}
@@ -3253,7 +3233,7 @@ func (re *RelationshipElement) DescendOnce(
 
 	if re.description != nil {
 		for _, v2 := range re.description {
-			abort = action(v2);
+			abort = action(v2)
 			if abort {
 				return
 			}
@@ -3271,7 +3251,7 @@ func (re *RelationshipElement) DescendOnce(
 
 	if re.supplementalSemanticIDs != nil {
 		for _, v3 := range re.supplementalSemanticIDs {
-			abort = action(v3);
+			abort = action(v3)
 			if abort {
 				return
 			}
@@ -3280,7 +3260,7 @@ func (re *RelationshipElement) DescendOnce(
 
 	if re.qualifiers != nil {
 		for _, v4 := range re.qualifiers {
-			abort = action(v4);
+			abort = action(v4)
 			if abort {
 				return
 			}
@@ -3289,7 +3269,7 @@ func (re *RelationshipElement) DescendOnce(
 
 	if re.embeddedDataSpecifications != nil {
 		for _, v5 := range re.embeddedDataSpecifications {
-			abort = action(v5);
+			abort = action(v5)
 			if abort {
 				return
 			}
@@ -3328,14 +3308,14 @@ func (re *RelationshipElement) Descend(
 ) (abort bool) {
 	if re.extensions != nil {
 		for _, v := range re.extensions {
-			abort = action(v);
+			abort = action(v)
 			if abort {
 				return
 			}
 
 			abort = v.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -3344,14 +3324,14 @@ func (re *RelationshipElement) Descend(
 
 	if re.displayName != nil {
 		for _, v1 := range re.displayName {
-			abort = action(v1);
+			abort = action(v1)
 			if abort {
 				return
 			}
 
 			abort = v1.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -3360,14 +3340,14 @@ func (re *RelationshipElement) Descend(
 
 	if re.description != nil {
 		for _, v2 := range re.description {
-			abort = action(v2);
+			abort = action(v2)
 			if abort {
 				return
 			}
 
 			abort = v2.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -3391,14 +3371,14 @@ func (re *RelationshipElement) Descend(
 
 	if re.supplementalSemanticIDs != nil {
 		for _, v3 := range re.supplementalSemanticIDs {
-			abort = action(v3);
+			abort = action(v3)
 			if abort {
 				return
 			}
 
 			abort = v3.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -3407,14 +3387,14 @@ func (re *RelationshipElement) Descend(
 
 	if re.qualifiers != nil {
 		for _, v4 := range re.qualifiers {
-			abort = action(v4);
+			abort = action(v4)
 			if abort {
 				return
 			}
 
 			abort = v4.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -3423,14 +3403,14 @@ func (re *RelationshipElement) Descend(
 
 	if re.embeddedDataSpecifications != nil {
 		for _, v5 := range re.embeddedDataSpecifications {
-			abort = action(v5);
+			abort = action(v5)
 			if abort {
 				return
 			}
 
 			abort = v5.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -3474,22 +3454,24 @@ func (re *RelationshipElement) Descend(
 // the given properties.
 func NewRelationshipElement() *RelationshipElement {
 	return &RelationshipElement{
-		extensions: nil,
-		category: nil,
-		idShort: nil,
-		displayName: nil,
-		description: nil,
-		semanticID: nil,
-		supplementalSemanticIDs: nil,
-		qualifiers: nil,
+		extensions:                 nil,
+		category:                   nil,
+		idShort:                    nil,
+		displayName:                nil,
+		description:                nil,
+		semanticID:                 nil,
+		supplementalSemanticIDs:    nil,
+		qualifiers:                 nil,
 		embeddedDataSpecifications: nil,
-		first: nil,
-		second: nil,
+		first:                      nil,
+		second:                     nil,
 	}
 }
 
 // Enumeration of all possible elements of a [ISubmodelElementList].
-type AASSubmodelElements int;const (
+type AASSubmodelElements int
+
+const (
 	AASSubmodelElementsAnnotatedRelationshipElement AASSubmodelElements = iota
 	AASSubmodelElementsBasicEventElement
 	AASSubmodelElementsBlob
@@ -3515,7 +3497,7 @@ type AASSubmodelElements int;const (
 // this array helps you avoid common errors and pitfalls.
 //
 // Please do not modify the array in the caller's code.
-var LiteralsOfAASSubmodelElements = [...]AASSubmodelElements {
+var LiteralsOfAASSubmodelElements = [...]AASSubmodelElements{
 	AASSubmodelElementsAnnotatedRelationshipElement,
 	AASSubmodelElementsBasicEventElement,
 	AASSubmodelElementsBlob,
@@ -3571,45 +3553,45 @@ type ISubmodelElementList interface {
 	// then the list is representing a set or a bag.
 	//
 	// Default: `True`
-	OrderRelevant() *bool;
+	OrderRelevant() *bool
 
 	SetOrderRelevant(
 		value *bool,
-	);
+	)
 
 	// Semantic ID the submodel elements contained in the list match to.
 	//
 	// NOTE: It is recommended to use a global reference.
-	SemanticIDListElement() IReference;
+	SemanticIDListElement() IReference
 
 	SetSemanticIDListElement(
 		value IReference,
-	);
+	)
 
 	// The submodel element type of the submodel elements contained in the list.
-	TypeValueListElement() AASSubmodelElements;
+	TypeValueListElement() AASSubmodelElements
 
 	SetTypeValueListElement(
 		value AASSubmodelElements,
-	);
+	)
 
 	// The value type of the submodel element contained in the list.
-	ValueTypeListElement() *DataTypeDefXSD;
+	ValueTypeListElement() *DataTypeDefXSD
 
 	SetValueTypeListElement(
 		value *DataTypeDefXSD,
-	);
+	)
 
 	// Submodel element contained in the list.
 	//
 	// The list is ordered.
-	Value() []ISubmodelElement;
+	Value() []ISubmodelElement
 
 	SetValue(
 		value []ISubmodelElement,
-	);
+	)
 
-	OrderRelevantOrDefault() bool;
+	OrderRelevantOrDefault() bool
 }
 
 // Check whether the instance corresponds to [aastypes.ISubmodelElementList]
@@ -3626,24 +3608,23 @@ func IsSubmodelElementList(
 
 // Implements ISubmodelElementList.
 type SubmodelElementList struct {
-	extensions []IExtension
-	category *string
-	idShort *string
-	displayName []ILangStringNameType
-	description []ILangStringTextType
-	semanticID IReference
-	supplementalSemanticIDs []IReference
-	qualifiers []IQualifier
+	extensions                 []IExtension
+	category                   *string
+	idShort                    *string
+	displayName                []ILangStringNameType
+	description                []ILangStringTextType
+	semanticID                 IReference
+	supplementalSemanticIDs    []IReference
+	qualifiers                 []IQualifier
 	embeddedDataSpecifications []IEmbeddedDataSpecification
-	orderRelevant *bool
-	semanticIDListElement IReference
-	typeValueListElement AASSubmodelElements
-	valueTypeListElement *DataTypeDefXSD
-	value []ISubmodelElement
+	orderRelevant              *bool
+	semanticIDListElement      IReference
+	typeValueListElement       AASSubmodelElements
+	valueTypeListElement       *DataTypeDefXSD
+	value                      []ISubmodelElement
 }
 
-func (sel *SubmodelElementList) Extensions(
-) []IExtension {
+func (sel *SubmodelElementList) Extensions() []IExtension {
 	return sel.extensions
 }
 
@@ -3653,8 +3634,7 @@ func (sel *SubmodelElementList) SetExtensions(
 	sel.extensions = value
 }
 
-func (sel *SubmodelElementList) Category(
-) *string {
+func (sel *SubmodelElementList) Category() *string {
 	return sel.category
 }
 
@@ -3664,8 +3644,7 @@ func (sel *SubmodelElementList) SetCategory(
 	sel.category = value
 }
 
-func (sel *SubmodelElementList) IDShort(
-) *string {
+func (sel *SubmodelElementList) IDShort() *string {
 	return sel.idShort
 }
 
@@ -3675,8 +3654,7 @@ func (sel *SubmodelElementList) SetIDShort(
 	sel.idShort = value
 }
 
-func (sel *SubmodelElementList) DisplayName(
-) []ILangStringNameType {
+func (sel *SubmodelElementList) DisplayName() []ILangStringNameType {
 	return sel.displayName
 }
 
@@ -3686,8 +3664,7 @@ func (sel *SubmodelElementList) SetDisplayName(
 	sel.displayName = value
 }
 
-func (sel *SubmodelElementList) Description(
-) []ILangStringTextType {
+func (sel *SubmodelElementList) Description() []ILangStringTextType {
 	return sel.description
 }
 
@@ -3697,8 +3674,7 @@ func (sel *SubmodelElementList) SetDescription(
 	sel.description = value
 }
 
-func (sel *SubmodelElementList) SemanticID(
-) IReference {
+func (sel *SubmodelElementList) SemanticID() IReference {
 	return sel.semanticID
 }
 
@@ -3708,8 +3684,7 @@ func (sel *SubmodelElementList) SetSemanticID(
 	sel.semanticID = value
 }
 
-func (sel *SubmodelElementList) SupplementalSemanticIDs(
-) []IReference {
+func (sel *SubmodelElementList) SupplementalSemanticIDs() []IReference {
 	return sel.supplementalSemanticIDs
 }
 
@@ -3719,8 +3694,7 @@ func (sel *SubmodelElementList) SetSupplementalSemanticIDs(
 	sel.supplementalSemanticIDs = value
 }
 
-func (sel *SubmodelElementList) Qualifiers(
-) []IQualifier {
+func (sel *SubmodelElementList) Qualifiers() []IQualifier {
 	return sel.qualifiers
 }
 
@@ -3730,8 +3704,7 @@ func (sel *SubmodelElementList) SetQualifiers(
 	sel.qualifiers = value
 }
 
-func (sel *SubmodelElementList) EmbeddedDataSpecifications(
-) []IEmbeddedDataSpecification {
+func (sel *SubmodelElementList) EmbeddedDataSpecifications() []IEmbeddedDataSpecification {
 	return sel.embeddedDataSpecifications
 }
 
@@ -3741,8 +3714,7 @@ func (sel *SubmodelElementList) SetEmbeddedDataSpecifications(
 	sel.embeddedDataSpecifications = value
 }
 
-func (sel *SubmodelElementList) OrderRelevant(
-) *bool {
+func (sel *SubmodelElementList) OrderRelevant() *bool {
 	return sel.orderRelevant
 }
 
@@ -3752,8 +3724,7 @@ func (sel *SubmodelElementList) SetOrderRelevant(
 	sel.orderRelevant = value
 }
 
-func (sel *SubmodelElementList) SemanticIDListElement(
-) IReference {
+func (sel *SubmodelElementList) SemanticIDListElement() IReference {
 	return sel.semanticIDListElement
 }
 
@@ -3763,8 +3734,7 @@ func (sel *SubmodelElementList) SetSemanticIDListElement(
 	sel.semanticIDListElement = value
 }
 
-func (sel *SubmodelElementList) TypeValueListElement(
-) AASSubmodelElements {
+func (sel *SubmodelElementList) TypeValueListElement() AASSubmodelElements {
 	return sel.typeValueListElement
 }
 
@@ -3774,8 +3744,7 @@ func (sel *SubmodelElementList) SetTypeValueListElement(
 	sel.typeValueListElement = value
 }
 
-func (sel *SubmodelElementList) ValueTypeListElement(
-) *DataTypeDefXSD {
+func (sel *SubmodelElementList) ValueTypeListElement() *DataTypeDefXSD {
 	return sel.valueTypeListElement
 }
 
@@ -3785,8 +3754,7 @@ func (sel *SubmodelElementList) SetValueTypeListElement(
 	sel.valueTypeListElement = value
 }
 
-func (sel *SubmodelElementList) Value(
-) []ISubmodelElement {
+func (sel *SubmodelElementList) Value() []ISubmodelElement {
 	return sel.value
 }
 
@@ -3796,8 +3764,7 @@ func (sel *SubmodelElementList) SetValue(
 	sel.value = value
 }
 
-func (sel *SubmodelElementList) ModelType(
-) ModelType {
+func (sel *SubmodelElementList) ModelType() ModelType {
 	return ModelTypeSubmodelElementList
 }
 
@@ -3825,7 +3792,7 @@ func (sel *SubmodelElementList) DescendOnce(
 ) (abort bool) {
 	if sel.extensions != nil {
 		for _, v := range sel.extensions {
-			abort = action(v);
+			abort = action(v)
 			if abort {
 				return
 			}
@@ -3834,7 +3801,7 @@ func (sel *SubmodelElementList) DescendOnce(
 
 	if sel.displayName != nil {
 		for _, v1 := range sel.displayName {
-			abort = action(v1);
+			abort = action(v1)
 			if abort {
 				return
 			}
@@ -3843,7 +3810,7 @@ func (sel *SubmodelElementList) DescendOnce(
 
 	if sel.description != nil {
 		for _, v2 := range sel.description {
-			abort = action(v2);
+			abort = action(v2)
 			if abort {
 				return
 			}
@@ -3861,7 +3828,7 @@ func (sel *SubmodelElementList) DescendOnce(
 
 	if sel.supplementalSemanticIDs != nil {
 		for _, v3 := range sel.supplementalSemanticIDs {
-			abort = action(v3);
+			abort = action(v3)
 			if abort {
 				return
 			}
@@ -3870,7 +3837,7 @@ func (sel *SubmodelElementList) DescendOnce(
 
 	if sel.qualifiers != nil {
 		for _, v4 := range sel.qualifiers {
-			abort = action(v4);
+			abort = action(v4)
 			if abort {
 				return
 			}
@@ -3879,7 +3846,7 @@ func (sel *SubmodelElementList) DescendOnce(
 
 	if sel.embeddedDataSpecifications != nil {
 		for _, v5 := range sel.embeddedDataSpecifications {
-			abort = action(v5);
+			abort = action(v5)
 			if abort {
 				return
 			}
@@ -3897,7 +3864,7 @@ func (sel *SubmodelElementList) DescendOnce(
 
 	if sel.value != nil {
 		for _, v6 := range sel.value {
-			abort = action(v6);
+			abort = action(v6)
 			if abort {
 				return
 			}
@@ -3918,14 +3885,14 @@ func (sel *SubmodelElementList) Descend(
 ) (abort bool) {
 	if sel.extensions != nil {
 		for _, v := range sel.extensions {
-			abort = action(v);
+			abort = action(v)
 			if abort {
 				return
 			}
 
 			abort = v.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -3934,14 +3901,14 @@ func (sel *SubmodelElementList) Descend(
 
 	if sel.displayName != nil {
 		for _, v1 := range sel.displayName {
-			abort = action(v1);
+			abort = action(v1)
 			if abort {
 				return
 			}
 
 			abort = v1.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -3950,14 +3917,14 @@ func (sel *SubmodelElementList) Descend(
 
 	if sel.description != nil {
 		for _, v2 := range sel.description {
-			abort = action(v2);
+			abort = action(v2)
 			if abort {
 				return
 			}
 
 			abort = v2.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -3981,14 +3948,14 @@ func (sel *SubmodelElementList) Descend(
 
 	if sel.supplementalSemanticIDs != nil {
 		for _, v3 := range sel.supplementalSemanticIDs {
-			abort = action(v3);
+			abort = action(v3)
 			if abort {
 				return
 			}
 
 			abort = v3.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -3997,14 +3964,14 @@ func (sel *SubmodelElementList) Descend(
 
 	if sel.qualifiers != nil {
 		for _, v4 := range sel.qualifiers {
-			abort = action(v4);
+			abort = action(v4)
 			if abort {
 				return
 			}
 
 			abort = v4.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -4013,14 +3980,14 @@ func (sel *SubmodelElementList) Descend(
 
 	if sel.embeddedDataSpecifications != nil {
 		for _, v5 := range sel.embeddedDataSpecifications {
-			abort = action(v5);
+			abort = action(v5)
 			if abort {
 				return
 			}
 
 			abort = v5.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -4044,14 +4011,14 @@ func (sel *SubmodelElementList) Descend(
 
 	if sel.value != nil {
 		for _, v6 := range sel.value {
-			abort = action(v6);
+			abort = action(v6)
 			if abort {
 				return
 			}
 
 			abort = v6.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -4067,20 +4034,20 @@ func NewSubmodelElementList(
 	typeValueListElement AASSubmodelElements,
 ) *SubmodelElementList {
 	return &SubmodelElementList{
-		typeValueListElement: typeValueListElement,
-		extensions: nil,
-		category: nil,
-		idShort: nil,
-		displayName: nil,
-		description: nil,
-		semanticID: nil,
-		supplementalSemanticIDs: nil,
-		qualifiers: nil,
+		typeValueListElement:       typeValueListElement,
+		extensions:                 nil,
+		category:                   nil,
+		idShort:                    nil,
+		displayName:                nil,
+		description:                nil,
+		semanticID:                 nil,
+		supplementalSemanticIDs:    nil,
+		qualifiers:                 nil,
 		embeddedDataSpecifications: nil,
-		orderRelevant: nil,
-		semanticIDListElement: nil,
-		valueTypeListElement: nil,
-		value: nil,
+		orderRelevant:              nil,
+		semanticIDListElement:      nil,
+		valueTypeListElement:       nil,
+		value:                      nil,
 	}
 }
 
@@ -4090,11 +4057,11 @@ type ISubmodelElementCollection interface {
 	ISubmodelElement
 
 	// Submodel element contained in the collection.
-	Value() []ISubmodelElement;
+	Value() []ISubmodelElement
 
 	SetValue(
 		value []ISubmodelElement,
-	);
+	)
 }
 
 // Check whether the instance corresponds to [aastypes.ISubmodelElementCollection]
@@ -4111,20 +4078,19 @@ func IsSubmodelElementCollection(
 
 // Implements ISubmodelElementCollection.
 type SubmodelElementCollection struct {
-	extensions []IExtension
-	category *string
-	idShort *string
-	displayName []ILangStringNameType
-	description []ILangStringTextType
-	semanticID IReference
-	supplementalSemanticIDs []IReference
-	qualifiers []IQualifier
+	extensions                 []IExtension
+	category                   *string
+	idShort                    *string
+	displayName                []ILangStringNameType
+	description                []ILangStringTextType
+	semanticID                 IReference
+	supplementalSemanticIDs    []IReference
+	qualifiers                 []IQualifier
 	embeddedDataSpecifications []IEmbeddedDataSpecification
-	value []ISubmodelElement
+	value                      []ISubmodelElement
 }
 
-func (sec *SubmodelElementCollection) Extensions(
-) []IExtension {
+func (sec *SubmodelElementCollection) Extensions() []IExtension {
 	return sec.extensions
 }
 
@@ -4134,8 +4100,7 @@ func (sec *SubmodelElementCollection) SetExtensions(
 	sec.extensions = value
 }
 
-func (sec *SubmodelElementCollection) Category(
-) *string {
+func (sec *SubmodelElementCollection) Category() *string {
 	return sec.category
 }
 
@@ -4145,8 +4110,7 @@ func (sec *SubmodelElementCollection) SetCategory(
 	sec.category = value
 }
 
-func (sec *SubmodelElementCollection) IDShort(
-) *string {
+func (sec *SubmodelElementCollection) IDShort() *string {
 	return sec.idShort
 }
 
@@ -4156,8 +4120,7 @@ func (sec *SubmodelElementCollection) SetIDShort(
 	sec.idShort = value
 }
 
-func (sec *SubmodelElementCollection) DisplayName(
-) []ILangStringNameType {
+func (sec *SubmodelElementCollection) DisplayName() []ILangStringNameType {
 	return sec.displayName
 }
 
@@ -4167,8 +4130,7 @@ func (sec *SubmodelElementCollection) SetDisplayName(
 	sec.displayName = value
 }
 
-func (sec *SubmodelElementCollection) Description(
-) []ILangStringTextType {
+func (sec *SubmodelElementCollection) Description() []ILangStringTextType {
 	return sec.description
 }
 
@@ -4178,8 +4140,7 @@ func (sec *SubmodelElementCollection) SetDescription(
 	sec.description = value
 }
 
-func (sec *SubmodelElementCollection) SemanticID(
-) IReference {
+func (sec *SubmodelElementCollection) SemanticID() IReference {
 	return sec.semanticID
 }
 
@@ -4189,8 +4150,7 @@ func (sec *SubmodelElementCollection) SetSemanticID(
 	sec.semanticID = value
 }
 
-func (sec *SubmodelElementCollection) SupplementalSemanticIDs(
-) []IReference {
+func (sec *SubmodelElementCollection) SupplementalSemanticIDs() []IReference {
 	return sec.supplementalSemanticIDs
 }
 
@@ -4200,8 +4160,7 @@ func (sec *SubmodelElementCollection) SetSupplementalSemanticIDs(
 	sec.supplementalSemanticIDs = value
 }
 
-func (sec *SubmodelElementCollection) Qualifiers(
-) []IQualifier {
+func (sec *SubmodelElementCollection) Qualifiers() []IQualifier {
 	return sec.qualifiers
 }
 
@@ -4211,8 +4170,7 @@ func (sec *SubmodelElementCollection) SetQualifiers(
 	sec.qualifiers = value
 }
 
-func (sec *SubmodelElementCollection) EmbeddedDataSpecifications(
-) []IEmbeddedDataSpecification {
+func (sec *SubmodelElementCollection) EmbeddedDataSpecifications() []IEmbeddedDataSpecification {
 	return sec.embeddedDataSpecifications
 }
 
@@ -4222,8 +4180,7 @@ func (sec *SubmodelElementCollection) SetEmbeddedDataSpecifications(
 	sec.embeddedDataSpecifications = value
 }
 
-func (sec *SubmodelElementCollection) Value(
-) []ISubmodelElement {
+func (sec *SubmodelElementCollection) Value() []ISubmodelElement {
 	return sec.value
 }
 
@@ -4233,8 +4190,7 @@ func (sec *SubmodelElementCollection) SetValue(
 	sec.value = value
 }
 
-func (sec *SubmodelElementCollection) ModelType(
-) ModelType {
+func (sec *SubmodelElementCollection) ModelType() ModelType {
 	return ModelTypeSubmodelElementCollection
 }
 
@@ -4251,7 +4207,7 @@ func (sec *SubmodelElementCollection) DescendOnce(
 ) (abort bool) {
 	if sec.extensions != nil {
 		for _, v := range sec.extensions {
-			abort = action(v);
+			abort = action(v)
 			if abort {
 				return
 			}
@@ -4260,7 +4216,7 @@ func (sec *SubmodelElementCollection) DescendOnce(
 
 	if sec.displayName != nil {
 		for _, v1 := range sec.displayName {
-			abort = action(v1);
+			abort = action(v1)
 			if abort {
 				return
 			}
@@ -4269,7 +4225,7 @@ func (sec *SubmodelElementCollection) DescendOnce(
 
 	if sec.description != nil {
 		for _, v2 := range sec.description {
-			abort = action(v2);
+			abort = action(v2)
 			if abort {
 				return
 			}
@@ -4287,7 +4243,7 @@ func (sec *SubmodelElementCollection) DescendOnce(
 
 	if sec.supplementalSemanticIDs != nil {
 		for _, v3 := range sec.supplementalSemanticIDs {
-			abort = action(v3);
+			abort = action(v3)
 			if abort {
 				return
 			}
@@ -4296,7 +4252,7 @@ func (sec *SubmodelElementCollection) DescendOnce(
 
 	if sec.qualifiers != nil {
 		for _, v4 := range sec.qualifiers {
-			abort = action(v4);
+			abort = action(v4)
 			if abort {
 				return
 			}
@@ -4305,7 +4261,7 @@ func (sec *SubmodelElementCollection) DescendOnce(
 
 	if sec.embeddedDataSpecifications != nil {
 		for _, v5 := range sec.embeddedDataSpecifications {
-			abort = action(v5);
+			abort = action(v5)
 			if abort {
 				return
 			}
@@ -4314,7 +4270,7 @@ func (sec *SubmodelElementCollection) DescendOnce(
 
 	if sec.value != nil {
 		for _, v6 := range sec.value {
-			abort = action(v6);
+			abort = action(v6)
 			if abort {
 				return
 			}
@@ -4335,14 +4291,14 @@ func (sec *SubmodelElementCollection) Descend(
 ) (abort bool) {
 	if sec.extensions != nil {
 		for _, v := range sec.extensions {
-			abort = action(v);
+			abort = action(v)
 			if abort {
 				return
 			}
 
 			abort = v.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -4351,14 +4307,14 @@ func (sec *SubmodelElementCollection) Descend(
 
 	if sec.displayName != nil {
 		for _, v1 := range sec.displayName {
-			abort = action(v1);
+			abort = action(v1)
 			if abort {
 				return
 			}
 
 			abort = v1.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -4367,14 +4323,14 @@ func (sec *SubmodelElementCollection) Descend(
 
 	if sec.description != nil {
 		for _, v2 := range sec.description {
-			abort = action(v2);
+			abort = action(v2)
 			if abort {
 				return
 			}
 
 			abort = v2.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -4398,14 +4354,14 @@ func (sec *SubmodelElementCollection) Descend(
 
 	if sec.supplementalSemanticIDs != nil {
 		for _, v3 := range sec.supplementalSemanticIDs {
-			abort = action(v3);
+			abort = action(v3)
 			if abort {
 				return
 			}
 
 			abort = v3.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -4414,14 +4370,14 @@ func (sec *SubmodelElementCollection) Descend(
 
 	if sec.qualifiers != nil {
 		for _, v4 := range sec.qualifiers {
-			abort = action(v4);
+			abort = action(v4)
 			if abort {
 				return
 			}
 
 			abort = v4.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -4430,14 +4386,14 @@ func (sec *SubmodelElementCollection) Descend(
 
 	if sec.embeddedDataSpecifications != nil {
 		for _, v5 := range sec.embeddedDataSpecifications {
-			abort = action(v5);
+			abort = action(v5)
 			if abort {
 				return
 			}
 
 			abort = v5.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -4446,14 +4402,14 @@ func (sec *SubmodelElementCollection) Descend(
 
 	if sec.value != nil {
 		for _, v6 := range sec.value {
-			abort = action(v6);
+			abort = action(v6)
 			if abort {
 				return
 			}
 
 			abort = v6.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -4467,16 +4423,16 @@ func (sec *SubmodelElementCollection) Descend(
 // the given properties.
 func NewSubmodelElementCollection() *SubmodelElementCollection {
 	return &SubmodelElementCollection{
-		extensions: nil,
-		category: nil,
-		idShort: nil,
-		displayName: nil,
-		description: nil,
-		semanticID: nil,
-		supplementalSemanticIDs: nil,
-		qualifiers: nil,
+		extensions:                 nil,
+		category:                   nil,
+		idShort:                    nil,
+		displayName:                nil,
+		description:                nil,
+		semanticID:                 nil,
+		supplementalSemanticIDs:    nil,
+		qualifiers:                 nil,
 		embeddedDataSpecifications: nil,
-		value: nil,
+		value:                      nil,
 	}
 }
 
@@ -4524,27 +4480,27 @@ type IProperty interface {
 	IDataElement
 
 	// Data type of the value
-	ValueType() DataTypeDefXSD;
+	ValueType() DataTypeDefXSD
 
 	SetValueType(
 		value DataTypeDefXSD,
-	);
+	)
 
 	// The value of the property instance.
-	Value() *string;
+	Value() *string
 
 	SetValue(
 		value *string,
-	);
+	)
 
 	// Reference to the global unique ID of a coded value.
 	//
 	// NOTE: It is recommended to use a global reference.
-	ValueID() IReference;
+	ValueID() IReference
 
 	SetValueID(
 		value IReference,
-	);
+	)
 }
 
 // Check whether the instance corresponds to [aastypes.IProperty]
@@ -4561,22 +4517,21 @@ func IsProperty(
 
 // Implements IProperty.
 type Property struct {
-	extensions []IExtension
-	category *string
-	idShort *string
-	displayName []ILangStringNameType
-	description []ILangStringTextType
-	semanticID IReference
-	supplementalSemanticIDs []IReference
-	qualifiers []IQualifier
+	extensions                 []IExtension
+	category                   *string
+	idShort                    *string
+	displayName                []ILangStringNameType
+	description                []ILangStringTextType
+	semanticID                 IReference
+	supplementalSemanticIDs    []IReference
+	qualifiers                 []IQualifier
 	embeddedDataSpecifications []IEmbeddedDataSpecification
-	valueType DataTypeDefXSD
-	value *string
-	valueID IReference
+	valueType                  DataTypeDefXSD
+	value                      *string
+	valueID                    IReference
 }
 
-func (p *Property) Extensions(
-) []IExtension {
+func (p *Property) Extensions() []IExtension {
 	return p.extensions
 }
 
@@ -4586,8 +4541,7 @@ func (p *Property) SetExtensions(
 	p.extensions = value
 }
 
-func (p *Property) Category(
-) *string {
+func (p *Property) Category() *string {
 	return p.category
 }
 
@@ -4597,8 +4551,7 @@ func (p *Property) SetCategory(
 	p.category = value
 }
 
-func (p *Property) IDShort(
-) *string {
+func (p *Property) IDShort() *string {
 	return p.idShort
 }
 
@@ -4608,8 +4561,7 @@ func (p *Property) SetIDShort(
 	p.idShort = value
 }
 
-func (p *Property) DisplayName(
-) []ILangStringNameType {
+func (p *Property) DisplayName() []ILangStringNameType {
 	return p.displayName
 }
 
@@ -4619,8 +4571,7 @@ func (p *Property) SetDisplayName(
 	p.displayName = value
 }
 
-func (p *Property) Description(
-) []ILangStringTextType {
+func (p *Property) Description() []ILangStringTextType {
 	return p.description
 }
 
@@ -4630,8 +4581,7 @@ func (p *Property) SetDescription(
 	p.description = value
 }
 
-func (p *Property) SemanticID(
-) IReference {
+func (p *Property) SemanticID() IReference {
 	return p.semanticID
 }
 
@@ -4641,8 +4591,7 @@ func (p *Property) SetSemanticID(
 	p.semanticID = value
 }
 
-func (p *Property) SupplementalSemanticIDs(
-) []IReference {
+func (p *Property) SupplementalSemanticIDs() []IReference {
 	return p.supplementalSemanticIDs
 }
 
@@ -4652,8 +4601,7 @@ func (p *Property) SetSupplementalSemanticIDs(
 	p.supplementalSemanticIDs = value
 }
 
-func (p *Property) Qualifiers(
-) []IQualifier {
+func (p *Property) Qualifiers() []IQualifier {
 	return p.qualifiers
 }
 
@@ -4663,8 +4611,7 @@ func (p *Property) SetQualifiers(
 	p.qualifiers = value
 }
 
-func (p *Property) EmbeddedDataSpecifications(
-) []IEmbeddedDataSpecification {
+func (p *Property) EmbeddedDataSpecifications() []IEmbeddedDataSpecification {
 	return p.embeddedDataSpecifications
 }
 
@@ -4674,8 +4621,7 @@ func (p *Property) SetEmbeddedDataSpecifications(
 	p.embeddedDataSpecifications = value
 }
 
-func (p *Property) ValueType(
-) DataTypeDefXSD {
+func (p *Property) ValueType() DataTypeDefXSD {
 	return p.valueType
 }
 
@@ -4685,8 +4631,7 @@ func (p *Property) SetValueType(
 	p.valueType = value
 }
 
-func (p *Property) Value(
-) *string {
+func (p *Property) Value() *string {
 	return p.value
 }
 
@@ -4696,8 +4641,7 @@ func (p *Property) SetValue(
 	p.value = value
 }
 
-func (p *Property) ValueID(
-) IReference {
+func (p *Property) ValueID() IReference {
 	return p.valueID
 }
 
@@ -4707,8 +4651,7 @@ func (p *Property) SetValueID(
 	p.valueID = value
 }
 
-func (p *Property) ModelType(
-) ModelType {
+func (p *Property) ModelType() ModelType {
 	return ModelTypeProperty
 }
 
@@ -4725,7 +4668,7 @@ func (p *Property) DescendOnce(
 ) (abort bool) {
 	if p.extensions != nil {
 		for _, v := range p.extensions {
-			abort = action(v);
+			abort = action(v)
 			if abort {
 				return
 			}
@@ -4734,7 +4677,7 @@ func (p *Property) DescendOnce(
 
 	if p.displayName != nil {
 		for _, v1 := range p.displayName {
-			abort = action(v1);
+			abort = action(v1)
 			if abort {
 				return
 			}
@@ -4743,7 +4686,7 @@ func (p *Property) DescendOnce(
 
 	if p.description != nil {
 		for _, v2 := range p.description {
-			abort = action(v2);
+			abort = action(v2)
 			if abort {
 				return
 			}
@@ -4761,7 +4704,7 @@ func (p *Property) DescendOnce(
 
 	if p.supplementalSemanticIDs != nil {
 		for _, v3 := range p.supplementalSemanticIDs {
-			abort = action(v3);
+			abort = action(v3)
 			if abort {
 				return
 			}
@@ -4770,7 +4713,7 @@ func (p *Property) DescendOnce(
 
 	if p.qualifiers != nil {
 		for _, v4 := range p.qualifiers {
-			abort = action(v4);
+			abort = action(v4)
 			if abort {
 				return
 			}
@@ -4779,7 +4722,7 @@ func (p *Property) DescendOnce(
 
 	if p.embeddedDataSpecifications != nil {
 		for _, v5 := range p.embeddedDataSpecifications {
-			abort = action(v5);
+			abort = action(v5)
 			if abort {
 				return
 			}
@@ -4809,14 +4752,14 @@ func (p *Property) Descend(
 ) (abort bool) {
 	if p.extensions != nil {
 		for _, v := range p.extensions {
-			abort = action(v);
+			abort = action(v)
 			if abort {
 				return
 			}
 
 			abort = v.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -4825,14 +4768,14 @@ func (p *Property) Descend(
 
 	if p.displayName != nil {
 		for _, v1 := range p.displayName {
-			abort = action(v1);
+			abort = action(v1)
 			if abort {
 				return
 			}
 
 			abort = v1.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -4841,14 +4784,14 @@ func (p *Property) Descend(
 
 	if p.description != nil {
 		for _, v2 := range p.description {
-			abort = action(v2);
+			abort = action(v2)
 			if abort {
 				return
 			}
 
 			abort = v2.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -4872,14 +4815,14 @@ func (p *Property) Descend(
 
 	if p.supplementalSemanticIDs != nil {
 		for _, v3 := range p.supplementalSemanticIDs {
-			abort = action(v3);
+			abort = action(v3)
 			if abort {
 				return
 			}
 
 			abort = v3.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -4888,14 +4831,14 @@ func (p *Property) Descend(
 
 	if p.qualifiers != nil {
 		for _, v4 := range p.qualifiers {
-			abort = action(v4);
+			abort = action(v4)
 			if abort {
 				return
 			}
 
 			abort = v4.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -4904,14 +4847,14 @@ func (p *Property) Descend(
 
 	if p.embeddedDataSpecifications != nil {
 		for _, v5 := range p.embeddedDataSpecifications {
-			abort = action(v5);
+			abort = action(v5)
 			if abort {
 				return
 			}
 
 			abort = v5.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -4942,18 +4885,18 @@ func NewProperty(
 	valueType DataTypeDefXSD,
 ) *Property {
 	return &Property{
-		valueType: valueType,
-		extensions: nil,
-		category: nil,
-		idShort: nil,
-		displayName: nil,
-		description: nil,
-		semanticID: nil,
-		supplementalSemanticIDs: nil,
-		qualifiers: nil,
+		valueType:                  valueType,
+		extensions:                 nil,
+		category:                   nil,
+		idShort:                    nil,
+		displayName:                nil,
+		description:                nil,
+		semanticID:                 nil,
+		supplementalSemanticIDs:    nil,
+		qualifiers:                 nil,
 		embeddedDataSpecifications: nil,
-		value: nil,
-		valueID: nil,
+		value:                      nil,
+		valueID:                    nil,
 	}
 }
 
@@ -4967,20 +4910,20 @@ type IMultiLanguageProperty interface {
 	IDataElement
 
 	// The value of the property instance.
-	Value() []ILangStringTextType;
+	Value() []ILangStringTextType
 
 	SetValue(
 		value []ILangStringTextType,
-	);
+	)
 
 	// Reference to the global unique ID of a coded value.
 	//
 	// NOTE: It is recommended to use a global reference.
-	ValueID() IReference;
+	ValueID() IReference
 
 	SetValueID(
 		value IReference,
-	);
+	)
 }
 
 // Check whether the instance corresponds to [aastypes.IMultiLanguageProperty]
@@ -4997,21 +4940,20 @@ func IsMultiLanguageProperty(
 
 // Implements IMultiLanguageProperty.
 type MultiLanguageProperty struct {
-	extensions []IExtension
-	category *string
-	idShort *string
-	displayName []ILangStringNameType
-	description []ILangStringTextType
-	semanticID IReference
-	supplementalSemanticIDs []IReference
-	qualifiers []IQualifier
+	extensions                 []IExtension
+	category                   *string
+	idShort                    *string
+	displayName                []ILangStringNameType
+	description                []ILangStringTextType
+	semanticID                 IReference
+	supplementalSemanticIDs    []IReference
+	qualifiers                 []IQualifier
 	embeddedDataSpecifications []IEmbeddedDataSpecification
-	value []ILangStringTextType
-	valueID IReference
+	value                      []ILangStringTextType
+	valueID                    IReference
 }
 
-func (mlp *MultiLanguageProperty) Extensions(
-) []IExtension {
+func (mlp *MultiLanguageProperty) Extensions() []IExtension {
 	return mlp.extensions
 }
 
@@ -5021,8 +4963,7 @@ func (mlp *MultiLanguageProperty) SetExtensions(
 	mlp.extensions = value
 }
 
-func (mlp *MultiLanguageProperty) Category(
-) *string {
+func (mlp *MultiLanguageProperty) Category() *string {
 	return mlp.category
 }
 
@@ -5032,8 +4973,7 @@ func (mlp *MultiLanguageProperty) SetCategory(
 	mlp.category = value
 }
 
-func (mlp *MultiLanguageProperty) IDShort(
-) *string {
+func (mlp *MultiLanguageProperty) IDShort() *string {
 	return mlp.idShort
 }
 
@@ -5043,8 +4983,7 @@ func (mlp *MultiLanguageProperty) SetIDShort(
 	mlp.idShort = value
 }
 
-func (mlp *MultiLanguageProperty) DisplayName(
-) []ILangStringNameType {
+func (mlp *MultiLanguageProperty) DisplayName() []ILangStringNameType {
 	return mlp.displayName
 }
 
@@ -5054,8 +4993,7 @@ func (mlp *MultiLanguageProperty) SetDisplayName(
 	mlp.displayName = value
 }
 
-func (mlp *MultiLanguageProperty) Description(
-) []ILangStringTextType {
+func (mlp *MultiLanguageProperty) Description() []ILangStringTextType {
 	return mlp.description
 }
 
@@ -5065,8 +5003,7 @@ func (mlp *MultiLanguageProperty) SetDescription(
 	mlp.description = value
 }
 
-func (mlp *MultiLanguageProperty) SemanticID(
-) IReference {
+func (mlp *MultiLanguageProperty) SemanticID() IReference {
 	return mlp.semanticID
 }
 
@@ -5076,8 +5013,7 @@ func (mlp *MultiLanguageProperty) SetSemanticID(
 	mlp.semanticID = value
 }
 
-func (mlp *MultiLanguageProperty) SupplementalSemanticIDs(
-) []IReference {
+func (mlp *MultiLanguageProperty) SupplementalSemanticIDs() []IReference {
 	return mlp.supplementalSemanticIDs
 }
 
@@ -5087,8 +5023,7 @@ func (mlp *MultiLanguageProperty) SetSupplementalSemanticIDs(
 	mlp.supplementalSemanticIDs = value
 }
 
-func (mlp *MultiLanguageProperty) Qualifiers(
-) []IQualifier {
+func (mlp *MultiLanguageProperty) Qualifiers() []IQualifier {
 	return mlp.qualifiers
 }
 
@@ -5098,8 +5033,7 @@ func (mlp *MultiLanguageProperty) SetQualifiers(
 	mlp.qualifiers = value
 }
 
-func (mlp *MultiLanguageProperty) EmbeddedDataSpecifications(
-) []IEmbeddedDataSpecification {
+func (mlp *MultiLanguageProperty) EmbeddedDataSpecifications() []IEmbeddedDataSpecification {
 	return mlp.embeddedDataSpecifications
 }
 
@@ -5109,8 +5043,7 @@ func (mlp *MultiLanguageProperty) SetEmbeddedDataSpecifications(
 	mlp.embeddedDataSpecifications = value
 }
 
-func (mlp *MultiLanguageProperty) Value(
-) []ILangStringTextType {
+func (mlp *MultiLanguageProperty) Value() []ILangStringTextType {
 	return mlp.value
 }
 
@@ -5120,8 +5053,7 @@ func (mlp *MultiLanguageProperty) SetValue(
 	mlp.value = value
 }
 
-func (mlp *MultiLanguageProperty) ValueID(
-) IReference {
+func (mlp *MultiLanguageProperty) ValueID() IReference {
 	return mlp.valueID
 }
 
@@ -5131,8 +5063,7 @@ func (mlp *MultiLanguageProperty) SetValueID(
 	mlp.valueID = value
 }
 
-func (mlp *MultiLanguageProperty) ModelType(
-) ModelType {
+func (mlp *MultiLanguageProperty) ModelType() ModelType {
 	return ModelTypeMultiLanguageProperty
 }
 
@@ -5149,7 +5080,7 @@ func (mlp *MultiLanguageProperty) DescendOnce(
 ) (abort bool) {
 	if mlp.extensions != nil {
 		for _, v := range mlp.extensions {
-			abort = action(v);
+			abort = action(v)
 			if abort {
 				return
 			}
@@ -5158,7 +5089,7 @@ func (mlp *MultiLanguageProperty) DescendOnce(
 
 	if mlp.displayName != nil {
 		for _, v1 := range mlp.displayName {
-			abort = action(v1);
+			abort = action(v1)
 			if abort {
 				return
 			}
@@ -5167,7 +5098,7 @@ func (mlp *MultiLanguageProperty) DescendOnce(
 
 	if mlp.description != nil {
 		for _, v2 := range mlp.description {
-			abort = action(v2);
+			abort = action(v2)
 			if abort {
 				return
 			}
@@ -5185,7 +5116,7 @@ func (mlp *MultiLanguageProperty) DescendOnce(
 
 	if mlp.supplementalSemanticIDs != nil {
 		for _, v3 := range mlp.supplementalSemanticIDs {
-			abort = action(v3);
+			abort = action(v3)
 			if abort {
 				return
 			}
@@ -5194,7 +5125,7 @@ func (mlp *MultiLanguageProperty) DescendOnce(
 
 	if mlp.qualifiers != nil {
 		for _, v4 := range mlp.qualifiers {
-			abort = action(v4);
+			abort = action(v4)
 			if abort {
 				return
 			}
@@ -5203,7 +5134,7 @@ func (mlp *MultiLanguageProperty) DescendOnce(
 
 	if mlp.embeddedDataSpecifications != nil {
 		for _, v5 := range mlp.embeddedDataSpecifications {
-			abort = action(v5);
+			abort = action(v5)
 			if abort {
 				return
 			}
@@ -5212,7 +5143,7 @@ func (mlp *MultiLanguageProperty) DescendOnce(
 
 	if mlp.value != nil {
 		for _, v6 := range mlp.value {
-			abort = action(v6);
+			abort = action(v6)
 			if abort {
 				return
 			}
@@ -5242,14 +5173,14 @@ func (mlp *MultiLanguageProperty) Descend(
 ) (abort bool) {
 	if mlp.extensions != nil {
 		for _, v := range mlp.extensions {
-			abort = action(v);
+			abort = action(v)
 			if abort {
 				return
 			}
 
 			abort = v.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -5258,14 +5189,14 @@ func (mlp *MultiLanguageProperty) Descend(
 
 	if mlp.displayName != nil {
 		for _, v1 := range mlp.displayName {
-			abort = action(v1);
+			abort = action(v1)
 			if abort {
 				return
 			}
 
 			abort = v1.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -5274,14 +5205,14 @@ func (mlp *MultiLanguageProperty) Descend(
 
 	if mlp.description != nil {
 		for _, v2 := range mlp.description {
-			abort = action(v2);
+			abort = action(v2)
 			if abort {
 				return
 			}
 
 			abort = v2.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -5305,14 +5236,14 @@ func (mlp *MultiLanguageProperty) Descend(
 
 	if mlp.supplementalSemanticIDs != nil {
 		for _, v3 := range mlp.supplementalSemanticIDs {
-			abort = action(v3);
+			abort = action(v3)
 			if abort {
 				return
 			}
 
 			abort = v3.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -5321,14 +5252,14 @@ func (mlp *MultiLanguageProperty) Descend(
 
 	if mlp.qualifiers != nil {
 		for _, v4 := range mlp.qualifiers {
-			abort = action(v4);
+			abort = action(v4)
 			if abort {
 				return
 			}
 
 			abort = v4.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -5337,14 +5268,14 @@ func (mlp *MultiLanguageProperty) Descend(
 
 	if mlp.embeddedDataSpecifications != nil {
 		for _, v5 := range mlp.embeddedDataSpecifications {
-			abort = action(v5);
+			abort = action(v5)
 			if abort {
 				return
 			}
 
 			abort = v5.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -5353,14 +5284,14 @@ func (mlp *MultiLanguageProperty) Descend(
 
 	if mlp.value != nil {
 		for _, v6 := range mlp.value {
-			abort = action(v6);
+			abort = action(v6)
 			if abort {
 				return
 			}
 
 			abort = v6.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -5389,17 +5320,17 @@ func (mlp *MultiLanguageProperty) Descend(
 // the given properties.
 func NewMultiLanguageProperty() *MultiLanguageProperty {
 	return &MultiLanguageProperty{
-		extensions: nil,
-		category: nil,
-		idShort: nil,
-		displayName: nil,
-		description: nil,
-		semanticID: nil,
-		supplementalSemanticIDs: nil,
-		qualifiers: nil,
+		extensions:                 nil,
+		category:                   nil,
+		idShort:                    nil,
+		displayName:                nil,
+		description:                nil,
+		semanticID:                 nil,
+		supplementalSemanticIDs:    nil,
+		qualifiers:                 nil,
 		embeddedDataSpecifications: nil,
-		value: nil,
-		valueID: nil,
+		value:                      nil,
+		valueID:                    nil,
 	}
 }
 
@@ -5408,29 +5339,29 @@ type IRange interface {
 	IDataElement
 
 	// Data type of the min und max
-	ValueType() DataTypeDefXSD;
+	ValueType() DataTypeDefXSD
 
 	SetValueType(
 		value DataTypeDefXSD,
-	);
+	)
 
 	// The minimum value of the range.
 	//
 	// If the min value is missing, then the value is assumed to be negative infinite.
-	Min() *string;
+	Min() *string
 
 	SetMin(
 		value *string,
-	);
+	)
 
 	// The maximum value of the range.
 	//
 	// If the max value is missing, then the value is assumed to be positive infinite.
-	Max() *string;
+	Max() *string
 
 	SetMax(
 		value *string,
-	);
+	)
 }
 
 // Check whether the instance corresponds to [aastypes.IRange]
@@ -5447,22 +5378,21 @@ func IsRange(
 
 // Implements IRange.
 type Range struct {
-	extensions []IExtension
-	category *string
-	idShort *string
-	displayName []ILangStringNameType
-	description []ILangStringTextType
-	semanticID IReference
-	supplementalSemanticIDs []IReference
-	qualifiers []IQualifier
+	extensions                 []IExtension
+	category                   *string
+	idShort                    *string
+	displayName                []ILangStringNameType
+	description                []ILangStringTextType
+	semanticID                 IReference
+	supplementalSemanticIDs    []IReference
+	qualifiers                 []IQualifier
 	embeddedDataSpecifications []IEmbeddedDataSpecification
-	valueType DataTypeDefXSD
-	min *string
-	max *string
+	valueType                  DataTypeDefXSD
+	min                        *string
+	max                        *string
 }
 
-func (r *Range) Extensions(
-) []IExtension {
+func (r *Range) Extensions() []IExtension {
 	return r.extensions
 }
 
@@ -5472,8 +5402,7 @@ func (r *Range) SetExtensions(
 	r.extensions = value
 }
 
-func (r *Range) Category(
-) *string {
+func (r *Range) Category() *string {
 	return r.category
 }
 
@@ -5483,8 +5412,7 @@ func (r *Range) SetCategory(
 	r.category = value
 }
 
-func (r *Range) IDShort(
-) *string {
+func (r *Range) IDShort() *string {
 	return r.idShort
 }
 
@@ -5494,8 +5422,7 @@ func (r *Range) SetIDShort(
 	r.idShort = value
 }
 
-func (r *Range) DisplayName(
-) []ILangStringNameType {
+func (r *Range) DisplayName() []ILangStringNameType {
 	return r.displayName
 }
 
@@ -5505,8 +5432,7 @@ func (r *Range) SetDisplayName(
 	r.displayName = value
 }
 
-func (r *Range) Description(
-) []ILangStringTextType {
+func (r *Range) Description() []ILangStringTextType {
 	return r.description
 }
 
@@ -5516,8 +5442,7 @@ func (r *Range) SetDescription(
 	r.description = value
 }
 
-func (r *Range) SemanticID(
-) IReference {
+func (r *Range) SemanticID() IReference {
 	return r.semanticID
 }
 
@@ -5527,8 +5452,7 @@ func (r *Range) SetSemanticID(
 	r.semanticID = value
 }
 
-func (r *Range) SupplementalSemanticIDs(
-) []IReference {
+func (r *Range) SupplementalSemanticIDs() []IReference {
 	return r.supplementalSemanticIDs
 }
 
@@ -5538,8 +5462,7 @@ func (r *Range) SetSupplementalSemanticIDs(
 	r.supplementalSemanticIDs = value
 }
 
-func (r *Range) Qualifiers(
-) []IQualifier {
+func (r *Range) Qualifiers() []IQualifier {
 	return r.qualifiers
 }
 
@@ -5549,8 +5472,7 @@ func (r *Range) SetQualifiers(
 	r.qualifiers = value
 }
 
-func (r *Range) EmbeddedDataSpecifications(
-) []IEmbeddedDataSpecification {
+func (r *Range) EmbeddedDataSpecifications() []IEmbeddedDataSpecification {
 	return r.embeddedDataSpecifications
 }
 
@@ -5560,8 +5482,7 @@ func (r *Range) SetEmbeddedDataSpecifications(
 	r.embeddedDataSpecifications = value
 }
 
-func (r *Range) ValueType(
-) DataTypeDefXSD {
+func (r *Range) ValueType() DataTypeDefXSD {
 	return r.valueType
 }
 
@@ -5571,8 +5492,7 @@ func (r *Range) SetValueType(
 	r.valueType = value
 }
 
-func (r *Range) Min(
-) *string {
+func (r *Range) Min() *string {
 	return r.min
 }
 
@@ -5582,8 +5502,7 @@ func (r *Range) SetMin(
 	r.min = value
 }
 
-func (r *Range) Max(
-) *string {
+func (r *Range) Max() *string {
 	return r.max
 }
 
@@ -5593,8 +5512,7 @@ func (r *Range) SetMax(
 	r.max = value
 }
 
-func (r *Range) ModelType(
-) ModelType {
+func (r *Range) ModelType() ModelType {
 	return ModelTypeRange
 }
 
@@ -5611,7 +5529,7 @@ func (r *Range) DescendOnce(
 ) (abort bool) {
 	if r.extensions != nil {
 		for _, v := range r.extensions {
-			abort = action(v);
+			abort = action(v)
 			if abort {
 				return
 			}
@@ -5620,7 +5538,7 @@ func (r *Range) DescendOnce(
 
 	if r.displayName != nil {
 		for _, v1 := range r.displayName {
-			abort = action(v1);
+			abort = action(v1)
 			if abort {
 				return
 			}
@@ -5629,7 +5547,7 @@ func (r *Range) DescendOnce(
 
 	if r.description != nil {
 		for _, v2 := range r.description {
-			abort = action(v2);
+			abort = action(v2)
 			if abort {
 				return
 			}
@@ -5647,7 +5565,7 @@ func (r *Range) DescendOnce(
 
 	if r.supplementalSemanticIDs != nil {
 		for _, v3 := range r.supplementalSemanticIDs {
-			abort = action(v3);
+			abort = action(v3)
 			if abort {
 				return
 			}
@@ -5656,7 +5574,7 @@ func (r *Range) DescendOnce(
 
 	if r.qualifiers != nil {
 		for _, v4 := range r.qualifiers {
-			abort = action(v4);
+			abort = action(v4)
 			if abort {
 				return
 			}
@@ -5665,7 +5583,7 @@ func (r *Range) DescendOnce(
 
 	if r.embeddedDataSpecifications != nil {
 		for _, v5 := range r.embeddedDataSpecifications {
-			abort = action(v5);
+			abort = action(v5)
 			if abort {
 				return
 			}
@@ -5686,14 +5604,14 @@ func (r *Range) Descend(
 ) (abort bool) {
 	if r.extensions != nil {
 		for _, v := range r.extensions {
-			abort = action(v);
+			abort = action(v)
 			if abort {
 				return
 			}
 
 			abort = v.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -5702,14 +5620,14 @@ func (r *Range) Descend(
 
 	if r.displayName != nil {
 		for _, v1 := range r.displayName {
-			abort = action(v1);
+			abort = action(v1)
 			if abort {
 				return
 			}
 
 			abort = v1.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -5718,14 +5636,14 @@ func (r *Range) Descend(
 
 	if r.description != nil {
 		for _, v2 := range r.description {
-			abort = action(v2);
+			abort = action(v2)
 			if abort {
 				return
 			}
 
 			abort = v2.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -5749,14 +5667,14 @@ func (r *Range) Descend(
 
 	if r.supplementalSemanticIDs != nil {
 		for _, v3 := range r.supplementalSemanticIDs {
-			abort = action(v3);
+			abort = action(v3)
 			if abort {
 				return
 			}
 
 			abort = v3.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -5765,14 +5683,14 @@ func (r *Range) Descend(
 
 	if r.qualifiers != nil {
 		for _, v4 := range r.qualifiers {
-			abort = action(v4);
+			abort = action(v4)
 			if abort {
 				return
 			}
 
 			abort = v4.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -5781,14 +5699,14 @@ func (r *Range) Descend(
 
 	if r.embeddedDataSpecifications != nil {
 		for _, v5 := range r.embeddedDataSpecifications {
-			abort = action(v5);
+			abort = action(v5)
 			if abort {
 				return
 			}
 
 			abort = v5.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -5804,18 +5722,18 @@ func NewRange(
 	valueType DataTypeDefXSD,
 ) *Range {
 	return &Range{
-		valueType: valueType,
-		extensions: nil,
-		category: nil,
-		idShort: nil,
-		displayName: nil,
-		description: nil,
-		semanticID: nil,
-		supplementalSemanticIDs: nil,
-		qualifiers: nil,
+		valueType:                  valueType,
+		extensions:                 nil,
+		category:                   nil,
+		idShort:                    nil,
+		displayName:                nil,
+		description:                nil,
+		semanticID:                 nil,
+		supplementalSemanticIDs:    nil,
+		qualifiers:                 nil,
 		embeddedDataSpecifications: nil,
-		min: nil,
-		max: nil,
+		min:                        nil,
+		max:                        nil,
 	}
 }
 
@@ -5828,11 +5746,11 @@ type IReferenceElement interface {
 	// Global reference to an external object or entity or a logical reference to
 	// another element within the same or another AAS (i.e. a model reference to
 	// a Referable).
-	Value() IReference;
+	Value() IReference
 
 	SetValue(
 		value IReference,
-	);
+	)
 }
 
 // Check whether the instance corresponds to [aastypes.IReferenceElement]
@@ -5849,20 +5767,19 @@ func IsReferenceElement(
 
 // Implements IReferenceElement.
 type ReferenceElement struct {
-	extensions []IExtension
-	category *string
-	idShort *string
-	displayName []ILangStringNameType
-	description []ILangStringTextType
-	semanticID IReference
-	supplementalSemanticIDs []IReference
-	qualifiers []IQualifier
+	extensions                 []IExtension
+	category                   *string
+	idShort                    *string
+	displayName                []ILangStringNameType
+	description                []ILangStringTextType
+	semanticID                 IReference
+	supplementalSemanticIDs    []IReference
+	qualifiers                 []IQualifier
 	embeddedDataSpecifications []IEmbeddedDataSpecification
-	value IReference
+	value                      IReference
 }
 
-func (re *ReferenceElement) Extensions(
-) []IExtension {
+func (re *ReferenceElement) Extensions() []IExtension {
 	return re.extensions
 }
 
@@ -5872,8 +5789,7 @@ func (re *ReferenceElement) SetExtensions(
 	re.extensions = value
 }
 
-func (re *ReferenceElement) Category(
-) *string {
+func (re *ReferenceElement) Category() *string {
 	return re.category
 }
 
@@ -5883,8 +5799,7 @@ func (re *ReferenceElement) SetCategory(
 	re.category = value
 }
 
-func (re *ReferenceElement) IDShort(
-) *string {
+func (re *ReferenceElement) IDShort() *string {
 	return re.idShort
 }
 
@@ -5894,8 +5809,7 @@ func (re *ReferenceElement) SetIDShort(
 	re.idShort = value
 }
 
-func (re *ReferenceElement) DisplayName(
-) []ILangStringNameType {
+func (re *ReferenceElement) DisplayName() []ILangStringNameType {
 	return re.displayName
 }
 
@@ -5905,8 +5819,7 @@ func (re *ReferenceElement) SetDisplayName(
 	re.displayName = value
 }
 
-func (re *ReferenceElement) Description(
-) []ILangStringTextType {
+func (re *ReferenceElement) Description() []ILangStringTextType {
 	return re.description
 }
 
@@ -5916,8 +5829,7 @@ func (re *ReferenceElement) SetDescription(
 	re.description = value
 }
 
-func (re *ReferenceElement) SemanticID(
-) IReference {
+func (re *ReferenceElement) SemanticID() IReference {
 	return re.semanticID
 }
 
@@ -5927,8 +5839,7 @@ func (re *ReferenceElement) SetSemanticID(
 	re.semanticID = value
 }
 
-func (re *ReferenceElement) SupplementalSemanticIDs(
-) []IReference {
+func (re *ReferenceElement) SupplementalSemanticIDs() []IReference {
 	return re.supplementalSemanticIDs
 }
 
@@ -5938,8 +5849,7 @@ func (re *ReferenceElement) SetSupplementalSemanticIDs(
 	re.supplementalSemanticIDs = value
 }
 
-func (re *ReferenceElement) Qualifiers(
-) []IQualifier {
+func (re *ReferenceElement) Qualifiers() []IQualifier {
 	return re.qualifiers
 }
 
@@ -5949,8 +5859,7 @@ func (re *ReferenceElement) SetQualifiers(
 	re.qualifiers = value
 }
 
-func (re *ReferenceElement) EmbeddedDataSpecifications(
-) []IEmbeddedDataSpecification {
+func (re *ReferenceElement) EmbeddedDataSpecifications() []IEmbeddedDataSpecification {
 	return re.embeddedDataSpecifications
 }
 
@@ -5960,8 +5869,7 @@ func (re *ReferenceElement) SetEmbeddedDataSpecifications(
 	re.embeddedDataSpecifications = value
 }
 
-func (re *ReferenceElement) Value(
-) IReference {
+func (re *ReferenceElement) Value() IReference {
 	return re.value
 }
 
@@ -5971,8 +5879,7 @@ func (re *ReferenceElement) SetValue(
 	re.value = value
 }
 
-func (re *ReferenceElement) ModelType(
-) ModelType {
+func (re *ReferenceElement) ModelType() ModelType {
 	return ModelTypeReferenceElement
 }
 
@@ -5989,7 +5896,7 @@ func (re *ReferenceElement) DescendOnce(
 ) (abort bool) {
 	if re.extensions != nil {
 		for _, v := range re.extensions {
-			abort = action(v);
+			abort = action(v)
 			if abort {
 				return
 			}
@@ -5998,7 +5905,7 @@ func (re *ReferenceElement) DescendOnce(
 
 	if re.displayName != nil {
 		for _, v1 := range re.displayName {
-			abort = action(v1);
+			abort = action(v1)
 			if abort {
 				return
 			}
@@ -6007,7 +5914,7 @@ func (re *ReferenceElement) DescendOnce(
 
 	if re.description != nil {
 		for _, v2 := range re.description {
-			abort = action(v2);
+			abort = action(v2)
 			if abort {
 				return
 			}
@@ -6025,7 +5932,7 @@ func (re *ReferenceElement) DescendOnce(
 
 	if re.supplementalSemanticIDs != nil {
 		for _, v3 := range re.supplementalSemanticIDs {
-			abort = action(v3);
+			abort = action(v3)
 			if abort {
 				return
 			}
@@ -6034,7 +5941,7 @@ func (re *ReferenceElement) DescendOnce(
 
 	if re.qualifiers != nil {
 		for _, v4 := range re.qualifiers {
-			abort = action(v4);
+			abort = action(v4)
 			if abort {
 				return
 			}
@@ -6043,7 +5950,7 @@ func (re *ReferenceElement) DescendOnce(
 
 	if re.embeddedDataSpecifications != nil {
 		for _, v5 := range re.embeddedDataSpecifications {
-			abort = action(v5);
+			abort = action(v5)
 			if abort {
 				return
 			}
@@ -6073,14 +5980,14 @@ func (re *ReferenceElement) Descend(
 ) (abort bool) {
 	if re.extensions != nil {
 		for _, v := range re.extensions {
-			abort = action(v);
+			abort = action(v)
 			if abort {
 				return
 			}
 
 			abort = v.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -6089,14 +5996,14 @@ func (re *ReferenceElement) Descend(
 
 	if re.displayName != nil {
 		for _, v1 := range re.displayName {
-			abort = action(v1);
+			abort = action(v1)
 			if abort {
 				return
 			}
 
 			abort = v1.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -6105,14 +6012,14 @@ func (re *ReferenceElement) Descend(
 
 	if re.description != nil {
 		for _, v2 := range re.description {
-			abort = action(v2);
+			abort = action(v2)
 			if abort {
 				return
 			}
 
 			abort = v2.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -6136,14 +6043,14 @@ func (re *ReferenceElement) Descend(
 
 	if re.supplementalSemanticIDs != nil {
 		for _, v3 := range re.supplementalSemanticIDs {
-			abort = action(v3);
+			abort = action(v3)
 			if abort {
 				return
 			}
 
 			abort = v3.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -6152,14 +6059,14 @@ func (re *ReferenceElement) Descend(
 
 	if re.qualifiers != nil {
 		for _, v4 := range re.qualifiers {
-			abort = action(v4);
+			abort = action(v4)
 			if abort {
 				return
 			}
 
 			abort = v4.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -6168,14 +6075,14 @@ func (re *ReferenceElement) Descend(
 
 	if re.embeddedDataSpecifications != nil {
 		for _, v5 := range re.embeddedDataSpecifications {
-			abort = action(v5);
+			abort = action(v5)
 			if abort {
 				return
 			}
 
 			abort = v5.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -6204,16 +6111,16 @@ func (re *ReferenceElement) Descend(
 // the given properties.
 func NewReferenceElement() *ReferenceElement {
 	return &ReferenceElement{
-		extensions: nil,
-		category: nil,
-		idShort: nil,
-		displayName: nil,
-		description: nil,
-		semanticID: nil,
-		supplementalSemanticIDs: nil,
-		qualifiers: nil,
+		extensions:                 nil,
+		category:                   nil,
+		idShort:                    nil,
+		displayName:                nil,
+		description:                nil,
+		semanticID:                 nil,
+		supplementalSemanticIDs:    nil,
+		qualifiers:                 nil,
 		embeddedDataSpecifications: nil,
-		value: nil,
+		value:                      nil,
 	}
 }
 
@@ -6226,11 +6133,11 @@ type IBlob interface {
 	//
 	// NOTE: In contrast to the file property the file content is stored directly as value
 	// in the [IBlob] data element.
-	Value() []byte;
+	Value() []byte
 
 	SetValue(
 		value []byte,
-	);
+	)
 
 	// Content type of the content of the [IBlob].
 	//
@@ -6240,11 +6147,11 @@ type IBlob interface {
 	// `image/jpg`.
 	//
 	// The allowed values are defined as in RFC2046.
-	ContentType() *string;
+	ContentType() *string
 
 	SetContentType(
 		value *string,
-	);
+	)
 }
 
 // Check whether the instance corresponds to [aastypes.IBlob]
@@ -6261,21 +6168,20 @@ func IsBlob(
 
 // Implements IBlob.
 type Blob struct {
-	extensions []IExtension
-	category *string
-	idShort *string
-	displayName []ILangStringNameType
-	description []ILangStringTextType
-	semanticID IReference
-	supplementalSemanticIDs []IReference
-	qualifiers []IQualifier
+	extensions                 []IExtension
+	category                   *string
+	idShort                    *string
+	displayName                []ILangStringNameType
+	description                []ILangStringTextType
+	semanticID                 IReference
+	supplementalSemanticIDs    []IReference
+	qualifiers                 []IQualifier
 	embeddedDataSpecifications []IEmbeddedDataSpecification
-	value []byte
-	contentType *string
+	value                      []byte
+	contentType                *string
 }
 
-func (b *Blob) Extensions(
-) []IExtension {
+func (b *Blob) Extensions() []IExtension {
 	return b.extensions
 }
 
@@ -6285,8 +6191,7 @@ func (b *Blob) SetExtensions(
 	b.extensions = value
 }
 
-func (b *Blob) Category(
-) *string {
+func (b *Blob) Category() *string {
 	return b.category
 }
 
@@ -6296,8 +6201,7 @@ func (b *Blob) SetCategory(
 	b.category = value
 }
 
-func (b *Blob) IDShort(
-) *string {
+func (b *Blob) IDShort() *string {
 	return b.idShort
 }
 
@@ -6307,8 +6211,7 @@ func (b *Blob) SetIDShort(
 	b.idShort = value
 }
 
-func (b *Blob) DisplayName(
-) []ILangStringNameType {
+func (b *Blob) DisplayName() []ILangStringNameType {
 	return b.displayName
 }
 
@@ -6318,8 +6221,7 @@ func (b *Blob) SetDisplayName(
 	b.displayName = value
 }
 
-func (b *Blob) Description(
-) []ILangStringTextType {
+func (b *Blob) Description() []ILangStringTextType {
 	return b.description
 }
 
@@ -6329,8 +6231,7 @@ func (b *Blob) SetDescription(
 	b.description = value
 }
 
-func (b *Blob) SemanticID(
-) IReference {
+func (b *Blob) SemanticID() IReference {
 	return b.semanticID
 }
 
@@ -6340,8 +6241,7 @@ func (b *Blob) SetSemanticID(
 	b.semanticID = value
 }
 
-func (b *Blob) SupplementalSemanticIDs(
-) []IReference {
+func (b *Blob) SupplementalSemanticIDs() []IReference {
 	return b.supplementalSemanticIDs
 }
 
@@ -6351,8 +6251,7 @@ func (b *Blob) SetSupplementalSemanticIDs(
 	b.supplementalSemanticIDs = value
 }
 
-func (b *Blob) Qualifiers(
-) []IQualifier {
+func (b *Blob) Qualifiers() []IQualifier {
 	return b.qualifiers
 }
 
@@ -6362,8 +6261,7 @@ func (b *Blob) SetQualifiers(
 	b.qualifiers = value
 }
 
-func (b *Blob) EmbeddedDataSpecifications(
-) []IEmbeddedDataSpecification {
+func (b *Blob) EmbeddedDataSpecifications() []IEmbeddedDataSpecification {
 	return b.embeddedDataSpecifications
 }
 
@@ -6373,8 +6271,7 @@ func (b *Blob) SetEmbeddedDataSpecifications(
 	b.embeddedDataSpecifications = value
 }
 
-func (b *Blob) Value(
-) []byte {
+func (b *Blob) Value() []byte {
 	return b.value
 }
 
@@ -6384,8 +6281,7 @@ func (b *Blob) SetValue(
 	b.value = value
 }
 
-func (b *Blob) ContentType(
-) *string {
+func (b *Blob) ContentType() *string {
 	return b.contentType
 }
 
@@ -6395,8 +6291,7 @@ func (b *Blob) SetContentType(
 	b.contentType = value
 }
 
-func (b *Blob) ModelType(
-) ModelType {
+func (b *Blob) ModelType() ModelType {
 	return ModelTypeBlob
 }
 
@@ -6413,7 +6308,7 @@ func (b *Blob) DescendOnce(
 ) (abort bool) {
 	if b.extensions != nil {
 		for _, v := range b.extensions {
-			abort = action(v);
+			abort = action(v)
 			if abort {
 				return
 			}
@@ -6422,7 +6317,7 @@ func (b *Blob) DescendOnce(
 
 	if b.displayName != nil {
 		for _, v1 := range b.displayName {
-			abort = action(v1);
+			abort = action(v1)
 			if abort {
 				return
 			}
@@ -6431,7 +6326,7 @@ func (b *Blob) DescendOnce(
 
 	if b.description != nil {
 		for _, v2 := range b.description {
-			abort = action(v2);
+			abort = action(v2)
 			if abort {
 				return
 			}
@@ -6449,7 +6344,7 @@ func (b *Blob) DescendOnce(
 
 	if b.supplementalSemanticIDs != nil {
 		for _, v3 := range b.supplementalSemanticIDs {
-			abort = action(v3);
+			abort = action(v3)
 			if abort {
 				return
 			}
@@ -6458,7 +6353,7 @@ func (b *Blob) DescendOnce(
 
 	if b.qualifiers != nil {
 		for _, v4 := range b.qualifiers {
-			abort = action(v4);
+			abort = action(v4)
 			if abort {
 				return
 			}
@@ -6467,7 +6362,7 @@ func (b *Blob) DescendOnce(
 
 	if b.embeddedDataSpecifications != nil {
 		for _, v5 := range b.embeddedDataSpecifications {
-			abort = action(v5);
+			abort = action(v5)
 			if abort {
 				return
 			}
@@ -6488,14 +6383,14 @@ func (b *Blob) Descend(
 ) (abort bool) {
 	if b.extensions != nil {
 		for _, v := range b.extensions {
-			abort = action(v);
+			abort = action(v)
 			if abort {
 				return
 			}
 
 			abort = v.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -6504,14 +6399,14 @@ func (b *Blob) Descend(
 
 	if b.displayName != nil {
 		for _, v1 := range b.displayName {
-			abort = action(v1);
+			abort = action(v1)
 			if abort {
 				return
 			}
 
 			abort = v1.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -6520,14 +6415,14 @@ func (b *Blob) Descend(
 
 	if b.description != nil {
 		for _, v2 := range b.description {
-			abort = action(v2);
+			abort = action(v2)
 			if abort {
 				return
 			}
 
 			abort = v2.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -6551,14 +6446,14 @@ func (b *Blob) Descend(
 
 	if b.supplementalSemanticIDs != nil {
 		for _, v3 := range b.supplementalSemanticIDs {
-			abort = action(v3);
+			abort = action(v3)
 			if abort {
 				return
 			}
 
 			abort = v3.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -6567,14 +6462,14 @@ func (b *Blob) Descend(
 
 	if b.qualifiers != nil {
 		for _, v4 := range b.qualifiers {
-			abort = action(v4);
+			abort = action(v4)
 			if abort {
 				return
 			}
 
 			abort = v4.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -6583,14 +6478,14 @@ func (b *Blob) Descend(
 
 	if b.embeddedDataSpecifications != nil {
 		for _, v5 := range b.embeddedDataSpecifications {
-			abort = action(v5);
+			abort = action(v5)
 			if abort {
 				return
 			}
 
 			abort = v5.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -6604,17 +6499,17 @@ func (b *Blob) Descend(
 // the given properties.
 func NewBlob() *Blob {
 	return &Blob{
-		extensions: nil,
-		category: nil,
-		idShort: nil,
-		displayName: nil,
-		description: nil,
-		semanticID: nil,
-		supplementalSemanticIDs: nil,
-		qualifiers: nil,
+		extensions:                 nil,
+		category:                   nil,
+		idShort:                    nil,
+		displayName:                nil,
+		description:                nil,
+		semanticID:                 nil,
+		supplementalSemanticIDs:    nil,
+		qualifiers:                 nil,
 		embeddedDataSpecifications: nil,
-		value: nil,
-		contentType: nil,
+		value:                      nil,
+		contentType:                nil,
 	}
 }
 
@@ -6627,20 +6522,20 @@ type IFile interface {
 	// Path and name of the referenced file (with file extension).
 	//
 	// The path can be absolute or relative.
-	Value() *string;
+	Value() *string
 
 	SetValue(
 		value *string,
-	);
+	)
 
 	// Content type of the content of the file.
 	//
 	// The content type states which file extensions the file can have.
-	ContentType() *string;
+	ContentType() *string
 
 	SetContentType(
 		value *string,
-	);
+	)
 }
 
 // Check whether the instance corresponds to [aastypes.IFile]
@@ -6657,21 +6552,20 @@ func IsFile(
 
 // Implements IFile.
 type File struct {
-	extensions []IExtension
-	category *string
-	idShort *string
-	displayName []ILangStringNameType
-	description []ILangStringTextType
-	semanticID IReference
-	supplementalSemanticIDs []IReference
-	qualifiers []IQualifier
+	extensions                 []IExtension
+	category                   *string
+	idShort                    *string
+	displayName                []ILangStringNameType
+	description                []ILangStringTextType
+	semanticID                 IReference
+	supplementalSemanticIDs    []IReference
+	qualifiers                 []IQualifier
 	embeddedDataSpecifications []IEmbeddedDataSpecification
-	value *string
-	contentType *string
+	value                      *string
+	contentType                *string
 }
 
-func (f *File) Extensions(
-) []IExtension {
+func (f *File) Extensions() []IExtension {
 	return f.extensions
 }
 
@@ -6681,8 +6575,7 @@ func (f *File) SetExtensions(
 	f.extensions = value
 }
 
-func (f *File) Category(
-) *string {
+func (f *File) Category() *string {
 	return f.category
 }
 
@@ -6692,8 +6585,7 @@ func (f *File) SetCategory(
 	f.category = value
 }
 
-func (f *File) IDShort(
-) *string {
+func (f *File) IDShort() *string {
 	return f.idShort
 }
 
@@ -6703,8 +6595,7 @@ func (f *File) SetIDShort(
 	f.idShort = value
 }
 
-func (f *File) DisplayName(
-) []ILangStringNameType {
+func (f *File) DisplayName() []ILangStringNameType {
 	return f.displayName
 }
 
@@ -6714,8 +6605,7 @@ func (f *File) SetDisplayName(
 	f.displayName = value
 }
 
-func (f *File) Description(
-) []ILangStringTextType {
+func (f *File) Description() []ILangStringTextType {
 	return f.description
 }
 
@@ -6725,8 +6615,7 @@ func (f *File) SetDescription(
 	f.description = value
 }
 
-func (f *File) SemanticID(
-) IReference {
+func (f *File) SemanticID() IReference {
 	return f.semanticID
 }
 
@@ -6736,8 +6625,7 @@ func (f *File) SetSemanticID(
 	f.semanticID = value
 }
 
-func (f *File) SupplementalSemanticIDs(
-) []IReference {
+func (f *File) SupplementalSemanticIDs() []IReference {
 	return f.supplementalSemanticIDs
 }
 
@@ -6747,8 +6635,7 @@ func (f *File) SetSupplementalSemanticIDs(
 	f.supplementalSemanticIDs = value
 }
 
-func (f *File) Qualifiers(
-) []IQualifier {
+func (f *File) Qualifiers() []IQualifier {
 	return f.qualifiers
 }
 
@@ -6758,8 +6645,7 @@ func (f *File) SetQualifiers(
 	f.qualifiers = value
 }
 
-func (f *File) EmbeddedDataSpecifications(
-) []IEmbeddedDataSpecification {
+func (f *File) EmbeddedDataSpecifications() []IEmbeddedDataSpecification {
 	return f.embeddedDataSpecifications
 }
 
@@ -6769,8 +6655,7 @@ func (f *File) SetEmbeddedDataSpecifications(
 	f.embeddedDataSpecifications = value
 }
 
-func (f *File) Value(
-) *string {
+func (f *File) Value() *string {
 	return f.value
 }
 
@@ -6780,8 +6665,7 @@ func (f *File) SetValue(
 	f.value = value
 }
 
-func (f *File) ContentType(
-) *string {
+func (f *File) ContentType() *string {
 	return f.contentType
 }
 
@@ -6791,8 +6675,7 @@ func (f *File) SetContentType(
 	f.contentType = value
 }
 
-func (f *File) ModelType(
-) ModelType {
+func (f *File) ModelType() ModelType {
 	return ModelTypeFile
 }
 
@@ -6809,7 +6692,7 @@ func (f *File) DescendOnce(
 ) (abort bool) {
 	if f.extensions != nil {
 		for _, v := range f.extensions {
-			abort = action(v);
+			abort = action(v)
 			if abort {
 				return
 			}
@@ -6818,7 +6701,7 @@ func (f *File) DescendOnce(
 
 	if f.displayName != nil {
 		for _, v1 := range f.displayName {
-			abort = action(v1);
+			abort = action(v1)
 			if abort {
 				return
 			}
@@ -6827,7 +6710,7 @@ func (f *File) DescendOnce(
 
 	if f.description != nil {
 		for _, v2 := range f.description {
-			abort = action(v2);
+			abort = action(v2)
 			if abort {
 				return
 			}
@@ -6845,7 +6728,7 @@ func (f *File) DescendOnce(
 
 	if f.supplementalSemanticIDs != nil {
 		for _, v3 := range f.supplementalSemanticIDs {
-			abort = action(v3);
+			abort = action(v3)
 			if abort {
 				return
 			}
@@ -6854,7 +6737,7 @@ func (f *File) DescendOnce(
 
 	if f.qualifiers != nil {
 		for _, v4 := range f.qualifiers {
-			abort = action(v4);
+			abort = action(v4)
 			if abort {
 				return
 			}
@@ -6863,7 +6746,7 @@ func (f *File) DescendOnce(
 
 	if f.embeddedDataSpecifications != nil {
 		for _, v5 := range f.embeddedDataSpecifications {
-			abort = action(v5);
+			abort = action(v5)
 			if abort {
 				return
 			}
@@ -6884,14 +6767,14 @@ func (f *File) Descend(
 ) (abort bool) {
 	if f.extensions != nil {
 		for _, v := range f.extensions {
-			abort = action(v);
+			abort = action(v)
 			if abort {
 				return
 			}
 
 			abort = v.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -6900,14 +6783,14 @@ func (f *File) Descend(
 
 	if f.displayName != nil {
 		for _, v1 := range f.displayName {
-			abort = action(v1);
+			abort = action(v1)
 			if abort {
 				return
 			}
 
 			abort = v1.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -6916,14 +6799,14 @@ func (f *File) Descend(
 
 	if f.description != nil {
 		for _, v2 := range f.description {
-			abort = action(v2);
+			abort = action(v2)
 			if abort {
 				return
 			}
 
 			abort = v2.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -6947,14 +6830,14 @@ func (f *File) Descend(
 
 	if f.supplementalSemanticIDs != nil {
 		for _, v3 := range f.supplementalSemanticIDs {
-			abort = action(v3);
+			abort = action(v3)
 			if abort {
 				return
 			}
 
 			abort = v3.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -6963,14 +6846,14 @@ func (f *File) Descend(
 
 	if f.qualifiers != nil {
 		for _, v4 := range f.qualifiers {
-			abort = action(v4);
+			abort = action(v4)
 			if abort {
 				return
 			}
 
 			abort = v4.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -6979,14 +6862,14 @@ func (f *File) Descend(
 
 	if f.embeddedDataSpecifications != nil {
 		for _, v5 := range f.embeddedDataSpecifications {
-			abort = action(v5);
+			abort = action(v5)
 			if abort {
 				return
 			}
 
 			abort = v5.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -7000,17 +6883,17 @@ func (f *File) Descend(
 // the given properties.
 func NewFile() *File {
 	return &File{
-		extensions: nil,
-		category: nil,
-		idShort: nil,
-		displayName: nil,
-		description: nil,
-		semanticID: nil,
-		supplementalSemanticIDs: nil,
-		qualifiers: nil,
+		extensions:                 nil,
+		category:                   nil,
+		idShort:                    nil,
+		displayName:                nil,
+		description:                nil,
+		semanticID:                 nil,
+		supplementalSemanticIDs:    nil,
+		qualifiers:                 nil,
 		embeddedDataSpecifications: nil,
-		value: nil,
-		contentType: nil,
+		value:                      nil,
+		contentType:                nil,
 	}
 }
 
@@ -7021,11 +6904,11 @@ type IAnnotatedRelationshipElement interface {
 
 	// A data element that represents an annotation that holds for the relationship
 	// between the two elements
-	Annotations() []IDataElement;
+	Annotations() []IDataElement
 
 	SetAnnotations(
 		value []IDataElement,
-	);
+	)
 }
 
 // Check whether the instance corresponds to [aastypes.IAnnotatedRelationshipElement]
@@ -7042,22 +6925,21 @@ func IsAnnotatedRelationshipElement(
 
 // Implements IAnnotatedRelationshipElement.
 type AnnotatedRelationshipElement struct {
-	extensions []IExtension
-	category *string
-	idShort *string
-	displayName []ILangStringNameType
-	description []ILangStringTextType
-	semanticID IReference
-	supplementalSemanticIDs []IReference
-	qualifiers []IQualifier
+	extensions                 []IExtension
+	category                   *string
+	idShort                    *string
+	displayName                []ILangStringNameType
+	description                []ILangStringTextType
+	semanticID                 IReference
+	supplementalSemanticIDs    []IReference
+	qualifiers                 []IQualifier
 	embeddedDataSpecifications []IEmbeddedDataSpecification
-	first IReference
-	second IReference
-	annotations []IDataElement
+	first                      IReference
+	second                     IReference
+	annotations                []IDataElement
 }
 
-func (are *AnnotatedRelationshipElement) Extensions(
-) []IExtension {
+func (are *AnnotatedRelationshipElement) Extensions() []IExtension {
 	return are.extensions
 }
 
@@ -7067,8 +6949,7 @@ func (are *AnnotatedRelationshipElement) SetExtensions(
 	are.extensions = value
 }
 
-func (are *AnnotatedRelationshipElement) Category(
-) *string {
+func (are *AnnotatedRelationshipElement) Category() *string {
 	return are.category
 }
 
@@ -7078,8 +6959,7 @@ func (are *AnnotatedRelationshipElement) SetCategory(
 	are.category = value
 }
 
-func (are *AnnotatedRelationshipElement) IDShort(
-) *string {
+func (are *AnnotatedRelationshipElement) IDShort() *string {
 	return are.idShort
 }
 
@@ -7089,8 +6969,7 @@ func (are *AnnotatedRelationshipElement) SetIDShort(
 	are.idShort = value
 }
 
-func (are *AnnotatedRelationshipElement) DisplayName(
-) []ILangStringNameType {
+func (are *AnnotatedRelationshipElement) DisplayName() []ILangStringNameType {
 	return are.displayName
 }
 
@@ -7100,8 +6979,7 @@ func (are *AnnotatedRelationshipElement) SetDisplayName(
 	are.displayName = value
 }
 
-func (are *AnnotatedRelationshipElement) Description(
-) []ILangStringTextType {
+func (are *AnnotatedRelationshipElement) Description() []ILangStringTextType {
 	return are.description
 }
 
@@ -7111,8 +6989,7 @@ func (are *AnnotatedRelationshipElement) SetDescription(
 	are.description = value
 }
 
-func (are *AnnotatedRelationshipElement) SemanticID(
-) IReference {
+func (are *AnnotatedRelationshipElement) SemanticID() IReference {
 	return are.semanticID
 }
 
@@ -7122,8 +6999,7 @@ func (are *AnnotatedRelationshipElement) SetSemanticID(
 	are.semanticID = value
 }
 
-func (are *AnnotatedRelationshipElement) SupplementalSemanticIDs(
-) []IReference {
+func (are *AnnotatedRelationshipElement) SupplementalSemanticIDs() []IReference {
 	return are.supplementalSemanticIDs
 }
 
@@ -7133,8 +7009,7 @@ func (are *AnnotatedRelationshipElement) SetSupplementalSemanticIDs(
 	are.supplementalSemanticIDs = value
 }
 
-func (are *AnnotatedRelationshipElement) Qualifiers(
-) []IQualifier {
+func (are *AnnotatedRelationshipElement) Qualifiers() []IQualifier {
 	return are.qualifiers
 }
 
@@ -7144,8 +7019,7 @@ func (are *AnnotatedRelationshipElement) SetQualifiers(
 	are.qualifiers = value
 }
 
-func (are *AnnotatedRelationshipElement) EmbeddedDataSpecifications(
-) []IEmbeddedDataSpecification {
+func (are *AnnotatedRelationshipElement) EmbeddedDataSpecifications() []IEmbeddedDataSpecification {
 	return are.embeddedDataSpecifications
 }
 
@@ -7155,8 +7029,7 @@ func (are *AnnotatedRelationshipElement) SetEmbeddedDataSpecifications(
 	are.embeddedDataSpecifications = value
 }
 
-func (are *AnnotatedRelationshipElement) First(
-) IReference {
+func (are *AnnotatedRelationshipElement) First() IReference {
 	return are.first
 }
 
@@ -7166,8 +7039,7 @@ func (are *AnnotatedRelationshipElement) SetFirst(
 	are.first = value
 }
 
-func (are *AnnotatedRelationshipElement) Second(
-) IReference {
+func (are *AnnotatedRelationshipElement) Second() IReference {
 	return are.second
 }
 
@@ -7177,8 +7049,7 @@ func (are *AnnotatedRelationshipElement) SetSecond(
 	are.second = value
 }
 
-func (are *AnnotatedRelationshipElement) Annotations(
-) []IDataElement {
+func (are *AnnotatedRelationshipElement) Annotations() []IDataElement {
 	return are.annotations
 }
 
@@ -7188,8 +7059,7 @@ func (are *AnnotatedRelationshipElement) SetAnnotations(
 	are.annotations = value
 }
 
-func (are *AnnotatedRelationshipElement) ModelType(
-) ModelType {
+func (are *AnnotatedRelationshipElement) ModelType() ModelType {
 	return ModelTypeAnnotatedRelationshipElement
 }
 
@@ -7206,7 +7076,7 @@ func (are *AnnotatedRelationshipElement) DescendOnce(
 ) (abort bool) {
 	if are.extensions != nil {
 		for _, v := range are.extensions {
-			abort = action(v);
+			abort = action(v)
 			if abort {
 				return
 			}
@@ -7215,7 +7085,7 @@ func (are *AnnotatedRelationshipElement) DescendOnce(
 
 	if are.displayName != nil {
 		for _, v1 := range are.displayName {
-			abort = action(v1);
+			abort = action(v1)
 			if abort {
 				return
 			}
@@ -7224,7 +7094,7 @@ func (are *AnnotatedRelationshipElement) DescendOnce(
 
 	if are.description != nil {
 		for _, v2 := range are.description {
-			abort = action(v2);
+			abort = action(v2)
 			if abort {
 				return
 			}
@@ -7242,7 +7112,7 @@ func (are *AnnotatedRelationshipElement) DescendOnce(
 
 	if are.supplementalSemanticIDs != nil {
 		for _, v3 := range are.supplementalSemanticIDs {
-			abort = action(v3);
+			abort = action(v3)
 			if abort {
 				return
 			}
@@ -7251,7 +7121,7 @@ func (are *AnnotatedRelationshipElement) DescendOnce(
 
 	if are.qualifiers != nil {
 		for _, v4 := range are.qualifiers {
-			abort = action(v4);
+			abort = action(v4)
 			if abort {
 				return
 			}
@@ -7260,7 +7130,7 @@ func (are *AnnotatedRelationshipElement) DescendOnce(
 
 	if are.embeddedDataSpecifications != nil {
 		for _, v5 := range are.embeddedDataSpecifications {
-			abort = action(v5);
+			abort = action(v5)
 			if abort {
 				return
 			}
@@ -7287,7 +7157,7 @@ func (are *AnnotatedRelationshipElement) DescendOnce(
 
 	if are.annotations != nil {
 		for _, v6 := range are.annotations {
-			abort = action(v6);
+			abort = action(v6)
 			if abort {
 				return
 			}
@@ -7308,14 +7178,14 @@ func (are *AnnotatedRelationshipElement) Descend(
 ) (abort bool) {
 	if are.extensions != nil {
 		for _, v := range are.extensions {
-			abort = action(v);
+			abort = action(v)
 			if abort {
 				return
 			}
 
 			abort = v.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -7324,14 +7194,14 @@ func (are *AnnotatedRelationshipElement) Descend(
 
 	if are.displayName != nil {
 		for _, v1 := range are.displayName {
-			abort = action(v1);
+			abort = action(v1)
 			if abort {
 				return
 			}
 
 			abort = v1.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -7340,14 +7210,14 @@ func (are *AnnotatedRelationshipElement) Descend(
 
 	if are.description != nil {
 		for _, v2 := range are.description {
-			abort = action(v2);
+			abort = action(v2)
 			if abort {
 				return
 			}
 
 			abort = v2.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -7371,14 +7241,14 @@ func (are *AnnotatedRelationshipElement) Descend(
 
 	if are.supplementalSemanticIDs != nil {
 		for _, v3 := range are.supplementalSemanticIDs {
-			abort = action(v3);
+			abort = action(v3)
 			if abort {
 				return
 			}
 
 			abort = v3.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -7387,14 +7257,14 @@ func (are *AnnotatedRelationshipElement) Descend(
 
 	if are.qualifiers != nil {
 		for _, v4 := range are.qualifiers {
-			abort = action(v4);
+			abort = action(v4)
 			if abort {
 				return
 			}
 
 			abort = v4.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -7403,14 +7273,14 @@ func (are *AnnotatedRelationshipElement) Descend(
 
 	if are.embeddedDataSpecifications != nil {
 		for _, v5 := range are.embeddedDataSpecifications {
-			abort = action(v5);
+			abort = action(v5)
 			if abort {
 				return
 			}
 
 			abort = v5.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -7449,14 +7319,14 @@ func (are *AnnotatedRelationshipElement) Descend(
 
 	if are.annotations != nil {
 		for _, v6 := range are.annotations {
-			abort = action(v6);
+			abort = action(v6)
 			if abort {
 				return
 			}
 
 			abort = v6.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -7470,18 +7340,18 @@ func (are *AnnotatedRelationshipElement) Descend(
 // the given properties.
 func NewAnnotatedRelationshipElement() *AnnotatedRelationshipElement {
 	return &AnnotatedRelationshipElement{
-		extensions: nil,
-		category: nil,
-		idShort: nil,
-		displayName: nil,
-		description: nil,
-		semanticID: nil,
-		supplementalSemanticIDs: nil,
-		qualifiers: nil,
+		extensions:                 nil,
+		category:                   nil,
+		idShort:                    nil,
+		displayName:                nil,
+		description:                nil,
+		semanticID:                 nil,
+		supplementalSemanticIDs:    nil,
+		qualifiers:                 nil,
 		embeddedDataSpecifications: nil,
-		first: nil,
-		second: nil,
-		annotations: nil,
+		first:                      nil,
+		second:                     nil,
+		annotations:                nil,
 	}
 }
 
@@ -7495,35 +7365,35 @@ type IEntity interface {
 
 	// Describes statements applicable to the entity by a set of submodel elements,
 	// typically with a qualified value.
-	Statements() []ISubmodelElement;
+	Statements() []ISubmodelElement
 
 	SetStatements(
 		value []ISubmodelElement,
-	);
+	)
 
 	// Describes whether the entity is a co-managed entity or a self-managed entity.
-	EntityType() *EntityType;
+	EntityType() *EntityType
 
 	SetEntityType(
 		value *EntityType,
-	);
+	)
 
 	// Global identifier of the asset the entity is representing.
 	//
 	// NOTE: This is a global reference.
-	GlobalAssetID() *string;
+	GlobalAssetID() *string
 
 	SetGlobalAssetID(
 		value *string,
-	);
+	)
 
 	// Reference to a specific asset ID representing a supplementary identifier
 	// of the asset represented by the Asset Administration Shell.
-	SpecificAssetIDs() []ISpecificAssetID;
+	SpecificAssetIDs() []ISpecificAssetID
 
 	SetSpecificAssetIDs(
 		value []ISpecificAssetID,
-	);
+	)
 }
 
 // Check whether the instance corresponds to [aastypes.IEntity]
@@ -7540,23 +7410,22 @@ func IsEntity(
 
 // Implements IEntity.
 type Entity struct {
-	extensions []IExtension
-	category *string
-	idShort *string
-	displayName []ILangStringNameType
-	description []ILangStringTextType
-	semanticID IReference
-	supplementalSemanticIDs []IReference
-	qualifiers []IQualifier
+	extensions                 []IExtension
+	category                   *string
+	idShort                    *string
+	displayName                []ILangStringNameType
+	description                []ILangStringTextType
+	semanticID                 IReference
+	supplementalSemanticIDs    []IReference
+	qualifiers                 []IQualifier
 	embeddedDataSpecifications []IEmbeddedDataSpecification
-	statements []ISubmodelElement
-	entityType *EntityType
-	globalAssetID *string
-	specificAssetIDs []ISpecificAssetID
+	statements                 []ISubmodelElement
+	entityType                 *EntityType
+	globalAssetID              *string
+	specificAssetIDs           []ISpecificAssetID
 }
 
-func (e *Entity) Extensions(
-) []IExtension {
+func (e *Entity) Extensions() []IExtension {
 	return e.extensions
 }
 
@@ -7566,8 +7435,7 @@ func (e *Entity) SetExtensions(
 	e.extensions = value
 }
 
-func (e *Entity) Category(
-) *string {
+func (e *Entity) Category() *string {
 	return e.category
 }
 
@@ -7577,8 +7445,7 @@ func (e *Entity) SetCategory(
 	e.category = value
 }
 
-func (e *Entity) IDShort(
-) *string {
+func (e *Entity) IDShort() *string {
 	return e.idShort
 }
 
@@ -7588,8 +7455,7 @@ func (e *Entity) SetIDShort(
 	e.idShort = value
 }
 
-func (e *Entity) DisplayName(
-) []ILangStringNameType {
+func (e *Entity) DisplayName() []ILangStringNameType {
 	return e.displayName
 }
 
@@ -7599,8 +7465,7 @@ func (e *Entity) SetDisplayName(
 	e.displayName = value
 }
 
-func (e *Entity) Description(
-) []ILangStringTextType {
+func (e *Entity) Description() []ILangStringTextType {
 	return e.description
 }
 
@@ -7610,8 +7475,7 @@ func (e *Entity) SetDescription(
 	e.description = value
 }
 
-func (e *Entity) SemanticID(
-) IReference {
+func (e *Entity) SemanticID() IReference {
 	return e.semanticID
 }
 
@@ -7621,8 +7485,7 @@ func (e *Entity) SetSemanticID(
 	e.semanticID = value
 }
 
-func (e *Entity) SupplementalSemanticIDs(
-) []IReference {
+func (e *Entity) SupplementalSemanticIDs() []IReference {
 	return e.supplementalSemanticIDs
 }
 
@@ -7632,8 +7495,7 @@ func (e *Entity) SetSupplementalSemanticIDs(
 	e.supplementalSemanticIDs = value
 }
 
-func (e *Entity) Qualifiers(
-) []IQualifier {
+func (e *Entity) Qualifiers() []IQualifier {
 	return e.qualifiers
 }
 
@@ -7643,8 +7505,7 @@ func (e *Entity) SetQualifiers(
 	e.qualifiers = value
 }
 
-func (e *Entity) EmbeddedDataSpecifications(
-) []IEmbeddedDataSpecification {
+func (e *Entity) EmbeddedDataSpecifications() []IEmbeddedDataSpecification {
 	return e.embeddedDataSpecifications
 }
 
@@ -7654,8 +7515,7 @@ func (e *Entity) SetEmbeddedDataSpecifications(
 	e.embeddedDataSpecifications = value
 }
 
-func (e *Entity) Statements(
-) []ISubmodelElement {
+func (e *Entity) Statements() []ISubmodelElement {
 	return e.statements
 }
 
@@ -7665,8 +7525,7 @@ func (e *Entity) SetStatements(
 	e.statements = value
 }
 
-func (e *Entity) EntityType(
-) *EntityType {
+func (e *Entity) EntityType() *EntityType {
 	return e.entityType
 }
 
@@ -7676,8 +7535,7 @@ func (e *Entity) SetEntityType(
 	e.entityType = value
 }
 
-func (e *Entity) GlobalAssetID(
-) *string {
+func (e *Entity) GlobalAssetID() *string {
 	return e.globalAssetID
 }
 
@@ -7687,8 +7545,7 @@ func (e *Entity) SetGlobalAssetID(
 	e.globalAssetID = value
 }
 
-func (e *Entity) SpecificAssetIDs(
-) []ISpecificAssetID {
+func (e *Entity) SpecificAssetIDs() []ISpecificAssetID {
 	return e.specificAssetIDs
 }
 
@@ -7698,8 +7555,7 @@ func (e *Entity) SetSpecificAssetIDs(
 	e.specificAssetIDs = value
 }
 
-func (e *Entity) ModelType(
-) ModelType {
+func (e *Entity) ModelType() ModelType {
 	return ModelTypeEntity
 }
 
@@ -7716,7 +7572,7 @@ func (e *Entity) DescendOnce(
 ) (abort bool) {
 	if e.extensions != nil {
 		for _, v := range e.extensions {
-			abort = action(v);
+			abort = action(v)
 			if abort {
 				return
 			}
@@ -7725,7 +7581,7 @@ func (e *Entity) DescendOnce(
 
 	if e.displayName != nil {
 		for _, v1 := range e.displayName {
-			abort = action(v1);
+			abort = action(v1)
 			if abort {
 				return
 			}
@@ -7734,7 +7590,7 @@ func (e *Entity) DescendOnce(
 
 	if e.description != nil {
 		for _, v2 := range e.description {
-			abort = action(v2);
+			abort = action(v2)
 			if abort {
 				return
 			}
@@ -7752,7 +7608,7 @@ func (e *Entity) DescendOnce(
 
 	if e.supplementalSemanticIDs != nil {
 		for _, v3 := range e.supplementalSemanticIDs {
-			abort = action(v3);
+			abort = action(v3)
 			if abort {
 				return
 			}
@@ -7761,7 +7617,7 @@ func (e *Entity) DescendOnce(
 
 	if e.qualifiers != nil {
 		for _, v4 := range e.qualifiers {
-			abort = action(v4);
+			abort = action(v4)
 			if abort {
 				return
 			}
@@ -7770,7 +7626,7 @@ func (e *Entity) DescendOnce(
 
 	if e.embeddedDataSpecifications != nil {
 		for _, v5 := range e.embeddedDataSpecifications {
-			abort = action(v5);
+			abort = action(v5)
 			if abort {
 				return
 			}
@@ -7779,7 +7635,7 @@ func (e *Entity) DescendOnce(
 
 	if e.statements != nil {
 		for _, v6 := range e.statements {
-			abort = action(v6);
+			abort = action(v6)
 			if abort {
 				return
 			}
@@ -7788,7 +7644,7 @@ func (e *Entity) DescendOnce(
 
 	if e.specificAssetIDs != nil {
 		for _, v7 := range e.specificAssetIDs {
-			abort = action(v7);
+			abort = action(v7)
 			if abort {
 				return
 			}
@@ -7809,14 +7665,14 @@ func (e *Entity) Descend(
 ) (abort bool) {
 	if e.extensions != nil {
 		for _, v := range e.extensions {
-			abort = action(v);
+			abort = action(v)
 			if abort {
 				return
 			}
 
 			abort = v.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -7825,14 +7681,14 @@ func (e *Entity) Descend(
 
 	if e.displayName != nil {
 		for _, v1 := range e.displayName {
-			abort = action(v1);
+			abort = action(v1)
 			if abort {
 				return
 			}
 
 			abort = v1.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -7841,14 +7697,14 @@ func (e *Entity) Descend(
 
 	if e.description != nil {
 		for _, v2 := range e.description {
-			abort = action(v2);
+			abort = action(v2)
 			if abort {
 				return
 			}
 
 			abort = v2.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -7872,14 +7728,14 @@ func (e *Entity) Descend(
 
 	if e.supplementalSemanticIDs != nil {
 		for _, v3 := range e.supplementalSemanticIDs {
-			abort = action(v3);
+			abort = action(v3)
 			if abort {
 				return
 			}
 
 			abort = v3.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -7888,14 +7744,14 @@ func (e *Entity) Descend(
 
 	if e.qualifiers != nil {
 		for _, v4 := range e.qualifiers {
-			abort = action(v4);
+			abort = action(v4)
 			if abort {
 				return
 			}
 
 			abort = v4.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -7904,14 +7760,14 @@ func (e *Entity) Descend(
 
 	if e.embeddedDataSpecifications != nil {
 		for _, v5 := range e.embeddedDataSpecifications {
-			abort = action(v5);
+			abort = action(v5)
 			if abort {
 				return
 			}
 
 			abort = v5.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -7920,14 +7776,14 @@ func (e *Entity) Descend(
 
 	if e.statements != nil {
 		for _, v6 := range e.statements {
-			abort = action(v6);
+			abort = action(v6)
 			if abort {
 				return
 			}
 
 			abort = v6.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -7936,14 +7792,14 @@ func (e *Entity) Descend(
 
 	if e.specificAssetIDs != nil {
 		for _, v7 := range e.specificAssetIDs {
-			abort = action(v7);
+			abort = action(v7)
 			if abort {
 				return
 			}
 
 			abort = v7.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -7957,25 +7813,27 @@ func (e *Entity) Descend(
 // the given properties.
 func NewEntity() *Entity {
 	return &Entity{
-		extensions: nil,
-		category: nil,
-		idShort: nil,
-		displayName: nil,
-		description: nil,
-		semanticID: nil,
-		supplementalSemanticIDs: nil,
-		qualifiers: nil,
+		extensions:                 nil,
+		category:                   nil,
+		idShort:                    nil,
+		displayName:                nil,
+		description:                nil,
+		semanticID:                 nil,
+		supplementalSemanticIDs:    nil,
+		qualifiers:                 nil,
 		embeddedDataSpecifications: nil,
-		statements: nil,
-		entityType: nil,
-		globalAssetID: nil,
-		specificAssetIDs: nil,
+		statements:                 nil,
+		entityType:                 nil,
+		globalAssetID:              nil,
+		specificAssetIDs:           nil,
 	}
 }
 
 // Enumeration for denoting whether an entity is a self-managed entity or a co-managed
 // entity.
-type EntityType int;const (
+type EntityType int
+
+const (
 	// For co-managed entities there is no separate AAS. Co-managed entities need to be
 	// part of a self-managed entity.
 	EntityTypeCoManagedEntity EntityType = iota
@@ -7992,7 +7850,7 @@ type EntityType int;const (
 // this array helps you avoid common errors and pitfalls.
 //
 // Please do not modify the array in the caller's code.
-var LiteralsOfEntityType = [...]EntityType {
+var LiteralsOfEntityType = [...]EntityType{
 	EntityTypeCoManagedEntity,
 	EntityTypeSelfManagedEntity,
 }
@@ -8001,7 +7859,9 @@ var LiteralsOfEntityType = [...]EntityType {
 //
 // NOTE: This element is experimental and therefore may be subject to change or may be
 // removed completely in future versions of the meta-model.
-type Direction int;const (
+type Direction int
+
+const (
 	// Input direction.
 	DirectionInput Direction = iota
 	// Output direction
@@ -8014,7 +7874,7 @@ type Direction int;const (
 // this array helps you avoid common errors and pitfalls.
 //
 // Please do not modify the array in the caller's code.
-var LiteralsOfDirection = [...]Direction {
+var LiteralsOfDirection = [...]Direction{
 	DirectionInput,
 	DirectionOutput,
 }
@@ -8023,7 +7883,9 @@ var LiteralsOfDirection = [...]Direction {
 //
 // NOTE: This element is experimental and therefore may be subject to change or may be
 // removed completely in future versions of the meta-model.
-type StateOfEvent int;const (
+type StateOfEvent int
+
+const (
 	// Event is on
 	StateOfEventOn StateOfEvent = iota
 	// Event is off.
@@ -8036,7 +7898,7 @@ type StateOfEvent int;const (
 // this array helps you avoid common errors and pitfalls.
 //
 // Please do not modify the array in the caller's code.
-var LiteralsOfStateOfEvent = [...]StateOfEvent {
+var LiteralsOfStateOfEvent = [...]StateOfEvent{
 	StateOfEventOn,
 	StateOfEventOff,
 }
@@ -8051,71 +7913,71 @@ type IEventPayload interface {
 	// Reference to the source event element, including identification of
 	// [IAssetAdministrationShell], [ISubmodel],
 	// [ISubmodelElement]'s.
-	Source() IReference;
+	Source() IReference
 
 	SetSource(
 		value IReference,
-	);
+	)
 
 	// [IHasSemantics.SemanticID] of the source event element, if available
 	//
 	// NOTE: It is recommended to use a global reference.
-	SourceSemanticID() IReference;
+	SourceSemanticID() IReference
 
 	SetSourceSemanticID(
 		value IReference,
-	);
+	)
 
 	// Reference to the referable, which defines the scope of the event.
 	//
 	// Can be [IAssetAdministrationShell], [ISubmodel] or
 	// [ISubmodelElement].
-	ObservableReference() IReference;
+	ObservableReference() IReference
 
 	SetObservableReference(
 		value IReference,
-	);
+	)
 
 	// [IHasSemantics.SemanticID] of the referable which defines the scope of
 	// the event, if available.
 	//
 	// NOTE: It is recommended to use a global reference.
-	ObservableSemanticID() IReference;
+	ObservableSemanticID() IReference
 
 	SetObservableSemanticID(
 		value IReference,
-	);
+	)
 
 	// Information for the outer message infrastructure for scheduling the event to
 	// the respective communication channel.
-	Topic() *string;
+	Topic() *string
 
 	SetTopic(
 		value *string,
-	);
+	)
 
 	// Subject, who/which initiated the creation.
 	//
 	// NOTE: This is an external reference.
-	SubjectID() IReference;
+	SubjectID() IReference
 
 	SetSubjectID(
 		value IReference,
-	);
+	)
 
 	// Timestamp in UTC, when this event was triggered.
-	TimeStamp() string;
+	TimeStamp() string
 
 	SetTimeStamp(
 		value string,
-	);
+	)
 
 	// Event specific payload.
-	Payload() []byte;
+	Payload() []byte
 
 	SetPayload(
 		value []byte,
-	);
+	)
 }
 
 // Check whether the instance corresponds to [aastypes.IEventPayload]
@@ -8132,18 +7994,17 @@ func IsEventPayload(
 
 // Implements IEventPayload.
 type EventPayload struct {
-	source IReference
-	sourceSemanticID IReference
-	observableReference IReference
+	source               IReference
+	sourceSemanticID     IReference
+	observableReference  IReference
 	observableSemanticID IReference
-	topic *string
-	subjectID IReference
-	timeStamp string
-	payload []byte
+	topic                *string
+	subjectID            IReference
+	timeStamp            string
+	payload              []byte
 }
 
-func (ep *EventPayload) Source(
-) IReference {
+func (ep *EventPayload) Source() IReference {
 	return ep.source
 }
 
@@ -8153,8 +8014,7 @@ func (ep *EventPayload) SetSource(
 	ep.source = value
 }
 
-func (ep *EventPayload) SourceSemanticID(
-) IReference {
+func (ep *EventPayload) SourceSemanticID() IReference {
 	return ep.sourceSemanticID
 }
 
@@ -8164,8 +8024,7 @@ func (ep *EventPayload) SetSourceSemanticID(
 	ep.sourceSemanticID = value
 }
 
-func (ep *EventPayload) ObservableReference(
-) IReference {
+func (ep *EventPayload) ObservableReference() IReference {
 	return ep.observableReference
 }
 
@@ -8175,8 +8034,7 @@ func (ep *EventPayload) SetObservableReference(
 	ep.observableReference = value
 }
 
-func (ep *EventPayload) ObservableSemanticID(
-) IReference {
+func (ep *EventPayload) ObservableSemanticID() IReference {
 	return ep.observableSemanticID
 }
 
@@ -8186,8 +8044,7 @@ func (ep *EventPayload) SetObservableSemanticID(
 	ep.observableSemanticID = value
 }
 
-func (ep *EventPayload) Topic(
-) *string {
+func (ep *EventPayload) Topic() *string {
 	return ep.topic
 }
 
@@ -8197,8 +8054,7 @@ func (ep *EventPayload) SetTopic(
 	ep.topic = value
 }
 
-func (ep *EventPayload) SubjectID(
-) IReference {
+func (ep *EventPayload) SubjectID() IReference {
 	return ep.subjectID
 }
 
@@ -8208,8 +8064,7 @@ func (ep *EventPayload) SetSubjectID(
 	ep.subjectID = value
 }
 
-func (ep *EventPayload) TimeStamp(
-) string {
+func (ep *EventPayload) TimeStamp() string {
 	return ep.timeStamp
 }
 
@@ -8219,8 +8074,7 @@ func (ep *EventPayload) SetTimeStamp(
 	ep.timeStamp = value
 }
 
-func (ep *EventPayload) Payload(
-) []byte {
+func (ep *EventPayload) Payload() []byte {
 	return ep.payload
 }
 
@@ -8230,8 +8084,7 @@ func (ep *EventPayload) SetPayload(
 	ep.payload = value
 }
 
-func (ep *EventPayload) ModelType(
-) ModelType {
+func (ep *EventPayload) ModelType() ModelType {
 	return ModelTypeEventPayload
 }
 
@@ -8381,14 +8234,14 @@ func NewEventPayload(
 	timeStamp string,
 ) *EventPayload {
 	return &EventPayload{
-		source: source,
-		observableReference: observableReference,
-		timeStamp: timeStamp,
-		sourceSemanticID: nil,
+		source:               source,
+		observableReference:  observableReference,
+		timeStamp:            timeStamp,
+		sourceSemanticID:     nil,
 		observableSemanticID: nil,
-		topic: nil,
-		subjectID: nil,
-		payload: nil,
+		topic:                nil,
+		subjectID:            nil,
+		payload:              nil,
 	}
 }
 
@@ -8428,37 +8281,37 @@ type IBasicEventElement interface {
 	//
 	// Reference to a referable, e.g., a data element or
 	// a submodel, that is being observed.
-	Observed() IReference;
+	Observed() IReference
 
 	SetObserved(
 		value IReference,
-	);
+	)
 
 	// Direction of event.
 	//
 	// Can be `{ Input, Output }`.
-	Direction() Direction;
+	Direction() Direction
 
 	SetDirection(
 		value Direction,
-	);
+	)
 
 	// State of event.
 	//
 	// Can be `{ On, Off }`.
-	State() StateOfEvent;
+	State() StateOfEvent
 
 	SetState(
 		value StateOfEvent,
-	);
+	)
 
 	// Information for the outer message infrastructure for scheduling the event to the
 	// respective communication channel.
-	MessageTopic() *string;
+	MessageTopic() *string
 
 	SetMessageTopic(
 		value *string,
-	);
+	)
 
 	// Information, which outer message infrastructure shall handle messages for
 	// the [IEventElement]. Refers to a [ISubmodel],
@@ -8468,19 +8321,19 @@ type IBasicEventElement interface {
 	//
 	// NOTE: For different message infrastructure, e.g., OPC UA or MQTT or AMQP, this
 	// proprietary specification could be standardized by having respective Submodels.
-	MessageBroker() IReference;
+	MessageBroker() IReference
 
 	SetMessageBroker(
 		value IReference,
-	);
+	)
 
 	// Timestamp in UTC, when the last event was received (input direction) or sent
 	// (output direction).
-	LastUpdate() *string;
+	LastUpdate() *string
 
 	SetLastUpdate(
 		value *string,
-	);
+	)
 
 	// For input direction, reports on the maximum frequency, the software entity behind
 	// the respective Referable can handle input events.
@@ -8489,11 +8342,11 @@ type IBasicEventElement interface {
 	// an outer infrastructure.
 	//
 	// Might be not specified, that is, there is no minimum interval.
-	MinInterval() *string;
+	MinInterval() *string
 
 	SetMinInterval(
 		value *string,
-	);
+	)
 
 	// For input direction: not applicable.
 	//
@@ -8502,11 +8355,11 @@ type IBasicEventElement interface {
 	// the event was not met.
 	//
 	// Might be not specified, that is, there is no maximum interval
-	MaxInterval() *string;
+	MaxInterval() *string
 
 	SetMaxInterval(
 		value *string,
-	);
+	)
 }
 
 // Check whether the instance corresponds to [aastypes.IBasicEventElement]
@@ -8523,27 +8376,26 @@ func IsBasicEventElement(
 
 // Implements IBasicEventElement.
 type BasicEventElement struct {
-	extensions []IExtension
-	category *string
-	idShort *string
-	displayName []ILangStringNameType
-	description []ILangStringTextType
-	semanticID IReference
-	supplementalSemanticIDs []IReference
-	qualifiers []IQualifier
+	extensions                 []IExtension
+	category                   *string
+	idShort                    *string
+	displayName                []ILangStringNameType
+	description                []ILangStringTextType
+	semanticID                 IReference
+	supplementalSemanticIDs    []IReference
+	qualifiers                 []IQualifier
 	embeddedDataSpecifications []IEmbeddedDataSpecification
-	observed IReference
-	direction Direction
-	state StateOfEvent
-	messageTopic *string
-	messageBroker IReference
-	lastUpdate *string
-	minInterval *string
-	maxInterval *string
+	observed                   IReference
+	direction                  Direction
+	state                      StateOfEvent
+	messageTopic               *string
+	messageBroker              IReference
+	lastUpdate                 *string
+	minInterval                *string
+	maxInterval                *string
 }
 
-func (bee *BasicEventElement) Extensions(
-) []IExtension {
+func (bee *BasicEventElement) Extensions() []IExtension {
 	return bee.extensions
 }
 
@@ -8553,8 +8405,7 @@ func (bee *BasicEventElement) SetExtensions(
 	bee.extensions = value
 }
 
-func (bee *BasicEventElement) Category(
-) *string {
+func (bee *BasicEventElement) Category() *string {
 	return bee.category
 }
 
@@ -8564,8 +8415,7 @@ func (bee *BasicEventElement) SetCategory(
 	bee.category = value
 }
 
-func (bee *BasicEventElement) IDShort(
-) *string {
+func (bee *BasicEventElement) IDShort() *string {
 	return bee.idShort
 }
 
@@ -8575,8 +8425,7 @@ func (bee *BasicEventElement) SetIDShort(
 	bee.idShort = value
 }
 
-func (bee *BasicEventElement) DisplayName(
-) []ILangStringNameType {
+func (bee *BasicEventElement) DisplayName() []ILangStringNameType {
 	return bee.displayName
 }
 
@@ -8586,8 +8435,7 @@ func (bee *BasicEventElement) SetDisplayName(
 	bee.displayName = value
 }
 
-func (bee *BasicEventElement) Description(
-) []ILangStringTextType {
+func (bee *BasicEventElement) Description() []ILangStringTextType {
 	return bee.description
 }
 
@@ -8597,8 +8445,7 @@ func (bee *BasicEventElement) SetDescription(
 	bee.description = value
 }
 
-func (bee *BasicEventElement) SemanticID(
-) IReference {
+func (bee *BasicEventElement) SemanticID() IReference {
 	return bee.semanticID
 }
 
@@ -8608,8 +8455,7 @@ func (bee *BasicEventElement) SetSemanticID(
 	bee.semanticID = value
 }
 
-func (bee *BasicEventElement) SupplementalSemanticIDs(
-) []IReference {
+func (bee *BasicEventElement) SupplementalSemanticIDs() []IReference {
 	return bee.supplementalSemanticIDs
 }
 
@@ -8619,8 +8465,7 @@ func (bee *BasicEventElement) SetSupplementalSemanticIDs(
 	bee.supplementalSemanticIDs = value
 }
 
-func (bee *BasicEventElement) Qualifiers(
-) []IQualifier {
+func (bee *BasicEventElement) Qualifiers() []IQualifier {
 	return bee.qualifiers
 }
 
@@ -8630,8 +8475,7 @@ func (bee *BasicEventElement) SetQualifiers(
 	bee.qualifiers = value
 }
 
-func (bee *BasicEventElement) EmbeddedDataSpecifications(
-) []IEmbeddedDataSpecification {
+func (bee *BasicEventElement) EmbeddedDataSpecifications() []IEmbeddedDataSpecification {
 	return bee.embeddedDataSpecifications
 }
 
@@ -8641,8 +8485,7 @@ func (bee *BasicEventElement) SetEmbeddedDataSpecifications(
 	bee.embeddedDataSpecifications = value
 }
 
-func (bee *BasicEventElement) Observed(
-) IReference {
+func (bee *BasicEventElement) Observed() IReference {
 	return bee.observed
 }
 
@@ -8652,8 +8495,7 @@ func (bee *BasicEventElement) SetObserved(
 	bee.observed = value
 }
 
-func (bee *BasicEventElement) Direction(
-) Direction {
+func (bee *BasicEventElement) Direction() Direction {
 	return bee.direction
 }
 
@@ -8663,8 +8505,7 @@ func (bee *BasicEventElement) SetDirection(
 	bee.direction = value
 }
 
-func (bee *BasicEventElement) State(
-) StateOfEvent {
+func (bee *BasicEventElement) State() StateOfEvent {
 	return bee.state
 }
 
@@ -8674,8 +8515,7 @@ func (bee *BasicEventElement) SetState(
 	bee.state = value
 }
 
-func (bee *BasicEventElement) MessageTopic(
-) *string {
+func (bee *BasicEventElement) MessageTopic() *string {
 	return bee.messageTopic
 }
 
@@ -8685,8 +8525,7 @@ func (bee *BasicEventElement) SetMessageTopic(
 	bee.messageTopic = value
 }
 
-func (bee *BasicEventElement) MessageBroker(
-) IReference {
+func (bee *BasicEventElement) MessageBroker() IReference {
 	return bee.messageBroker
 }
 
@@ -8696,8 +8535,7 @@ func (bee *BasicEventElement) SetMessageBroker(
 	bee.messageBroker = value
 }
 
-func (bee *BasicEventElement) LastUpdate(
-) *string {
+func (bee *BasicEventElement) LastUpdate() *string {
 	return bee.lastUpdate
 }
 
@@ -8707,8 +8545,7 @@ func (bee *BasicEventElement) SetLastUpdate(
 	bee.lastUpdate = value
 }
 
-func (bee *BasicEventElement) MinInterval(
-) *string {
+func (bee *BasicEventElement) MinInterval() *string {
 	return bee.minInterval
 }
 
@@ -8718,8 +8555,7 @@ func (bee *BasicEventElement) SetMinInterval(
 	bee.minInterval = value
 }
 
-func (bee *BasicEventElement) MaxInterval(
-) *string {
+func (bee *BasicEventElement) MaxInterval() *string {
 	return bee.maxInterval
 }
 
@@ -8729,8 +8565,7 @@ func (bee *BasicEventElement) SetMaxInterval(
 	bee.maxInterval = value
 }
 
-func (bee *BasicEventElement) ModelType(
-) ModelType {
+func (bee *BasicEventElement) ModelType() ModelType {
 	return ModelTypeBasicEventElement
 }
 
@@ -8747,7 +8582,7 @@ func (bee *BasicEventElement) DescendOnce(
 ) (abort bool) {
 	if bee.extensions != nil {
 		for _, v := range bee.extensions {
-			abort = action(v);
+			abort = action(v)
 			if abort {
 				return
 			}
@@ -8756,7 +8591,7 @@ func (bee *BasicEventElement) DescendOnce(
 
 	if bee.displayName != nil {
 		for _, v1 := range bee.displayName {
-			abort = action(v1);
+			abort = action(v1)
 			if abort {
 				return
 			}
@@ -8765,7 +8600,7 @@ func (bee *BasicEventElement) DescendOnce(
 
 	if bee.description != nil {
 		for _, v2 := range bee.description {
-			abort = action(v2);
+			abort = action(v2)
 			if abort {
 				return
 			}
@@ -8783,7 +8618,7 @@ func (bee *BasicEventElement) DescendOnce(
 
 	if bee.supplementalSemanticIDs != nil {
 		for _, v3 := range bee.supplementalSemanticIDs {
-			abort = action(v3);
+			abort = action(v3)
 			if abort {
 				return
 			}
@@ -8792,7 +8627,7 @@ func (bee *BasicEventElement) DescendOnce(
 
 	if bee.qualifiers != nil {
 		for _, v4 := range bee.qualifiers {
-			abort = action(v4);
+			abort = action(v4)
 			if abort {
 				return
 			}
@@ -8801,7 +8636,7 @@ func (bee *BasicEventElement) DescendOnce(
 
 	if bee.embeddedDataSpecifications != nil {
 		for _, v5 := range bee.embeddedDataSpecifications {
-			abort = action(v5);
+			abort = action(v5)
 			if abort {
 				return
 			}
@@ -8838,14 +8673,14 @@ func (bee *BasicEventElement) Descend(
 ) (abort bool) {
 	if bee.extensions != nil {
 		for _, v := range bee.extensions {
-			abort = action(v);
+			abort = action(v)
 			if abort {
 				return
 			}
 
 			abort = v.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -8854,14 +8689,14 @@ func (bee *BasicEventElement) Descend(
 
 	if bee.displayName != nil {
 		for _, v1 := range bee.displayName {
-			abort = action(v1);
+			abort = action(v1)
 			if abort {
 				return
 			}
 
 			abort = v1.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -8870,14 +8705,14 @@ func (bee *BasicEventElement) Descend(
 
 	if bee.description != nil {
 		for _, v2 := range bee.description {
-			abort = action(v2);
+			abort = action(v2)
 			if abort {
 				return
 			}
 
 			abort = v2.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -8901,14 +8736,14 @@ func (bee *BasicEventElement) Descend(
 
 	if bee.supplementalSemanticIDs != nil {
 		for _, v3 := range bee.supplementalSemanticIDs {
-			abort = action(v3);
+			abort = action(v3)
 			if abort {
 				return
 			}
 
 			abort = v3.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -8917,14 +8752,14 @@ func (bee *BasicEventElement) Descend(
 
 	if bee.qualifiers != nil {
 		for _, v4 := range bee.qualifiers {
-			abort = action(v4);
+			abort = action(v4)
 			if abort {
 				return
 			}
 
 			abort = v4.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -8933,14 +8768,14 @@ func (bee *BasicEventElement) Descend(
 
 	if bee.embeddedDataSpecifications != nil {
 		for _, v5 := range bee.embeddedDataSpecifications {
-			abort = action(v5);
+			abort = action(v5)
 			if abort {
 				return
 			}
 
 			abort = v5.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -8986,23 +8821,23 @@ func NewBasicEventElement(
 	state StateOfEvent,
 ) *BasicEventElement {
 	return &BasicEventElement{
-		observed: observed,
-		direction: direction,
-		state: state,
-		extensions: nil,
-		category: nil,
-		idShort: nil,
-		displayName: nil,
-		description: nil,
-		semanticID: nil,
-		supplementalSemanticIDs: nil,
-		qualifiers: nil,
+		observed:                   observed,
+		direction:                  direction,
+		state:                      state,
+		extensions:                 nil,
+		category:                   nil,
+		idShort:                    nil,
+		displayName:                nil,
+		description:                nil,
+		semanticID:                 nil,
+		supplementalSemanticIDs:    nil,
+		qualifiers:                 nil,
 		embeddedDataSpecifications: nil,
-		messageTopic: nil,
-		messageBroker: nil,
-		lastUpdate: nil,
-		minInterval: nil,
-		maxInterval: nil,
+		messageTopic:               nil,
+		messageBroker:              nil,
+		lastUpdate:                 nil,
+		minInterval:                nil,
+		maxInterval:                nil,
 	}
 }
 
@@ -9017,25 +8852,25 @@ type IOperation interface {
 	ISubmodelElement
 
 	// Input parameter of the operation.
-	InputVariables() []IOperationVariable;
+	InputVariables() []IOperationVariable
 
 	SetInputVariables(
 		value []IOperationVariable,
-	);
+	)
 
 	// Output parameter of the operation.
-	OutputVariables() []IOperationVariable;
+	OutputVariables() []IOperationVariable
 
 	SetOutputVariables(
 		value []IOperationVariable,
-	);
+	)
 
 	// Parameter that is input and output of the operation.
-	InoutputVariables() []IOperationVariable;
+	InoutputVariables() []IOperationVariable
 
 	SetInoutputVariables(
 		value []IOperationVariable,
-	);
+	)
 }
 
 // Check whether the instance corresponds to [aastypes.IOperation]
@@ -9052,22 +8887,21 @@ func IsOperation(
 
 // Implements IOperation.
 type Operation struct {
-	extensions []IExtension
-	category *string
-	idShort *string
-	displayName []ILangStringNameType
-	description []ILangStringTextType
-	semanticID IReference
-	supplementalSemanticIDs []IReference
-	qualifiers []IQualifier
+	extensions                 []IExtension
+	category                   *string
+	idShort                    *string
+	displayName                []ILangStringNameType
+	description                []ILangStringTextType
+	semanticID                 IReference
+	supplementalSemanticIDs    []IReference
+	qualifiers                 []IQualifier
 	embeddedDataSpecifications []IEmbeddedDataSpecification
-	inputVariables []IOperationVariable
-	outputVariables []IOperationVariable
-	inoutputVariables []IOperationVariable
+	inputVariables             []IOperationVariable
+	outputVariables            []IOperationVariable
+	inoutputVariables          []IOperationVariable
 }
 
-func (o *Operation) Extensions(
-) []IExtension {
+func (o *Operation) Extensions() []IExtension {
 	return o.extensions
 }
 
@@ -9077,8 +8911,7 @@ func (o *Operation) SetExtensions(
 	o.extensions = value
 }
 
-func (o *Operation) Category(
-) *string {
+func (o *Operation) Category() *string {
 	return o.category
 }
 
@@ -9088,8 +8921,7 @@ func (o *Operation) SetCategory(
 	o.category = value
 }
 
-func (o *Operation) IDShort(
-) *string {
+func (o *Operation) IDShort() *string {
 	return o.idShort
 }
 
@@ -9099,8 +8931,7 @@ func (o *Operation) SetIDShort(
 	o.idShort = value
 }
 
-func (o *Operation) DisplayName(
-) []ILangStringNameType {
+func (o *Operation) DisplayName() []ILangStringNameType {
 	return o.displayName
 }
 
@@ -9110,8 +8941,7 @@ func (o *Operation) SetDisplayName(
 	o.displayName = value
 }
 
-func (o *Operation) Description(
-) []ILangStringTextType {
+func (o *Operation) Description() []ILangStringTextType {
 	return o.description
 }
 
@@ -9121,8 +8951,7 @@ func (o *Operation) SetDescription(
 	o.description = value
 }
 
-func (o *Operation) SemanticID(
-) IReference {
+func (o *Operation) SemanticID() IReference {
 	return o.semanticID
 }
 
@@ -9132,8 +8961,7 @@ func (o *Operation) SetSemanticID(
 	o.semanticID = value
 }
 
-func (o *Operation) SupplementalSemanticIDs(
-) []IReference {
+func (o *Operation) SupplementalSemanticIDs() []IReference {
 	return o.supplementalSemanticIDs
 }
 
@@ -9143,8 +8971,7 @@ func (o *Operation) SetSupplementalSemanticIDs(
 	o.supplementalSemanticIDs = value
 }
 
-func (o *Operation) Qualifiers(
-) []IQualifier {
+func (o *Operation) Qualifiers() []IQualifier {
 	return o.qualifiers
 }
 
@@ -9154,8 +8981,7 @@ func (o *Operation) SetQualifiers(
 	o.qualifiers = value
 }
 
-func (o *Operation) EmbeddedDataSpecifications(
-) []IEmbeddedDataSpecification {
+func (o *Operation) EmbeddedDataSpecifications() []IEmbeddedDataSpecification {
 	return o.embeddedDataSpecifications
 }
 
@@ -9165,8 +8991,7 @@ func (o *Operation) SetEmbeddedDataSpecifications(
 	o.embeddedDataSpecifications = value
 }
 
-func (o *Operation) InputVariables(
-) []IOperationVariable {
+func (o *Operation) InputVariables() []IOperationVariable {
 	return o.inputVariables
 }
 
@@ -9176,8 +9001,7 @@ func (o *Operation) SetInputVariables(
 	o.inputVariables = value
 }
 
-func (o *Operation) OutputVariables(
-) []IOperationVariable {
+func (o *Operation) OutputVariables() []IOperationVariable {
 	return o.outputVariables
 }
 
@@ -9187,8 +9011,7 @@ func (o *Operation) SetOutputVariables(
 	o.outputVariables = value
 }
 
-func (o *Operation) InoutputVariables(
-) []IOperationVariable {
+func (o *Operation) InoutputVariables() []IOperationVariable {
 	return o.inoutputVariables
 }
 
@@ -9198,8 +9021,7 @@ func (o *Operation) SetInoutputVariables(
 	o.inoutputVariables = value
 }
 
-func (o *Operation) ModelType(
-) ModelType {
+func (o *Operation) ModelType() ModelType {
 	return ModelTypeOperation
 }
 
@@ -9216,7 +9038,7 @@ func (o *Operation) DescendOnce(
 ) (abort bool) {
 	if o.extensions != nil {
 		for _, v := range o.extensions {
-			abort = action(v);
+			abort = action(v)
 			if abort {
 				return
 			}
@@ -9225,7 +9047,7 @@ func (o *Operation) DescendOnce(
 
 	if o.displayName != nil {
 		for _, v1 := range o.displayName {
-			abort = action(v1);
+			abort = action(v1)
 			if abort {
 				return
 			}
@@ -9234,7 +9056,7 @@ func (o *Operation) DescendOnce(
 
 	if o.description != nil {
 		for _, v2 := range o.description {
-			abort = action(v2);
+			abort = action(v2)
 			if abort {
 				return
 			}
@@ -9252,7 +9074,7 @@ func (o *Operation) DescendOnce(
 
 	if o.supplementalSemanticIDs != nil {
 		for _, v3 := range o.supplementalSemanticIDs {
-			abort = action(v3);
+			abort = action(v3)
 			if abort {
 				return
 			}
@@ -9261,7 +9083,7 @@ func (o *Operation) DescendOnce(
 
 	if o.qualifiers != nil {
 		for _, v4 := range o.qualifiers {
-			abort = action(v4);
+			abort = action(v4)
 			if abort {
 				return
 			}
@@ -9270,7 +9092,7 @@ func (o *Operation) DescendOnce(
 
 	if o.embeddedDataSpecifications != nil {
 		for _, v5 := range o.embeddedDataSpecifications {
-			abort = action(v5);
+			abort = action(v5)
 			if abort {
 				return
 			}
@@ -9279,7 +9101,7 @@ func (o *Operation) DescendOnce(
 
 	if o.inputVariables != nil {
 		for _, v6 := range o.inputVariables {
-			abort = action(v6);
+			abort = action(v6)
 			if abort {
 				return
 			}
@@ -9288,7 +9110,7 @@ func (o *Operation) DescendOnce(
 
 	if o.outputVariables != nil {
 		for _, v7 := range o.outputVariables {
-			abort = action(v7);
+			abort = action(v7)
 			if abort {
 				return
 			}
@@ -9297,7 +9119,7 @@ func (o *Operation) DescendOnce(
 
 	if o.inoutputVariables != nil {
 		for _, v8 := range o.inoutputVariables {
-			abort = action(v8);
+			abort = action(v8)
 			if abort {
 				return
 			}
@@ -9318,14 +9140,14 @@ func (o *Operation) Descend(
 ) (abort bool) {
 	if o.extensions != nil {
 		for _, v := range o.extensions {
-			abort = action(v);
+			abort = action(v)
 			if abort {
 				return
 			}
 
 			abort = v.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -9334,14 +9156,14 @@ func (o *Operation) Descend(
 
 	if o.displayName != nil {
 		for _, v1 := range o.displayName {
-			abort = action(v1);
+			abort = action(v1)
 			if abort {
 				return
 			}
 
 			abort = v1.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -9350,14 +9172,14 @@ func (o *Operation) Descend(
 
 	if o.description != nil {
 		for _, v2 := range o.description {
-			abort = action(v2);
+			abort = action(v2)
 			if abort {
 				return
 			}
 
 			abort = v2.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -9381,14 +9203,14 @@ func (o *Operation) Descend(
 
 	if o.supplementalSemanticIDs != nil {
 		for _, v3 := range o.supplementalSemanticIDs {
-			abort = action(v3);
+			abort = action(v3)
 			if abort {
 				return
 			}
 
 			abort = v3.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -9397,14 +9219,14 @@ func (o *Operation) Descend(
 
 	if o.qualifiers != nil {
 		for _, v4 := range o.qualifiers {
-			abort = action(v4);
+			abort = action(v4)
 			if abort {
 				return
 			}
 
 			abort = v4.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -9413,14 +9235,14 @@ func (o *Operation) Descend(
 
 	if o.embeddedDataSpecifications != nil {
 		for _, v5 := range o.embeddedDataSpecifications {
-			abort = action(v5);
+			abort = action(v5)
 			if abort {
 				return
 			}
 
 			abort = v5.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -9429,14 +9251,14 @@ func (o *Operation) Descend(
 
 	if o.inputVariables != nil {
 		for _, v6 := range o.inputVariables {
-			abort = action(v6);
+			abort = action(v6)
 			if abort {
 				return
 			}
 
 			abort = v6.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -9445,14 +9267,14 @@ func (o *Operation) Descend(
 
 	if o.outputVariables != nil {
 		for _, v7 := range o.outputVariables {
-			abort = action(v7);
+			abort = action(v7)
 			if abort {
 				return
 			}
 
 			abort = v7.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -9461,14 +9283,14 @@ func (o *Operation) Descend(
 
 	if o.inoutputVariables != nil {
 		for _, v8 := range o.inoutputVariables {
-			abort = action(v8);
+			abort = action(v8)
 			if abort {
 				return
 			}
 
 			abort = v8.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -9482,18 +9304,18 @@ func (o *Operation) Descend(
 // the given properties.
 func NewOperation() *Operation {
 	return &Operation{
-		extensions: nil,
-		category: nil,
-		idShort: nil,
-		displayName: nil,
-		description: nil,
-		semanticID: nil,
-		supplementalSemanticIDs: nil,
-		qualifiers: nil,
+		extensions:                 nil,
+		category:                   nil,
+		idShort:                    nil,
+		displayName:                nil,
+		description:                nil,
+		semanticID:                 nil,
+		supplementalSemanticIDs:    nil,
+		qualifiers:                 nil,
 		embeddedDataSpecifications: nil,
-		inputVariables: nil,
-		outputVariables: nil,
-		inoutputVariables: nil,
+		inputVariables:             nil,
+		outputVariables:            nil,
+		inoutputVariables:          nil,
 	}
 }
 
@@ -9503,11 +9325,11 @@ type IOperationVariable interface {
 	IClass
 
 	// Describes an argument or result of an operation via a submodel element
-	Value() ISubmodelElement;
+	Value() ISubmodelElement
 
 	SetValue(
 		value ISubmodelElement,
-	);
+	)
 }
 
 // Check whether the instance corresponds to [aastypes.IOperationVariable]
@@ -9527,8 +9349,7 @@ type OperationVariable struct {
 	value ISubmodelElement
 }
 
-func (ov *OperationVariable) Value(
-) ISubmodelElement {
+func (ov *OperationVariable) Value() ISubmodelElement {
 	return ov.value
 }
 
@@ -9538,8 +9359,7 @@ func (ov *OperationVariable) SetValue(
 	ov.value = value
 }
 
-func (ov *OperationVariable) ModelType(
-) ModelType {
+func (ov *OperationVariable) ModelType() ModelType {
 	return ModelTypeOperationVariable
 }
 
@@ -9622,19 +9442,18 @@ func IsCapability(
 
 // Implements ICapability.
 type Capability struct {
-	extensions []IExtension
-	category *string
-	idShort *string
-	displayName []ILangStringNameType
-	description []ILangStringTextType
-	semanticID IReference
-	supplementalSemanticIDs []IReference
-	qualifiers []IQualifier
+	extensions                 []IExtension
+	category                   *string
+	idShort                    *string
+	displayName                []ILangStringNameType
+	description                []ILangStringTextType
+	semanticID                 IReference
+	supplementalSemanticIDs    []IReference
+	qualifiers                 []IQualifier
 	embeddedDataSpecifications []IEmbeddedDataSpecification
 }
 
-func (c *Capability) Extensions(
-) []IExtension {
+func (c *Capability) Extensions() []IExtension {
 	return c.extensions
 }
 
@@ -9644,8 +9463,7 @@ func (c *Capability) SetExtensions(
 	c.extensions = value
 }
 
-func (c *Capability) Category(
-) *string {
+func (c *Capability) Category() *string {
 	return c.category
 }
 
@@ -9655,8 +9473,7 @@ func (c *Capability) SetCategory(
 	c.category = value
 }
 
-func (c *Capability) IDShort(
-) *string {
+func (c *Capability) IDShort() *string {
 	return c.idShort
 }
 
@@ -9666,8 +9483,7 @@ func (c *Capability) SetIDShort(
 	c.idShort = value
 }
 
-func (c *Capability) DisplayName(
-) []ILangStringNameType {
+func (c *Capability) DisplayName() []ILangStringNameType {
 	return c.displayName
 }
 
@@ -9677,8 +9493,7 @@ func (c *Capability) SetDisplayName(
 	c.displayName = value
 }
 
-func (c *Capability) Description(
-) []ILangStringTextType {
+func (c *Capability) Description() []ILangStringTextType {
 	return c.description
 }
 
@@ -9688,8 +9503,7 @@ func (c *Capability) SetDescription(
 	c.description = value
 }
 
-func (c *Capability) SemanticID(
-) IReference {
+func (c *Capability) SemanticID() IReference {
 	return c.semanticID
 }
 
@@ -9699,8 +9513,7 @@ func (c *Capability) SetSemanticID(
 	c.semanticID = value
 }
 
-func (c *Capability) SupplementalSemanticIDs(
-) []IReference {
+func (c *Capability) SupplementalSemanticIDs() []IReference {
 	return c.supplementalSemanticIDs
 }
 
@@ -9710,8 +9523,7 @@ func (c *Capability) SetSupplementalSemanticIDs(
 	c.supplementalSemanticIDs = value
 }
 
-func (c *Capability) Qualifiers(
-) []IQualifier {
+func (c *Capability) Qualifiers() []IQualifier {
 	return c.qualifiers
 }
 
@@ -9721,8 +9533,7 @@ func (c *Capability) SetQualifiers(
 	c.qualifiers = value
 }
 
-func (c *Capability) EmbeddedDataSpecifications(
-) []IEmbeddedDataSpecification {
+func (c *Capability) EmbeddedDataSpecifications() []IEmbeddedDataSpecification {
 	return c.embeddedDataSpecifications
 }
 
@@ -9732,8 +9543,7 @@ func (c *Capability) SetEmbeddedDataSpecifications(
 	c.embeddedDataSpecifications = value
 }
 
-func (c *Capability) ModelType(
-) ModelType {
+func (c *Capability) ModelType() ModelType {
 	return ModelTypeCapability
 }
 
@@ -9750,7 +9560,7 @@ func (c *Capability) DescendOnce(
 ) (abort bool) {
 	if c.extensions != nil {
 		for _, v := range c.extensions {
-			abort = action(v);
+			abort = action(v)
 			if abort {
 				return
 			}
@@ -9759,7 +9569,7 @@ func (c *Capability) DescendOnce(
 
 	if c.displayName != nil {
 		for _, v1 := range c.displayName {
-			abort = action(v1);
+			abort = action(v1)
 			if abort {
 				return
 			}
@@ -9768,7 +9578,7 @@ func (c *Capability) DescendOnce(
 
 	if c.description != nil {
 		for _, v2 := range c.description {
-			abort = action(v2);
+			abort = action(v2)
 			if abort {
 				return
 			}
@@ -9786,7 +9596,7 @@ func (c *Capability) DescendOnce(
 
 	if c.supplementalSemanticIDs != nil {
 		for _, v3 := range c.supplementalSemanticIDs {
-			abort = action(v3);
+			abort = action(v3)
 			if abort {
 				return
 			}
@@ -9795,7 +9605,7 @@ func (c *Capability) DescendOnce(
 
 	if c.qualifiers != nil {
 		for _, v4 := range c.qualifiers {
-			abort = action(v4);
+			abort = action(v4)
 			if abort {
 				return
 			}
@@ -9804,7 +9614,7 @@ func (c *Capability) DescendOnce(
 
 	if c.embeddedDataSpecifications != nil {
 		for _, v5 := range c.embeddedDataSpecifications {
-			abort = action(v5);
+			abort = action(v5)
 			if abort {
 				return
 			}
@@ -9825,14 +9635,14 @@ func (c *Capability) Descend(
 ) (abort bool) {
 	if c.extensions != nil {
 		for _, v := range c.extensions {
-			abort = action(v);
+			abort = action(v)
 			if abort {
 				return
 			}
 
 			abort = v.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -9841,14 +9651,14 @@ func (c *Capability) Descend(
 
 	if c.displayName != nil {
 		for _, v1 := range c.displayName {
-			abort = action(v1);
+			abort = action(v1)
 			if abort {
 				return
 			}
 
 			abort = v1.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -9857,14 +9667,14 @@ func (c *Capability) Descend(
 
 	if c.description != nil {
 		for _, v2 := range c.description {
-			abort = action(v2);
+			abort = action(v2)
 			if abort {
 				return
 			}
 
 			abort = v2.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -9888,14 +9698,14 @@ func (c *Capability) Descend(
 
 	if c.supplementalSemanticIDs != nil {
 		for _, v3 := range c.supplementalSemanticIDs {
-			abort = action(v3);
+			abort = action(v3)
 			if abort {
 				return
 			}
 
 			abort = v3.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -9904,14 +9714,14 @@ func (c *Capability) Descend(
 
 	if c.qualifiers != nil {
 		for _, v4 := range c.qualifiers {
-			abort = action(v4);
+			abort = action(v4)
 			if abort {
 				return
 			}
 
 			abort = v4.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -9920,14 +9730,14 @@ func (c *Capability) Descend(
 
 	if c.embeddedDataSpecifications != nil {
 		for _, v5 := range c.embeddedDataSpecifications {
-			abort = action(v5);
+			abort = action(v5)
 			if abort {
 				return
 			}
 
 			abort = v5.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -9941,14 +9751,14 @@ func (c *Capability) Descend(
 // the given properties.
 func NewCapability() *Capability {
 	return &Capability{
-		extensions: nil,
-		category: nil,
-		idShort: nil,
-		displayName: nil,
-		description: nil,
-		semanticID: nil,
-		supplementalSemanticIDs: nil,
-		qualifiers: nil,
+		extensions:                 nil,
+		category:                   nil,
+		idShort:                    nil,
+		displayName:                nil,
+		description:                nil,
+		semanticID:                 nil,
+		supplementalSemanticIDs:    nil,
+		qualifiers:                 nil,
 		embeddedDataSpecifications: nil,
 	}
 }
@@ -10022,11 +9832,11 @@ type IConceptDescription interface {
 	// NOTE: It is recommended to use a global reference.
 	//
 	// NOTE: Compare to is-case-of relationship in ISO 13584-32 & IEC EN 61360
-	IsCaseOf() []IReference;
+	IsCaseOf() []IReference
 
 	SetIsCaseOf(
 		value []IReference,
-	);
+	)
 }
 
 // Check whether the instance corresponds to [aastypes.IConceptDescription]
@@ -10043,19 +9853,18 @@ func IsConceptDescription(
 
 // Implements IConceptDescription.
 type ConceptDescription struct {
-	extensions []IExtension
-	category *string
-	idShort *string
-	displayName []ILangStringNameType
-	description []ILangStringTextType
-	administration IAdministrativeInformation
-	id string
+	extensions                 []IExtension
+	category                   *string
+	idShort                    *string
+	displayName                []ILangStringNameType
+	description                []ILangStringTextType
+	administration             IAdministrativeInformation
+	id                         string
 	embeddedDataSpecifications []IEmbeddedDataSpecification
-	isCaseOf []IReference
+	isCaseOf                   []IReference
 }
 
-func (cd *ConceptDescription) Extensions(
-) []IExtension {
+func (cd *ConceptDescription) Extensions() []IExtension {
 	return cd.extensions
 }
 
@@ -10065,8 +9874,7 @@ func (cd *ConceptDescription) SetExtensions(
 	cd.extensions = value
 }
 
-func (cd *ConceptDescription) Category(
-) *string {
+func (cd *ConceptDescription) Category() *string {
 	return cd.category
 }
 
@@ -10076,8 +9884,7 @@ func (cd *ConceptDescription) SetCategory(
 	cd.category = value
 }
 
-func (cd *ConceptDescription) IDShort(
-) *string {
+func (cd *ConceptDescription) IDShort() *string {
 	return cd.idShort
 }
 
@@ -10087,8 +9894,7 @@ func (cd *ConceptDescription) SetIDShort(
 	cd.idShort = value
 }
 
-func (cd *ConceptDescription) DisplayName(
-) []ILangStringNameType {
+func (cd *ConceptDescription) DisplayName() []ILangStringNameType {
 	return cd.displayName
 }
 
@@ -10098,8 +9904,7 @@ func (cd *ConceptDescription) SetDisplayName(
 	cd.displayName = value
 }
 
-func (cd *ConceptDescription) Description(
-) []ILangStringTextType {
+func (cd *ConceptDescription) Description() []ILangStringTextType {
 	return cd.description
 }
 
@@ -10109,8 +9914,7 @@ func (cd *ConceptDescription) SetDescription(
 	cd.description = value
 }
 
-func (cd *ConceptDescription) Administration(
-) IAdministrativeInformation {
+func (cd *ConceptDescription) Administration() IAdministrativeInformation {
 	return cd.administration
 }
 
@@ -10120,8 +9924,7 @@ func (cd *ConceptDescription) SetAdministration(
 	cd.administration = value
 }
 
-func (cd *ConceptDescription) ID(
-) string {
+func (cd *ConceptDescription) ID() string {
 	return cd.id
 }
 
@@ -10131,8 +9934,7 @@ func (cd *ConceptDescription) SetID(
 	cd.id = value
 }
 
-func (cd *ConceptDescription) EmbeddedDataSpecifications(
-) []IEmbeddedDataSpecification {
+func (cd *ConceptDescription) EmbeddedDataSpecifications() []IEmbeddedDataSpecification {
 	return cd.embeddedDataSpecifications
 }
 
@@ -10142,8 +9944,7 @@ func (cd *ConceptDescription) SetEmbeddedDataSpecifications(
 	cd.embeddedDataSpecifications = value
 }
 
-func (cd *ConceptDescription) IsCaseOf(
-) []IReference {
+func (cd *ConceptDescription) IsCaseOf() []IReference {
 	return cd.isCaseOf
 }
 
@@ -10153,8 +9954,7 @@ func (cd *ConceptDescription) SetIsCaseOf(
 	cd.isCaseOf = value
 }
 
-func (cd *ConceptDescription) ModelType(
-) ModelType {
+func (cd *ConceptDescription) ModelType() ModelType {
 	return ModelTypeConceptDescription
 }
 
@@ -10171,7 +9971,7 @@ func (cd *ConceptDescription) DescendOnce(
 ) (abort bool) {
 	if cd.extensions != nil {
 		for _, v := range cd.extensions {
-			abort = action(v);
+			abort = action(v)
 			if abort {
 				return
 			}
@@ -10180,7 +9980,7 @@ func (cd *ConceptDescription) DescendOnce(
 
 	if cd.displayName != nil {
 		for _, v1 := range cd.displayName {
-			abort = action(v1);
+			abort = action(v1)
 			if abort {
 				return
 			}
@@ -10189,7 +9989,7 @@ func (cd *ConceptDescription) DescendOnce(
 
 	if cd.description != nil {
 		for _, v2 := range cd.description {
-			abort = action(v2);
+			abort = action(v2)
 			if abort {
 				return
 			}
@@ -10207,7 +10007,7 @@ func (cd *ConceptDescription) DescendOnce(
 
 	if cd.embeddedDataSpecifications != nil {
 		for _, v3 := range cd.embeddedDataSpecifications {
-			abort = action(v3);
+			abort = action(v3)
 			if abort {
 				return
 			}
@@ -10216,7 +10016,7 @@ func (cd *ConceptDescription) DescendOnce(
 
 	if cd.isCaseOf != nil {
 		for _, v4 := range cd.isCaseOf {
-			abort = action(v4);
+			abort = action(v4)
 			if abort {
 				return
 			}
@@ -10237,14 +10037,14 @@ func (cd *ConceptDescription) Descend(
 ) (abort bool) {
 	if cd.extensions != nil {
 		for _, v := range cd.extensions {
-			abort = action(v);
+			abort = action(v)
 			if abort {
 				return
 			}
 
 			abort = v.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -10253,14 +10053,14 @@ func (cd *ConceptDescription) Descend(
 
 	if cd.displayName != nil {
 		for _, v1 := range cd.displayName {
-			abort = action(v1);
+			abort = action(v1)
 			if abort {
 				return
 			}
 
 			abort = v1.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -10269,14 +10069,14 @@ func (cd *ConceptDescription) Descend(
 
 	if cd.description != nil {
 		for _, v2 := range cd.description {
-			abort = action(v2);
+			abort = action(v2)
 			if abort {
 				return
 			}
 
 			abort = v2.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -10300,14 +10100,14 @@ func (cd *ConceptDescription) Descend(
 
 	if cd.embeddedDataSpecifications != nil {
 		for _, v3 := range cd.embeddedDataSpecifications {
-			abort = action(v3);
+			abort = action(v3)
 			if abort {
 				return
 			}
 
 			abort = v3.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -10316,14 +10116,14 @@ func (cd *ConceptDescription) Descend(
 
 	if cd.isCaseOf != nil {
 		for _, v4 := range cd.isCaseOf {
-			abort = action(v4);
+			abort = action(v4)
 			if abort {
 				return
 			}
 
 			abort = v4.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -10339,20 +10139,22 @@ func NewConceptDescription(
 	id string,
 ) *ConceptDescription {
 	return &ConceptDescription{
-		id: id,
-		extensions: nil,
-		category: nil,
-		idShort: nil,
-		displayName: nil,
-		description: nil,
-		administration: nil,
+		id:                         id,
+		extensions:                 nil,
+		category:                   nil,
+		idShort:                    nil,
+		displayName:                nil,
+		description:                nil,
+		administration:             nil,
 		embeddedDataSpecifications: nil,
-		isCaseOf: nil,
+		isCaseOf:                   nil,
 	}
 }
 
 // Reference types
-type ReferenceTypes int;const (
+type ReferenceTypes int
+
+const (
 	// External reference.
 	ReferenceTypesExternalReference ReferenceTypes = iota
 	// Model reference.
@@ -10365,7 +10167,7 @@ type ReferenceTypes int;const (
 // this array helps you avoid common errors and pitfalls.
 //
 // Please do not modify the array in the caller's code.
-var LiteralsOfReferenceTypes = [...]ReferenceTypes {
+var LiteralsOfReferenceTypes = [...]ReferenceTypes{
 	ReferenceTypesExternalReference,
 	ReferenceTypesModelReference,
 }
@@ -10446,11 +10248,11 @@ type IReference interface {
 	// Type of the reference.
 	//
 	// Denotes, whether reference is an external reference or a model reference.
-	Type() ReferenceTypes;
+	Type() ReferenceTypes
 
 	SetType(
 		value ReferenceTypes,
-	);
+	)
 
 	// [IHasSemantics.SemanticID] of the referenced model element
 	// ([IReference.Type] = [ReferenceTypesModelReference]).
@@ -10458,18 +10260,18 @@ type IReference interface {
 	// For external references there typically is no semantic ID.
 	//
 	// NOTE: It is recommended to use a external reference.
-	ReferredSemanticID() IReference;
+	ReferredSemanticID() IReference
 
 	SetReferredSemanticID(
 		value IReference,
-	);
+	)
 
 	// Unique references in their name space.
-	Keys() []IKey;
+	Keys() []IKey
 
 	SetKeys(
 		value []IKey,
-	);
+	)
 }
 
 // Check whether the instance corresponds to [aastypes.IReference]
@@ -10486,13 +10288,12 @@ func IsReference(
 
 // Implements IReference.
 type Reference struct {
-	typE ReferenceTypes
+	typE               ReferenceTypes
 	referredSemanticID IReference
-	keys []IKey
+	keys               []IKey
 }
 
-func (r *Reference) Type(
-) ReferenceTypes {
+func (r *Reference) Type() ReferenceTypes {
 	return r.typE
 }
 
@@ -10502,8 +10303,7 @@ func (r *Reference) SetType(
 	r.typE = value
 }
 
-func (r *Reference) ReferredSemanticID(
-) IReference {
+func (r *Reference) ReferredSemanticID() IReference {
 	return r.referredSemanticID
 }
 
@@ -10513,8 +10313,7 @@ func (r *Reference) SetReferredSemanticID(
 	r.referredSemanticID = value
 }
 
-func (r *Reference) Keys(
-) []IKey {
+func (r *Reference) Keys() []IKey {
 	return r.keys
 }
 
@@ -10524,8 +10323,7 @@ func (r *Reference) SetKeys(
 	r.keys = value
 }
 
-func (r *Reference) ModelType(
-) ModelType {
+func (r *Reference) ModelType() ModelType {
 	return ModelTypeReference
 }
 
@@ -10550,7 +10348,7 @@ func (r *Reference) DescendOnce(
 	}
 
 	for _, v := range r.keys {
-		abort = action(v);
+		abort = action(v)
 		if abort {
 			return
 		}
@@ -10584,14 +10382,14 @@ func (r *Reference) Descend(
 	}
 
 	for _, v := range r.keys {
-		abort = action(v);
+		abort = action(v)
 		if abort {
 			return
 		}
 
 		abort = v.Descend(
 			action,
-		);
+		)
 		if abort {
 			return
 		}
@@ -10607,8 +10405,8 @@ func NewReference(
 	keys []IKey,
 ) *Reference {
 	return &Reference{
-		typE: typE,
-		keys: keys,
+		typE:               typE,
+		keys:               keys,
 		referredSemanticID: nil,
 	}
 }
@@ -10628,18 +10426,18 @@ type IKey interface {
 	//
 	// In all other cases the key references a model element of the same or of another AAS.
 	// The name of the model element is explicitly listed.
-	Type() KeyTypes;
+	Type() KeyTypes
 
 	SetType(
 		value KeyTypes,
-	);
+	)
 
 	// The key value, for example an IRDI or an URI
-	Value() string;
+	Value() string
 
 	SetValue(
 		value string,
-	);
+	)
 }
 
 // Check whether the instance corresponds to [aastypes.IKey]
@@ -10656,12 +10454,11 @@ func IsKey(
 
 // Implements IKey.
 type Key struct {
-	typE KeyTypes
+	typE  KeyTypes
 	value string
 }
 
-func (k *Key) Type(
-) KeyTypes {
+func (k *Key) Type() KeyTypes {
 	return k.typE
 }
 
@@ -10671,8 +10468,7 @@ func (k *Key) SetType(
 	k.typE = value
 }
 
-func (k *Key) Value(
-) string {
+func (k *Key) Value() string {
 	return k.value
 }
 
@@ -10682,8 +10478,7 @@ func (k *Key) SetValue(
 	k.value = value
 }
 
-func (k *Key) ModelType(
-) ModelType {
+func (k *Key) ModelType() ModelType {
 	return ModelTypeKey
 }
 
@@ -10724,13 +10519,15 @@ func NewKey(
 	value string,
 ) *Key {
 	return &Key{
-		typE: typE,
+		typE:  typE,
 		value: value,
 	}
 }
 
 // Enumeration of different key value types within a key.
-type KeyTypes int;const (
+type KeyTypes int
+
+const (
 	KeyTypesAnnotatedRelationshipElement KeyTypes = iota
 	KeyTypesAssetAdministrationShell
 	KeyTypesBasicEventElement
@@ -10786,7 +10583,7 @@ type KeyTypes int;const (
 // this array helps you avoid common errors and pitfalls.
 //
 // Please do not modify the array in the caller's code.
-var LiteralsOfKeyTypes = [...]KeyTypes {
+var LiteralsOfKeyTypes = [...]KeyTypes{
 	KeyTypesAnnotatedRelationshipElement,
 	KeyTypesAssetAdministrationShell,
 	KeyTypesBasicEventElement,
@@ -10814,7 +10611,9 @@ var LiteralsOfKeyTypes = [...]KeyTypes {
 }
 
 // Enumeration listing all XSD anySimpleTypes
-type DataTypeDefXSD int;const (
+type DataTypeDefXSD int
+
+const (
 	DataTypeDefXSDAnyURI DataTypeDefXSD = iota
 	DataTypeDefXSDBase64Binary
 	DataTypeDefXSDBoolean
@@ -10853,7 +10652,7 @@ type DataTypeDefXSD int;const (
 // this array helps you avoid common errors and pitfalls.
 //
 // Please do not modify the array in the caller's code.
-var LiteralsOfDataTypeDefXSD = [...]DataTypeDefXSD {
+var LiteralsOfDataTypeDefXSD = [...]DataTypeDefXSD{
 	DataTypeDefXSDAnyURI,
 	DataTypeDefXSDBase64Binary,
 	DataTypeDefXSDBoolean,
@@ -10891,18 +10690,18 @@ type IAbstractLangString interface {
 	IClass
 
 	// Language tag conforming to BCP 47
-	Language() string;
+	Language() string
 
 	SetLanguage(
 		value string,
-	);
+	)
 
 	// Text in the [IAbstractLangString.Language]
-	Text() string;
+	Text() string
 
 	SetText(
 		value string,
-	);
+	)
 }
 
 // Check whether the instance corresponds to [aastypes.IAbstractLangString]
@@ -10923,6 +10722,10 @@ func IsAbstractLangString(
 	case ModelTypeLangStringShortNameTypeIEC61360:
 		ok = true
 	case ModelTypeLangStringDefinitionTypeIEC61360:
+		ok = true
+	case ModelTypeLangStringUOM:
+		ok = true
+	case ModelTypeLangStringDefinitionTypeUOM:
 		ok = true
 	}
 	return
@@ -10948,11 +10751,10 @@ func IsLangStringNameType(
 // Implements ILangStringNameType.
 type LangStringNameType struct {
 	language string
-	text string
+	text     string
 }
 
-func (lsnt *LangStringNameType) Language(
-) string {
+func (lsnt *LangStringNameType) Language() string {
 	return lsnt.language
 }
 
@@ -10962,8 +10764,7 @@ func (lsnt *LangStringNameType) SetLanguage(
 	lsnt.language = value
 }
 
-func (lsnt *LangStringNameType) Text(
-) string {
+func (lsnt *LangStringNameType) Text() string {
 	return lsnt.text
 }
 
@@ -10973,8 +10774,7 @@ func (lsnt *LangStringNameType) SetText(
 	lsnt.text = value
 }
 
-func (lsnt *LangStringNameType) ModelType(
-) ModelType {
+func (lsnt *LangStringNameType) ModelType() ModelType {
 	return ModelTypeLangStringNameType
 }
 
@@ -11016,7 +10816,7 @@ func NewLangStringNameType(
 ) *LangStringNameType {
 	return &LangStringNameType{
 		language: language,
-		text: text,
+		text:     text,
 	}
 }
 
@@ -11040,11 +10840,10 @@ func IsLangStringTextType(
 // Implements ILangStringTextType.
 type LangStringTextType struct {
 	language string
-	text string
+	text     string
 }
 
-func (lstt *LangStringTextType) Language(
-) string {
+func (lstt *LangStringTextType) Language() string {
 	return lstt.language
 }
 
@@ -11054,8 +10853,7 @@ func (lstt *LangStringTextType) SetLanguage(
 	lstt.language = value
 }
 
-func (lstt *LangStringTextType) Text(
-) string {
+func (lstt *LangStringTextType) Text() string {
 	return lstt.text
 }
 
@@ -11065,8 +10863,7 @@ func (lstt *LangStringTextType) SetText(
 	lstt.text = value
 }
 
-func (lstt *LangStringTextType) ModelType(
-) ModelType {
+func (lstt *LangStringTextType) ModelType() ModelType {
 	return ModelTypeLangStringTextType
 }
 
@@ -11108,7 +10905,7 @@ func NewLangStringTextType(
 ) *LangStringTextType {
 	return &LangStringTextType{
 		language: language,
-		text: text,
+		text:     text,
 	}
 }
 
@@ -11121,25 +10918,25 @@ type IEnvironment interface {
 	IClass
 
 	// Asset administration shell
-	AssetAdministrationShells() []IAssetAdministrationShell;
+	AssetAdministrationShells() []IAssetAdministrationShell
 
 	SetAssetAdministrationShells(
 		value []IAssetAdministrationShell,
-	);
+	)
 
 	// Submodel
-	Submodels() []ISubmodel;
+	Submodels() []ISubmodel
 
 	SetSubmodels(
 		value []ISubmodel,
-	);
+	)
 
 	// Concept description
-	ConceptDescriptions() []IConceptDescription;
+	ConceptDescriptions() []IConceptDescription
 
 	SetConceptDescriptions(
 		value []IConceptDescription,
-	);
+	)
 }
 
 // Check whether the instance corresponds to [aastypes.IEnvironment]
@@ -11157,12 +10954,11 @@ func IsEnvironment(
 // Implements IEnvironment.
 type Environment struct {
 	assetAdministrationShells []IAssetAdministrationShell
-	submodels []ISubmodel
-	conceptDescriptions []IConceptDescription
+	submodels                 []ISubmodel
+	conceptDescriptions       []IConceptDescription
 }
 
-func (e *Environment) AssetAdministrationShells(
-) []IAssetAdministrationShell {
+func (e *Environment) AssetAdministrationShells() []IAssetAdministrationShell {
 	return e.assetAdministrationShells
 }
 
@@ -11172,8 +10968,7 @@ func (e *Environment) SetAssetAdministrationShells(
 	e.assetAdministrationShells = value
 }
 
-func (e *Environment) Submodels(
-) []ISubmodel {
+func (e *Environment) Submodels() []ISubmodel {
 	return e.submodels
 }
 
@@ -11183,8 +10978,7 @@ func (e *Environment) SetSubmodels(
 	e.submodels = value
 }
 
-func (e *Environment) ConceptDescriptions(
-) []IConceptDescription {
+func (e *Environment) ConceptDescriptions() []IConceptDescription {
 	return e.conceptDescriptions
 }
 
@@ -11194,8 +10988,7 @@ func (e *Environment) SetConceptDescriptions(
 	e.conceptDescriptions = value
 }
 
-func (e *Environment) ModelType(
-) ModelType {
+func (e *Environment) ModelType() ModelType {
 	return ModelTypeEnvironment
 }
 
@@ -11212,7 +11005,7 @@ func (e *Environment) DescendOnce(
 ) (abort bool) {
 	if e.assetAdministrationShells != nil {
 		for _, v := range e.assetAdministrationShells {
-			abort = action(v);
+			abort = action(v)
 			if abort {
 				return
 			}
@@ -11221,7 +11014,7 @@ func (e *Environment) DescendOnce(
 
 	if e.submodels != nil {
 		for _, v1 := range e.submodels {
-			abort = action(v1);
+			abort = action(v1)
 			if abort {
 				return
 			}
@@ -11230,7 +11023,7 @@ func (e *Environment) DescendOnce(
 
 	if e.conceptDescriptions != nil {
 		for _, v2 := range e.conceptDescriptions {
-			abort = action(v2);
+			abort = action(v2)
 			if abort {
 				return
 			}
@@ -11251,14 +11044,14 @@ func (e *Environment) Descend(
 ) (abort bool) {
 	if e.assetAdministrationShells != nil {
 		for _, v := range e.assetAdministrationShells {
-			abort = action(v);
+			abort = action(v)
 			if abort {
 				return
 			}
 
 			abort = v.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -11267,14 +11060,14 @@ func (e *Environment) Descend(
 
 	if e.submodels != nil {
 		for _, v1 := range e.submodels {
-			abort = action(v1);
+			abort = action(v1)
 			if abort {
 				return
 			}
 
 			abort = v1.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -11283,14 +11076,14 @@ func (e *Environment) Descend(
 
 	if e.conceptDescriptions != nil {
 		for _, v2 := range e.conceptDescriptions {
-			abort = action(v2);
+			abort = action(v2)
 			if abort {
 				return
 			}
 
 			abort = v2.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -11305,8 +11098,8 @@ func (e *Environment) Descend(
 func NewEnvironment() *Environment {
 	return &Environment{
 		assetAdministrationShells: nil,
-		submodels: nil,
-		conceptDescriptions: nil,
+		submodels:                 nil,
+		conceptDescriptions:       nil,
 	}
 }
 
@@ -11336,6 +11129,8 @@ func IsDataSpecificationContent(
 	switch that.ModelType() {
 	case ModelTypeDataSpecificationIEC61360:
 		ok = true
+	case ModelTypeDataSpecificationUOM:
+		ok = true
 	}
 	return
 }
@@ -11345,18 +11140,18 @@ type IEmbeddedDataSpecification interface {
 	IClass
 
 	// Reference to the data specification
-	DataSpecification() IReference;
+	DataSpecification() IReference
 
 	SetDataSpecification(
 		value IReference,
-	);
+	)
 
 	// Actual content of the data specification
-	DataSpecificationContent() IDataSpecificationContent;
+	DataSpecificationContent() IDataSpecificationContent
 
 	SetDataSpecificationContent(
 		value IDataSpecificationContent,
-	);
+	)
 }
 
 // Check whether the instance corresponds to [aastypes.IEmbeddedDataSpecification]
@@ -11373,12 +11168,11 @@ func IsEmbeddedDataSpecification(
 
 // Implements IEmbeddedDataSpecification.
 type EmbeddedDataSpecification struct {
-	dataSpecification IReference
+	dataSpecification        IReference
 	dataSpecificationContent IDataSpecificationContent
 }
 
-func (eds *EmbeddedDataSpecification) DataSpecification(
-) IReference {
+func (eds *EmbeddedDataSpecification) DataSpecification() IReference {
 	return eds.dataSpecification
 }
 
@@ -11388,8 +11182,7 @@ func (eds *EmbeddedDataSpecification) SetDataSpecification(
 	eds.dataSpecification = value
 }
 
-func (eds *EmbeddedDataSpecification) DataSpecificationContent(
-) IDataSpecificationContent {
+func (eds *EmbeddedDataSpecification) DataSpecificationContent() IDataSpecificationContent {
 	return eds.dataSpecificationContent
 }
 
@@ -11399,8 +11192,7 @@ func (eds *EmbeddedDataSpecification) SetDataSpecificationContent(
 	eds.dataSpecificationContent = value
 }
 
-func (eds *EmbeddedDataSpecification) ModelType(
-) ModelType {
+func (eds *EmbeddedDataSpecification) ModelType() ModelType {
 	return ModelTypeEmbeddedDataSpecification
 }
 
@@ -11477,12 +11269,14 @@ func NewEmbeddedDataSpecification(
 	dataSpecificationContent IDataSpecificationContent,
 ) *EmbeddedDataSpecification {
 	return &EmbeddedDataSpecification{
-		dataSpecification: dataSpecification,
+		dataSpecification:        dataSpecification,
 		dataSpecificationContent: dataSpecificationContent,
 	}
 }
 
-type DataTypeIEC61360 int;const (
+type DataTypeIEC61360 int
+
+const (
 	// values containing a calendar date, conformant to ISO 8601:2004 Format yyyy-mm-dd
 	// Example from IEC 61360-1:2017: "1999-05-31" is the [DATE] representation of:
 	// "31 May 1999".
@@ -11570,7 +11364,7 @@ type DataTypeIEC61360 int;const (
 // this array helps you avoid common errors and pitfalls.
 //
 // Please do not modify the array in the caller's code.
-var LiteralsOfDataTypeIEC61360 = [...]DataTypeIEC61360 {
+var LiteralsOfDataTypeIEC61360 = [...]DataTypeIEC61360{
 	DataTypeIEC61360Date,
 	DataTypeIEC61360String,
 	DataTypeIEC61360StringTranslatable,
@@ -11602,13 +11396,13 @@ var LiteralsOfDataTypeIEC61360 = [...]DataTypeIEC61360 {
 //
 // NOTE: This is how AAS deals with the following combinations of level types:
 //
-//   • Either all attributes are false. In this case the concept is mapped
+//   - Either all attributes are false. In this case the concept is mapped
 //     to a [IProperty] and level type is ignored.
-//   • At most one of the attributes is set to true. In this case
+//   - At most one of the attributes is set to true. In this case
 //     the concept is mapped to a [IProperty].
-//   • Min and max are set to true. In this case the concept is mapped
+//   - Min and max are set to true. In this case the concept is mapped
 //     to a [IRange].
-//   • More than one attribute is set to true but not min and max only
+//   - More than one attribute is set to true but not min and max only
 //     (see second case). In this case the concept is mapped
 //     to a [ISubmodelElementCollection] with the corresponding
 //     number of Properties.
@@ -11625,32 +11419,32 @@ type ILevelType interface {
 	IClass
 
 	// Minimum of the value
-	Min() bool;
+	Min() bool
 
 	SetMin(
 		value bool,
-	);
+	)
 
 	// Nominal value (value as designated)
-	Nom() bool;
+	Nom() bool
 
 	SetNom(
 		value bool,
-	);
+	)
 
 	// Value as typically present
-	Typ() bool;
+	Typ() bool
 
 	SetTyp(
 		value bool,
-	);
+	)
 
 	// Maximum of the value
-	Max() bool;
+	Max() bool
 
 	SetMax(
 		value bool,
-	);
+	)
 }
 
 // Check whether the instance corresponds to [aastypes.ILevelType]
@@ -11673,8 +11467,7 @@ type LevelType struct {
 	max bool
 }
 
-func (lt *LevelType) Min(
-) bool {
+func (lt *LevelType) Min() bool {
 	return lt.min
 }
 
@@ -11684,8 +11477,7 @@ func (lt *LevelType) SetMin(
 	lt.min = value
 }
 
-func (lt *LevelType) Nom(
-) bool {
+func (lt *LevelType) Nom() bool {
 	return lt.nom
 }
 
@@ -11695,8 +11487,7 @@ func (lt *LevelType) SetNom(
 	lt.nom = value
 }
 
-func (lt *LevelType) Typ(
-) bool {
+func (lt *LevelType) Typ() bool {
 	return lt.typ
 }
 
@@ -11706,8 +11497,7 @@ func (lt *LevelType) SetTyp(
 	lt.typ = value
 }
 
-func (lt *LevelType) Max(
-) bool {
+func (lt *LevelType) Max() bool {
 	return lt.max
 }
 
@@ -11717,8 +11507,7 @@ func (lt *LevelType) SetMax(
 	lt.max = value
 }
 
-func (lt *LevelType) ModelType(
-) ModelType {
+func (lt *LevelType) ModelType() ModelType {
 	return ModelTypeLevelType
 }
 
@@ -11774,20 +11563,20 @@ type IValueReferencePair interface {
 	IClass
 
 	// The value of the referenced concept definition of the value in [IValueReferencePair.ValueID].
-	Value() string;
+	Value() string
 
 	SetValue(
 		value string,
-	);
+	)
 
 	// Global unique id of the value.
 	//
 	// NOTE: It is recommended to use a global reference.
-	ValueID() IReference;
+	ValueID() IReference
 
 	SetValueID(
 		value IReference,
-	);
+	)
 }
 
 // Check whether the instance corresponds to [aastypes.IValueReferencePair]
@@ -11804,12 +11593,11 @@ func IsValueReferencePair(
 
 // Implements IValueReferencePair.
 type ValueReferencePair struct {
-	value string
+	value   string
 	valueID IReference
 }
 
-func (vrp *ValueReferencePair) Value(
-) string {
+func (vrp *ValueReferencePair) Value() string {
 	return vrp.value
 }
 
@@ -11819,8 +11607,7 @@ func (vrp *ValueReferencePair) SetValue(
 	vrp.value = value
 }
 
-func (vrp *ValueReferencePair) ValueID(
-) IReference {
+func (vrp *ValueReferencePair) ValueID() IReference {
 	return vrp.valueID
 }
 
@@ -11830,8 +11617,7 @@ func (vrp *ValueReferencePair) SetValueID(
 	vrp.valueID = value
 }
 
-func (vrp *ValueReferencePair) ModelType(
-) ModelType {
+func (vrp *ValueReferencePair) ModelType() ModelType {
 	return ModelTypeValueReferencePair
 }
 
@@ -11891,7 +11677,7 @@ func NewValueReferencePair(
 	value string,
 ) *ValueReferencePair {
 	return &ValueReferencePair{
-		value: value,
+		value:   value,
 		valueID: nil,
 	}
 }
@@ -11901,11 +11687,11 @@ type IValueList interface {
 	IClass
 
 	// A pair of a value together with its global unique id.
-	ValueReferencePairs() []IValueReferencePair;
+	ValueReferencePairs() []IValueReferencePair
 
 	SetValueReferencePairs(
 		value []IValueReferencePair,
-	);
+	)
 }
 
 // Check whether the instance corresponds to [aastypes.IValueList]
@@ -11925,8 +11711,7 @@ type ValueList struct {
 	valueReferencePairs []IValueReferencePair
 }
 
-func (vl *ValueList) ValueReferencePairs(
-) []IValueReferencePair {
+func (vl *ValueList) ValueReferencePairs() []IValueReferencePair {
 	return vl.valueReferencePairs
 }
 
@@ -11936,8 +11721,7 @@ func (vl *ValueList) SetValueReferencePairs(
 	vl.valueReferencePairs = value
 }
 
-func (vl *ValueList) ModelType(
-) ModelType {
+func (vl *ValueList) ModelType() ModelType {
 	return ModelTypeValueList
 }
 
@@ -11953,7 +11737,7 @@ func (vl *ValueList) DescendOnce(
 	action func(IClass) bool,
 ) (abort bool) {
 	for _, v := range vl.valueReferencePairs {
-		abort = action(v);
+		abort = action(v)
 		if abort {
 			return
 		}
@@ -11972,14 +11756,14 @@ func (vl *ValueList) Descend(
 	action func(IClass) bool,
 ) (abort bool) {
 	for _, v := range vl.valueReferencePairs {
-		abort = action(v);
+		abort = action(v)
 		if abort {
 			return
 		}
 
 		abort = v.Descend(
 			action,
-		);
+		)
 		if abort {
 			return
 		}
@@ -12020,11 +11804,10 @@ func IsLangStringPreferredNameTypeIEC61360(
 // Implements ILangStringPreferredNameTypeIEC61360.
 type LangStringPreferredNameTypeIEC61360 struct {
 	language string
-	text string
+	text     string
 }
 
-func (lspnti6 *LangStringPreferredNameTypeIEC61360) Language(
-) string {
+func (lspnti6 *LangStringPreferredNameTypeIEC61360) Language() string {
 	return lspnti6.language
 }
 
@@ -12034,8 +11817,7 @@ func (lspnti6 *LangStringPreferredNameTypeIEC61360) SetLanguage(
 	lspnti6.language = value
 }
 
-func (lspnti6 *LangStringPreferredNameTypeIEC61360) Text(
-) string {
+func (lspnti6 *LangStringPreferredNameTypeIEC61360) Text() string {
 	return lspnti6.text
 }
 
@@ -12045,8 +11827,7 @@ func (lspnti6 *LangStringPreferredNameTypeIEC61360) SetText(
 	lspnti6.text = value
 }
 
-func (lspnti6 *LangStringPreferredNameTypeIEC61360) ModelType(
-) ModelType {
+func (lspnti6 *LangStringPreferredNameTypeIEC61360) ModelType() ModelType {
 	return ModelTypeLangStringPreferredNameTypeIEC61360
 }
 
@@ -12088,7 +11869,7 @@ func NewLangStringPreferredNameTypeIEC61360(
 ) *LangStringPreferredNameTypeIEC61360 {
 	return &LangStringPreferredNameTypeIEC61360{
 		language: language,
-		text: text,
+		text:     text,
 	}
 }
 
@@ -12112,11 +11893,10 @@ func IsLangStringShortNameTypeIEC61360(
 // Implements ILangStringShortNameTypeIEC61360.
 type LangStringShortNameTypeIEC61360 struct {
 	language string
-	text string
+	text     string
 }
 
-func (lssnti6 *LangStringShortNameTypeIEC61360) Language(
-) string {
+func (lssnti6 *LangStringShortNameTypeIEC61360) Language() string {
 	return lssnti6.language
 }
 
@@ -12126,8 +11906,7 @@ func (lssnti6 *LangStringShortNameTypeIEC61360) SetLanguage(
 	lssnti6.language = value
 }
 
-func (lssnti6 *LangStringShortNameTypeIEC61360) Text(
-) string {
+func (lssnti6 *LangStringShortNameTypeIEC61360) Text() string {
 	return lssnti6.text
 }
 
@@ -12137,8 +11916,7 @@ func (lssnti6 *LangStringShortNameTypeIEC61360) SetText(
 	lssnti6.text = value
 }
 
-func (lssnti6 *LangStringShortNameTypeIEC61360) ModelType(
-) ModelType {
+func (lssnti6 *LangStringShortNameTypeIEC61360) ModelType() ModelType {
 	return ModelTypeLangStringShortNameTypeIEC61360
 }
 
@@ -12180,7 +11958,7 @@ func NewLangStringShortNameTypeIEC61360(
 ) *LangStringShortNameTypeIEC61360 {
 	return &LangStringShortNameTypeIEC61360{
 		language: language,
-		text: text,
+		text:     text,
 	}
 }
 
@@ -12204,11 +11982,10 @@ func IsLangStringDefinitionTypeIEC61360(
 // Implements ILangStringDefinitionTypeIEC61360.
 type LangStringDefinitionTypeIEC61360 struct {
 	language string
-	text string
+	text     string
 }
 
-func (lsdti6 *LangStringDefinitionTypeIEC61360) Language(
-) string {
+func (lsdti6 *LangStringDefinitionTypeIEC61360) Language() string {
 	return lsdti6.language
 }
 
@@ -12218,8 +11995,7 @@ func (lsdti6 *LangStringDefinitionTypeIEC61360) SetLanguage(
 	lsdti6.language = value
 }
 
-func (lsdti6 *LangStringDefinitionTypeIEC61360) Text(
-) string {
+func (lsdti6 *LangStringDefinitionTypeIEC61360) Text() string {
 	return lsdti6.text
 }
 
@@ -12229,8 +12005,7 @@ func (lsdti6 *LangStringDefinitionTypeIEC61360) SetText(
 	lsdti6.text = value
 }
 
-func (lsdti6 *LangStringDefinitionTypeIEC61360) ModelType(
-) ModelType {
+func (lsdti6 *LangStringDefinitionTypeIEC61360) ModelType() ModelType {
 	return ModelTypeLangStringDefinitionTypeIEC61360
 }
 
@@ -12272,7 +12047,241 @@ func NewLangStringDefinitionTypeIEC61360(
 ) *LangStringDefinitionTypeIEC61360 {
 	return &LangStringDefinitionTypeIEC61360{
 		language: language,
-		text: text,
+		text:     text,
+	}
+}
+
+// String with length 256 maximum and minimum 1 characters and with language tags.
+type ILangStringUOM interface {
+	IAbstractLangString
+}
+
+func IsLangStringUOM(
+	that IClass,
+) (ok bool) {
+	ok = that.ModelType() == ModelTypeLangStringUOM
+	return
+}
+
+type LangStringUOM struct {
+	language string
+	text     string
+}
+
+func (lsu *LangStringUOM) Language() string                                  { return lsu.language }
+func (lsu *LangStringUOM) SetLanguage(value string)                          { lsu.language = value }
+func (lsu *LangStringUOM) Text() string                                      { return lsu.text }
+func (lsu *LangStringUOM) SetText(value string)                              { lsu.text = value }
+func (lsu *LangStringUOM) ModelType() ModelType                              { return ModelTypeLangStringUOM }
+func (lsu *LangStringUOM) DescendOnce(action func(IClass) bool) (abort bool) { return }
+func (lsu *LangStringUOM) Descend(action func(IClass) bool) (abort bool)     { return }
+
+func NewLangStringUOM(
+	language string,
+	text string,
+) *LangStringUOM {
+	return &LangStringUOM{
+		language: language,
+		text:     text,
+	}
+}
+
+// String with length 2048 maximum and minimum 1 characters and with language tags.
+type ILangStringDefinitionTypeUOM interface {
+	IAbstractLangString
+}
+
+func IsLangStringDefinitionTypeUOM(
+	that IClass,
+) (ok bool) {
+	ok = that.ModelType() == ModelTypeLangStringDefinitionTypeUOM
+	return
+}
+
+type LangStringDefinitionTypeUOM struct {
+	language string
+	text     string
+}
+
+func (lsdtu *LangStringDefinitionTypeUOM) Language() string         { return lsdtu.language }
+func (lsdtu *LangStringDefinitionTypeUOM) SetLanguage(value string) { lsdtu.language = value }
+func (lsdtu *LangStringDefinitionTypeUOM) Text() string             { return lsdtu.text }
+func (lsdtu *LangStringDefinitionTypeUOM) SetText(value string)     { lsdtu.text = value }
+func (lsdtu *LangStringDefinitionTypeUOM) ModelType() ModelType {
+	return ModelTypeLangStringDefinitionTypeUOM
+}
+func (lsdtu *LangStringDefinitionTypeUOM) DescendOnce(action func(IClass) bool) (abort bool) {
+	return
+}
+func (lsdtu *LangStringDefinitionTypeUOM) Descend(action func(IClass) bool) (abort bool) {
+	return
+}
+
+func NewLangStringDefinitionTypeUOM(
+	language string,
+	text string,
+) *LangStringDefinitionTypeUOM {
+	return &LangStringDefinitionTypeUOM{
+		language: language,
+		text:     text,
+	}
+}
+
+type IDataSpecificationUOM interface {
+	IDataSpecificationContent
+
+	PreferredName() []ILangStringUOM
+	SetPreferredName(value []ILangStringUOM)
+
+	Symbol() string
+	SetSymbol(value string)
+
+	SpecificUnitID() *string
+	SetSpecificUnitID(value *string)
+
+	Definition() []ILangStringDefinitionTypeUOM
+	SetDefinition(value []ILangStringDefinitionTypeUOM)
+
+	PreferredNameQuantity() []ILangStringUOM
+	SetPreferredNameQuantity(value []ILangStringUOM)
+
+	QuantityID() *string
+	SetQuantityID(value *string)
+
+	ClassificationSystem() *string
+	SetClassificationSystem(value *string)
+
+	ClassificationSystemVersion() *string
+	SetClassificationSystemVersion(value *string)
+}
+
+func IsDataSpecificationUOM(
+	that IClass,
+) (ok bool) {
+	ok = that.ModelType() == ModelTypeDataSpecificationUOM
+	return
+}
+
+type DataSpecificationUOM struct {
+	preferredName               []ILangStringUOM
+	symbol                      string
+	specificUnitID              *string
+	definition                  []ILangStringDefinitionTypeUOM
+	preferredNameQuantity       []ILangStringUOM
+	quantityID                  *string
+	classificationSystem        *string
+	classificationSystemVersion *string
+}
+
+func (dsu *DataSpecificationUOM) PreferredName() []ILangStringUOM            { return dsu.preferredName }
+func (dsu *DataSpecificationUOM) SetPreferredName(value []ILangStringUOM)    { dsu.preferredName = value }
+func (dsu *DataSpecificationUOM) Symbol() string                             { return dsu.symbol }
+func (dsu *DataSpecificationUOM) SetSymbol(value string)                     { dsu.symbol = value }
+func (dsu *DataSpecificationUOM) SpecificUnitID() *string                    { return dsu.specificUnitID }
+func (dsu *DataSpecificationUOM) SetSpecificUnitID(value *string)            { dsu.specificUnitID = value }
+func (dsu *DataSpecificationUOM) Definition() []ILangStringDefinitionTypeUOM { return dsu.definition }
+func (dsu *DataSpecificationUOM) SetDefinition(value []ILangStringDefinitionTypeUOM) {
+	dsu.definition = value
+}
+func (dsu *DataSpecificationUOM) PreferredNameQuantity() []ILangStringUOM {
+	return dsu.preferredNameQuantity
+}
+func (dsu *DataSpecificationUOM) SetPreferredNameQuantity(value []ILangStringUOM) {
+	dsu.preferredNameQuantity = value
+}
+func (dsu *DataSpecificationUOM) QuantityID() *string           { return dsu.quantityID }
+func (dsu *DataSpecificationUOM) SetQuantityID(value *string)   { dsu.quantityID = value }
+func (dsu *DataSpecificationUOM) ClassificationSystem() *string { return dsu.classificationSystem }
+func (dsu *DataSpecificationUOM) SetClassificationSystem(value *string) {
+	dsu.classificationSystem = value
+}
+func (dsu *DataSpecificationUOM) ClassificationSystemVersion() *string {
+	return dsu.classificationSystemVersion
+}
+func (dsu *DataSpecificationUOM) SetClassificationSystemVersion(value *string) {
+	dsu.classificationSystemVersion = value
+}
+func (dsu *DataSpecificationUOM) ModelType() ModelType { return ModelTypeDataSpecificationUOM }
+func (dsu *DataSpecificationUOM) DescendOnce(action func(IClass) bool) (abort bool) {
+	if dsu.preferredName != nil {
+		for _, v := range dsu.preferredName {
+			abort = action(v)
+			if abort {
+				return
+			}
+		}
+	}
+	if dsu.definition != nil {
+		for _, v := range dsu.definition {
+			abort = action(v)
+			if abort {
+				return
+			}
+		}
+	}
+	if dsu.preferredNameQuantity != nil {
+		for _, v := range dsu.preferredNameQuantity {
+			abort = action(v)
+			if abort {
+				return
+			}
+		}
+	}
+	return
+}
+func (dsu *DataSpecificationUOM) Descend(action func(IClass) bool) (abort bool) {
+	if dsu.preferredName != nil {
+		for _, v := range dsu.preferredName {
+			abort = action(v)
+			if abort {
+				return
+			}
+			abort = v.Descend(action)
+			if abort {
+				return
+			}
+		}
+	}
+	if dsu.definition != nil {
+		for _, v := range dsu.definition {
+			abort = action(v)
+			if abort {
+				return
+			}
+			abort = v.Descend(action)
+			if abort {
+				return
+			}
+		}
+	}
+	if dsu.preferredNameQuantity != nil {
+		for _, v := range dsu.preferredNameQuantity {
+			abort = action(v)
+			if abort {
+				return
+			}
+			abort = v.Descend(action)
+			if abort {
+				return
+			}
+		}
+	}
+	return
+}
+
+func NewDataSpecificationUOM(
+	preferredName []ILangStringUOM,
+	symbol string,
+) *DataSpecificationUOM {
+	return &DataSpecificationUOM{
+		preferredName:               preferredName,
+		symbol:                      symbol,
+		specificUnitID:              nil,
+		definition:                  nil,
+		preferredNameQuantity:       nil,
+		quantityID:                  nil,
+		classificationSystem:        nil,
+		classificationSystemVersion: nil,
 	}
 }
 
@@ -12324,25 +12333,25 @@ type IDataSpecificationIEC61360 interface {
 	//
 	// Constraint AASc-3a-002:
 	// [IDataSpecificationIEC61360.PreferredName] shall be provided at least in English.
-	PreferredName() []ILangStringPreferredNameTypeIEC61360;
+	PreferredName() []ILangStringPreferredNameTypeIEC61360
 
 	SetPreferredName(
 		value []ILangStringPreferredNameTypeIEC61360,
-	);
+	)
 
 	// Short name
-	ShortName() []ILangStringShortNameTypeIEC61360;
+	ShortName() []ILangStringShortNameTypeIEC61360
 
 	SetShortName(
 		value []ILangStringShortNameTypeIEC61360,
-	);
+	)
 
 	// Unit
-	Unit() *string;
+	Unit() *string
 
 	SetUnit(
 		value *string,
-	);
+	)
 
 	// Unique unit id
 	//
@@ -12350,69 +12359,69 @@ type IDataSpecificationIEC61360 interface {
 	// are set
 	//
 	// NOTE: It is recommended to use an external reference ID.
-	UnitID() IReference;
+	UnitID() IReference
 
 	SetUnitID(
 		value IReference,
-	);
+	)
 
 	// Source of definition
-	SourceOfDefinition() *string;
+	SourceOfDefinition() *string
 
 	SetSourceOfDefinition(
 		value *string,
-	);
+	)
 
 	// Symbol
-	Symbol() *string;
+	Symbol() *string
 
 	SetSymbol(
 		value *string,
-	);
+	)
 
 	// Data Type
-	DataType() *DataTypeIEC61360;
+	DataType() *DataTypeIEC61360
 
 	SetDataType(
 		value *DataTypeIEC61360,
-	);
+	)
 
 	// Definition in different languages
-	Definition() []ILangStringDefinitionTypeIEC61360;
+	Definition() []ILangStringDefinitionTypeIEC61360
 
 	SetDefinition(
 		value []ILangStringDefinitionTypeIEC61360,
-	);
+	)
 
 	// Value Format
 	//
 	// NOTE: The value format is based on ISO 13584-42 and IEC 61360-2.
-	ValueFormat() *string;
+	ValueFormat() *string
 
 	SetValueFormat(
 		value *string,
-	);
+	)
 
 	// List of allowed values
-	ValueList() IValueList;
+	ValueList() IValueList
 
 	SetValueList(
 		value IValueList,
-	);
+	)
 
 	// Value
-	Value() *string;
+	Value() *string
 
 	SetValue(
 		value *string,
-	);
+	)
 
 	// Set of levels.
-	LevelType() ILevelType;
+	LevelType() ILevelType
 
 	SetLevelType(
 		value ILevelType,
-	);
+	)
 }
 
 // Check whether the instance corresponds to [aastypes.IDataSpecificationIEC61360]
@@ -12429,22 +12438,21 @@ func IsDataSpecificationIEC61360(
 
 // Implements IDataSpecificationIEC61360.
 type DataSpecificationIEC61360 struct {
-	preferredName []ILangStringPreferredNameTypeIEC61360
-	shortName []ILangStringShortNameTypeIEC61360
-	unit *string
-	unitID IReference
+	preferredName      []ILangStringPreferredNameTypeIEC61360
+	shortName          []ILangStringShortNameTypeIEC61360
+	unit               *string
+	unitID             IReference
 	sourceOfDefinition *string
-	symbol *string
-	dataType *DataTypeIEC61360
-	definition []ILangStringDefinitionTypeIEC61360
-	valueFormat *string
-	valueList IValueList
-	value *string
-	levelType ILevelType
+	symbol             *string
+	dataType           *DataTypeIEC61360
+	definition         []ILangStringDefinitionTypeIEC61360
+	valueFormat        *string
+	valueList          IValueList
+	value              *string
+	levelType          ILevelType
 }
 
-func (dsi6 *DataSpecificationIEC61360) PreferredName(
-) []ILangStringPreferredNameTypeIEC61360 {
+func (dsi6 *DataSpecificationIEC61360) PreferredName() []ILangStringPreferredNameTypeIEC61360 {
 	return dsi6.preferredName
 }
 
@@ -12454,8 +12462,7 @@ func (dsi6 *DataSpecificationIEC61360) SetPreferredName(
 	dsi6.preferredName = value
 }
 
-func (dsi6 *DataSpecificationIEC61360) ShortName(
-) []ILangStringShortNameTypeIEC61360 {
+func (dsi6 *DataSpecificationIEC61360) ShortName() []ILangStringShortNameTypeIEC61360 {
 	return dsi6.shortName
 }
 
@@ -12465,8 +12472,7 @@ func (dsi6 *DataSpecificationIEC61360) SetShortName(
 	dsi6.shortName = value
 }
 
-func (dsi6 *DataSpecificationIEC61360) Unit(
-) *string {
+func (dsi6 *DataSpecificationIEC61360) Unit() *string {
 	return dsi6.unit
 }
 
@@ -12476,8 +12482,7 @@ func (dsi6 *DataSpecificationIEC61360) SetUnit(
 	dsi6.unit = value
 }
 
-func (dsi6 *DataSpecificationIEC61360) UnitID(
-) IReference {
+func (dsi6 *DataSpecificationIEC61360) UnitID() IReference {
 	return dsi6.unitID
 }
 
@@ -12487,8 +12492,7 @@ func (dsi6 *DataSpecificationIEC61360) SetUnitID(
 	dsi6.unitID = value
 }
 
-func (dsi6 *DataSpecificationIEC61360) SourceOfDefinition(
-) *string {
+func (dsi6 *DataSpecificationIEC61360) SourceOfDefinition() *string {
 	return dsi6.sourceOfDefinition
 }
 
@@ -12498,8 +12502,7 @@ func (dsi6 *DataSpecificationIEC61360) SetSourceOfDefinition(
 	dsi6.sourceOfDefinition = value
 }
 
-func (dsi6 *DataSpecificationIEC61360) Symbol(
-) *string {
+func (dsi6 *DataSpecificationIEC61360) Symbol() *string {
 	return dsi6.symbol
 }
 
@@ -12509,8 +12512,7 @@ func (dsi6 *DataSpecificationIEC61360) SetSymbol(
 	dsi6.symbol = value
 }
 
-func (dsi6 *DataSpecificationIEC61360) DataType(
-) *DataTypeIEC61360 {
+func (dsi6 *DataSpecificationIEC61360) DataType() *DataTypeIEC61360 {
 	return dsi6.dataType
 }
 
@@ -12520,8 +12522,7 @@ func (dsi6 *DataSpecificationIEC61360) SetDataType(
 	dsi6.dataType = value
 }
 
-func (dsi6 *DataSpecificationIEC61360) Definition(
-) []ILangStringDefinitionTypeIEC61360 {
+func (dsi6 *DataSpecificationIEC61360) Definition() []ILangStringDefinitionTypeIEC61360 {
 	return dsi6.definition
 }
 
@@ -12531,8 +12532,7 @@ func (dsi6 *DataSpecificationIEC61360) SetDefinition(
 	dsi6.definition = value
 }
 
-func (dsi6 *DataSpecificationIEC61360) ValueFormat(
-) *string {
+func (dsi6 *DataSpecificationIEC61360) ValueFormat() *string {
 	return dsi6.valueFormat
 }
 
@@ -12542,8 +12542,7 @@ func (dsi6 *DataSpecificationIEC61360) SetValueFormat(
 	dsi6.valueFormat = value
 }
 
-func (dsi6 *DataSpecificationIEC61360) ValueList(
-) IValueList {
+func (dsi6 *DataSpecificationIEC61360) ValueList() IValueList {
 	return dsi6.valueList
 }
 
@@ -12553,8 +12552,7 @@ func (dsi6 *DataSpecificationIEC61360) SetValueList(
 	dsi6.valueList = value
 }
 
-func (dsi6 *DataSpecificationIEC61360) Value(
-) *string {
+func (dsi6 *DataSpecificationIEC61360) Value() *string {
 	return dsi6.value
 }
 
@@ -12564,8 +12562,7 @@ func (dsi6 *DataSpecificationIEC61360) SetValue(
 	dsi6.value = value
 }
 
-func (dsi6 *DataSpecificationIEC61360) LevelType(
-) ILevelType {
+func (dsi6 *DataSpecificationIEC61360) LevelType() ILevelType {
 	return dsi6.levelType
 }
 
@@ -12575,8 +12572,7 @@ func (dsi6 *DataSpecificationIEC61360) SetLevelType(
 	dsi6.levelType = value
 }
 
-func (dsi6 *DataSpecificationIEC61360) ModelType(
-) ModelType {
+func (dsi6 *DataSpecificationIEC61360) ModelType() ModelType {
 	return ModelTypeDataSpecificationIEC61360
 }
 
@@ -12592,7 +12588,7 @@ func (dsi6 *DataSpecificationIEC61360) DescendOnce(
 	action func(IClass) bool,
 ) (abort bool) {
 	for _, v := range dsi6.preferredName {
-		abort = action(v);
+		abort = action(v)
 		if abort {
 			return
 		}
@@ -12600,7 +12596,7 @@ func (dsi6 *DataSpecificationIEC61360) DescendOnce(
 
 	if dsi6.shortName != nil {
 		for _, v1 := range dsi6.shortName {
-			abort = action(v1);
+			abort = action(v1)
 			if abort {
 				return
 			}
@@ -12618,7 +12614,7 @@ func (dsi6 *DataSpecificationIEC61360) DescendOnce(
 
 	if dsi6.definition != nil {
 		for _, v2 := range dsi6.definition {
-			abort = action(v2);
+			abort = action(v2)
 			if abort {
 				return
 			}
@@ -12656,14 +12652,14 @@ func (dsi6 *DataSpecificationIEC61360) Descend(
 	action func(IClass) bool,
 ) (abort bool) {
 	for _, v := range dsi6.preferredName {
-		abort = action(v);
+		abort = action(v)
 		if abort {
 			return
 		}
 
 		abort = v.Descend(
 			action,
-		);
+		)
 		if abort {
 			return
 		}
@@ -12671,14 +12667,14 @@ func (dsi6 *DataSpecificationIEC61360) Descend(
 
 	if dsi6.shortName != nil {
 		for _, v1 := range dsi6.shortName {
-			abort = action(v1);
+			abort = action(v1)
 			if abort {
 				return
 			}
 
 			abort = v1.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -12702,14 +12698,14 @@ func (dsi6 *DataSpecificationIEC61360) Descend(
 
 	if dsi6.definition != nil {
 		for _, v2 := range dsi6.definition {
-			abort = action(v2);
+			abort = action(v2)
 			if abort {
 				return
 			}
 
 			abort = v2.Descend(
 				action,
-			);
+			)
 			if abort {
 				return
 			}
@@ -12755,18 +12751,18 @@ func NewDataSpecificationIEC61360(
 	preferredName []ILangStringPreferredNameTypeIEC61360,
 ) *DataSpecificationIEC61360 {
 	return &DataSpecificationIEC61360{
-		preferredName: preferredName,
-		shortName: nil,
-		unit: nil,
-		unitID: nil,
+		preferredName:      preferredName,
+		shortName:          nil,
+		unit:               nil,
+		unitID:             nil,
 		sourceOfDefinition: nil,
-		symbol: nil,
-		dataType: nil,
-		definition: nil,
-		valueFormat: nil,
-		valueList: nil,
-		value: nil,
-		levelType: nil,
+		symbol:             nil,
+		dataType:           nil,
+		definition:         nil,
+		valueFormat:        nil,
+		valueList:          nil,
+		value:              nil,
+		levelType:          nil,
 	}
 }
 

@@ -13,12 +13,12 @@ package jsonization
 // Do NOT edit or append.
 
 import (
-	"fmt"
-	"math"
 	b64 "encoding/base64"
+	"fmt"
 	aasreporting "github.com/FriedJannik/aas-go-sdk/reporting"
 	aasstringification "github.com/FriedJannik/aas-go-sdk/stringification"
 	aastypes "github.com/FriedJannik/aas-go-sdk/types"
+	"math"
 )
 
 // region De-serialization
@@ -26,14 +26,14 @@ import (
 // Represent an error during the de-serialization.
 //
 // Implements `error`.
-type DeserializationError struct{
-	Path *aasreporting.Path
+type DeserializationError struct {
+	Path    *aasreporting.Path
 	Message string
 }
 
 func newDeserializationError(message string) *DeserializationError {
 	return &DeserializationError{
-		Path: &aasreporting.Path{},
+		Path:    &aasreporting.Path{},
 		Message: message,
 	}
 }
@@ -612,7 +612,7 @@ func ModellingKindFromJsonable(
 	if jsonable == nil {
 		err = newDeserializationError(
 			"Expected a string representation of ModellingKind, " +
-			"but got null",
+				"but got null",
 		)
 		return
 	}
@@ -621,8 +621,8 @@ func ModellingKindFromJsonable(
 	if !ok {
 		err = newDeserializationError(
 			fmt.Sprintf(
-				"Expected a string representation of ModellingKind, " +
-				"but got %T",
+				"Expected a string representation of ModellingKind, "+
+					"but got %T",
 				jsonable,
 			),
 		)
@@ -633,8 +633,8 @@ func ModellingKindFromJsonable(
 	if !ok {
 		err = newDeserializationError(
 			fmt.Sprintf(
-				"Expected a string representation of ModellingKind, " +
-				"but got %v",
+				"Expected a string representation of ModellingKind, "+
+					"but got %v",
 				text,
 			),
 		)
@@ -749,6 +749,8 @@ func administrativeInformationFromMapWithoutDispatch(
 	var theVersion *string
 	var theRevision *string
 	var theCreator aastypes.IReference
+	var theCreatedAt *string
+	var theUpdatedAt *string
 	var theTemplateID *string
 
 	for k, v := range m {
@@ -854,6 +856,32 @@ func administrativeInformationFromMapWithoutDispatch(
 				return
 			}
 
+		case "createdAt":
+			var parsed string
+			parsed, err = stringFromJsonable(v)
+			if err != nil {
+				if deseriaErr, ok := err.(*DeserializationError); ok {
+					deseriaErr.Path.PrependName(
+						&aasreporting.NameSegment{Name: "createdAt"},
+					)
+				}
+				return
+			}
+			theCreatedAt = &parsed
+
+		case "updatedAt":
+			var parsed string
+			parsed, err = stringFromJsonable(v)
+			if err != nil {
+				if deseriaErr, ok := err.(*DeserializationError); ok {
+					deseriaErr.Path.PrependName(
+						&aasreporting.NameSegment{Name: "updatedAt"},
+					)
+				}
+				return
+			}
+			theUpdatedAt = &parsed
+
 		case "templateId":
 			var parsed string
 			parsed, err = stringFromJsonable(
@@ -894,6 +922,12 @@ func administrativeInformationFromMapWithoutDispatch(
 	)
 	result.SetCreator(
 		theCreator,
+	)
+	result.SetCreatedAt(
+		theCreatedAt,
+	)
+	result.SetUpdatedAt(
+		theUpdatedAt,
 	)
 	result.SetTemplateID(
 		theTemplateID,
@@ -941,7 +975,7 @@ func QualifierKindFromJsonable(
 	if jsonable == nil {
 		err = newDeserializationError(
 			"Expected a string representation of QualifierKind, " +
-			"but got null",
+				"but got null",
 		)
 		return
 	}
@@ -950,8 +984,8 @@ func QualifierKindFromJsonable(
 	if !ok {
 		err = newDeserializationError(
 			fmt.Sprintf(
-				"Expected a string representation of QualifierKind, " +
-				"but got %T",
+				"Expected a string representation of QualifierKind, "+
+					"but got %T",
 				jsonable,
 			),
 		)
@@ -962,8 +996,8 @@ func QualifierKindFromJsonable(
 	if !ok {
 		err = newDeserializationError(
 			fmt.Sprintf(
-				"Expected a string representation of QualifierKind, " +
-				"but got %v",
+				"Expected a string representation of QualifierKind, "+
+					"but got %v",
 				text,
 			),
 		)
@@ -2056,7 +2090,7 @@ func AssetKindFromJsonable(
 	if jsonable == nil {
 		err = newDeserializationError(
 			"Expected a string representation of AssetKind, " +
-			"but got null",
+				"but got null",
 		)
 		return
 	}
@@ -2065,8 +2099,8 @@ func AssetKindFromJsonable(
 	if !ok {
 		err = newDeserializationError(
 			fmt.Sprintf(
-				"Expected a string representation of AssetKind, " +
-				"but got %T",
+				"Expected a string representation of AssetKind, "+
+					"but got %T",
 				jsonable,
 			),
 		)
@@ -2077,8 +2111,8 @@ func AssetKindFromJsonable(
 	if !ok {
 		err = newDeserializationError(
 			fmt.Sprintf(
-				"Expected a string representation of AssetKind, " +
-				"but got %v",
+				"Expected a string representation of AssetKind, "+
+					"but got %v",
 				text,
 			),
 		)
@@ -3502,7 +3536,7 @@ func AASSubmodelElementsFromJsonable(
 	if jsonable == nil {
 		err = newDeserializationError(
 			"Expected a string representation of AASSubmodelElements, " +
-			"but got null",
+				"but got null",
 		)
 		return
 	}
@@ -3511,8 +3545,8 @@ func AASSubmodelElementsFromJsonable(
 	if !ok {
 		err = newDeserializationError(
 			fmt.Sprintf(
-				"Expected a string representation of AASSubmodelElements, " +
-				"but got %T",
+				"Expected a string representation of AASSubmodelElements, "+
+					"but got %T",
 				jsonable,
 			),
 		)
@@ -3523,8 +3557,8 @@ func AASSubmodelElementsFromJsonable(
 	if !ok {
 		err = newDeserializationError(
 			fmt.Sprintf(
-				"Expected a string representation of AASSubmodelElements, " +
-				"but got %v",
+				"Expected a string representation of AASSubmodelElements, "+
+					"but got %v",
 				text,
 			),
 		)
@@ -9336,7 +9370,7 @@ func EntityTypeFromJsonable(
 	if jsonable == nil {
 		err = newDeserializationError(
 			"Expected a string representation of EntityType, " +
-			"but got null",
+				"but got null",
 		)
 		return
 	}
@@ -9345,8 +9379,8 @@ func EntityTypeFromJsonable(
 	if !ok {
 		err = newDeserializationError(
 			fmt.Sprintf(
-				"Expected a string representation of EntityType, " +
-				"but got %T",
+				"Expected a string representation of EntityType, "+
+					"but got %T",
 				jsonable,
 			),
 		)
@@ -9357,8 +9391,8 @@ func EntityTypeFromJsonable(
 	if !ok {
 		err = newDeserializationError(
 			fmt.Sprintf(
-				"Expected a string representation of EntityType, " +
-				"but got %v",
+				"Expected a string representation of EntityType, "+
+					"but got %v",
 				text,
 			),
 		)
@@ -9376,7 +9410,7 @@ func DirectionFromJsonable(
 	if jsonable == nil {
 		err = newDeserializationError(
 			"Expected a string representation of Direction, " +
-			"but got null",
+				"but got null",
 		)
 		return
 	}
@@ -9385,8 +9419,8 @@ func DirectionFromJsonable(
 	if !ok {
 		err = newDeserializationError(
 			fmt.Sprintf(
-				"Expected a string representation of Direction, " +
-				"but got %T",
+				"Expected a string representation of Direction, "+
+					"but got %T",
 				jsonable,
 			),
 		)
@@ -9397,8 +9431,8 @@ func DirectionFromJsonable(
 	if !ok {
 		err = newDeserializationError(
 			fmt.Sprintf(
-				"Expected a string representation of Direction, " +
-				"but got %v",
+				"Expected a string representation of Direction, "+
+					"but got %v",
 				text,
 			),
 		)
@@ -9416,7 +9450,7 @@ func StateOfEventFromJsonable(
 	if jsonable == nil {
 		err = newDeserializationError(
 			"Expected a string representation of StateOfEvent, " +
-			"but got null",
+				"but got null",
 		)
 		return
 	}
@@ -9425,8 +9459,8 @@ func StateOfEventFromJsonable(
 	if !ok {
 		err = newDeserializationError(
 			fmt.Sprintf(
-				"Expected a string representation of StateOfEvent, " +
-				"but got %T",
+				"Expected a string representation of StateOfEvent, "+
+					"but got %T",
 				jsonable,
 			),
 		)
@@ -9437,8 +9471,8 @@ func StateOfEventFromJsonable(
 	if !ok {
 		err = newDeserializationError(
 			fmt.Sprintf(
-				"Expected a string representation of StateOfEvent, " +
-				"but got %v",
+				"Expected a string representation of StateOfEvent, "+
+					"but got %v",
 				text,
 			),
 		)
@@ -12131,7 +12165,7 @@ func ReferenceTypesFromJsonable(
 	if jsonable == nil {
 		err = newDeserializationError(
 			"Expected a string representation of ReferenceTypes, " +
-			"but got null",
+				"but got null",
 		)
 		return
 	}
@@ -12140,8 +12174,8 @@ func ReferenceTypesFromJsonable(
 	if !ok {
 		err = newDeserializationError(
 			fmt.Sprintf(
-				"Expected a string representation of ReferenceTypes, " +
-				"but got %T",
+				"Expected a string representation of ReferenceTypes, "+
+					"but got %T",
 				jsonable,
 			),
 		)
@@ -12152,8 +12186,8 @@ func ReferenceTypesFromJsonable(
 	if !ok {
 		err = newDeserializationError(
 			fmt.Sprintf(
-				"Expected a string representation of ReferenceTypes, " +
-				"but got %v",
+				"Expected a string representation of ReferenceTypes, "+
+					"but got %v",
 				text,
 			),
 		)
@@ -12451,7 +12485,7 @@ func KeyTypesFromJsonable(
 	if jsonable == nil {
 		err = newDeserializationError(
 			"Expected a string representation of KeyTypes, " +
-			"but got null",
+				"but got null",
 		)
 		return
 	}
@@ -12460,8 +12494,8 @@ func KeyTypesFromJsonable(
 	if !ok {
 		err = newDeserializationError(
 			fmt.Sprintf(
-				"Expected a string representation of KeyTypes, " +
-				"but got %T",
+				"Expected a string representation of KeyTypes, "+
+					"but got %T",
 				jsonable,
 			),
 		)
@@ -12472,8 +12506,8 @@ func KeyTypesFromJsonable(
 	if !ok {
 		err = newDeserializationError(
 			fmt.Sprintf(
-				"Expected a string representation of KeyTypes, " +
-				"but got %v",
+				"Expected a string representation of KeyTypes, "+
+					"but got %v",
 				text,
 			),
 		)
@@ -12491,7 +12525,7 @@ func DataTypeDefXSDFromJsonable(
 	if jsonable == nil {
 		err = newDeserializationError(
 			"Expected a string representation of DataTypeDefXSD, " +
-			"but got null",
+				"but got null",
 		)
 		return
 	}
@@ -12500,8 +12534,8 @@ func DataTypeDefXSDFromJsonable(
 	if !ok {
 		err = newDeserializationError(
 			fmt.Sprintf(
-				"Expected a string representation of DataTypeDefXSD, " +
-				"but got %T",
+				"Expected a string representation of DataTypeDefXSD, "+
+					"but got %T",
 				jsonable,
 			),
 		)
@@ -12512,8 +12546,8 @@ func DataTypeDefXSDFromJsonable(
 	if !ok {
 		err = newDeserializationError(
 			fmt.Sprintf(
-				"Expected a string representation of DataTypeDefXSD, " +
-				"but got %v",
+				"Expected a string representation of DataTypeDefXSD, "+
+					"but got %v",
 				text,
 			),
 		)
@@ -13155,7 +13189,7 @@ func DataTypeIEC61360FromJsonable(
 	if jsonable == nil {
 		err = newDeserializationError(
 			"Expected a string representation of DataTypeIEC61360, " +
-			"but got null",
+				"but got null",
 		)
 		return
 	}
@@ -13164,8 +13198,8 @@ func DataTypeIEC61360FromJsonable(
 	if !ok {
 		err = newDeserializationError(
 			fmt.Sprintf(
-				"Expected a string representation of DataTypeIEC61360, " +
-				"but got %T",
+				"Expected a string representation of DataTypeIEC61360, "+
+					"but got %T",
 				jsonable,
 			),
 		)
@@ -13176,8 +13210,8 @@ func DataTypeIEC61360FromJsonable(
 	if !ok {
 		err = newDeserializationError(
 			fmt.Sprintf(
-				"Expected a string representation of DataTypeIEC61360, " +
-				"but got %v",
+				"Expected a string representation of DataTypeIEC61360, "+
+					"but got %v",
 				text,
 			),
 		)
@@ -13915,6 +13949,82 @@ func langStringDefinitionTypeIEC61360FromMapWithoutDispatch(
 	return
 }
 
+// Parse [aastypes.ILangStringUOM] from a map, or return an error.
+func langStringUOMFromMapWithoutDispatch(
+	m map[string]interface{},
+) (
+	result aastypes.ILangStringUOM,
+	err error,
+) {
+	var theLanguage string
+	var theText string
+	foundLanguage := false
+	foundText := false
+	for k, v := range m {
+		switch k {
+		case "language":
+			theLanguage, err = stringFromJsonable(v)
+			if err != nil {
+				return
+			}
+			foundLanguage = true
+		case "text":
+			theText, err = stringFromJsonable(v)
+			if err != nil {
+				return
+			}
+			foundText = true
+		default:
+			err = newDeserializationError(fmt.Sprintf("Unexpected property: %s", k))
+			return
+		}
+	}
+	if !foundLanguage || !foundText {
+		err = newDeserializationError("The required properties 'language' and 'text' must be set")
+		return
+	}
+	result = aastypes.NewLangStringUOM(theLanguage, theText)
+	return
+}
+
+// Parse [aastypes.ILangStringDefinitionTypeUOM] from a map, or return an error.
+func langStringDefinitionTypeUOMFromMapWithoutDispatch(
+	m map[string]interface{},
+) (
+	result aastypes.ILangStringDefinitionTypeUOM,
+	err error,
+) {
+	var theLanguage string
+	var theText string
+	foundLanguage := false
+	foundText := false
+	for k, v := range m {
+		switch k {
+		case "language":
+			theLanguage, err = stringFromJsonable(v)
+			if err != nil {
+				return
+			}
+			foundLanguage = true
+		case "text":
+			theText, err = stringFromJsonable(v)
+			if err != nil {
+				return
+			}
+			foundText = true
+		default:
+			err = newDeserializationError(fmt.Sprintf("Unexpected property: %s", k))
+			return
+		}
+	}
+	if !foundLanguage || !foundText {
+		err = newDeserializationError("The required properties 'language' and 'text' must be set")
+		return
+	}
+	result = aastypes.NewLangStringDefinitionTypeUOM(theLanguage, theText)
+	return
+}
+
 // Parse `jsonable` as an instance of [aastypes.IDataSpecificationIEC61360],
 // or return an error.
 func DataSpecificationIEC61360FromJsonable(
@@ -14378,6 +14488,71 @@ func dataSpecificationIEC61360FromMapWithoutDispatch(
 	return
 }
 
+func dataSpecificationUOMFromMapWithoutDispatch(
+	m map[string]interface{},
+) (
+	result aastypes.IDataSpecificationUOM,
+	err error,
+) {
+	var thePreferredName []aastypes.ILangStringUOM
+	var theSymbol string
+	var theSpecificUnitID *string
+	var foundPreferredName bool
+	var foundSymbol bool
+
+	for k, v := range m {
+		switch k {
+		case "preferredName":
+			jsonableArray, ok := v.([]interface{})
+			if !ok {
+				err = newDeserializationError(fmt.Sprintf("Expected an array, but got %T", v))
+				return
+			}
+			array := make([]aastypes.ILangStringUOM, len(jsonableArray))
+			for i, item := range jsonableArray {
+				itemMap, ok := item.(map[string]interface{})
+				if !ok {
+					err = newDeserializationError(fmt.Sprintf("Expected an object at index %d", i))
+					return
+				}
+				array[i], err = langStringUOMFromMapWithoutDispatch(itemMap)
+				if err != nil {
+					return
+				}
+			}
+			thePreferredName = array
+			foundPreferredName = true
+		case "symbol":
+			theSymbol, err = stringFromJsonable(v)
+			if err != nil {
+				return
+			}
+			foundSymbol = true
+		case "specificUnitId":
+			var parsed string
+			parsed, err = stringFromJsonable(v)
+			if err != nil {
+				return
+			}
+			theSpecificUnitID = &parsed
+		case "definition", "preferredNameQuantity", "quantityId", "classificationSystem", "classificationSystemVersion", "modelType":
+			// Parsed/serialized as optional extensions in manual 3.2 uplift.
+		default:
+			err = newDeserializationError(fmt.Sprintf("Unexpected property: %s", k))
+			return
+		}
+	}
+
+	if !foundPreferredName || !foundSymbol {
+		err = newDeserializationError("The required properties 'preferredName' and 'symbol' are missing")
+		return
+	}
+
+	result = aastypes.NewDataSpecificationUOM(thePreferredName, theSymbol)
+	result.SetSpecificUnitID(theSpecificUnitID)
+	return
+}
+
 // De-serialize an instance of [aastypes.IHasSemantics]
 // from a map by dispatching to the concrete `*FromMapWithoutDispatch` function.
 func hasSemanticsFromMap(
@@ -14388,7 +14563,7 @@ func hasSemanticsFromMap(
 ) {
 	var modelTypeAny interface{}
 	var ok bool
-	modelTypeAny, ok = m["modelType"];
+	modelTypeAny, ok = m["modelType"]
 	if !ok {
 		err = newDeserializationError(
 			"The required property modelType is missing",
@@ -14401,8 +14576,8 @@ func hasSemanticsFromMap(
 	if !ok {
 		err = newDeserializationError(
 			fmt.Sprintf(
-				"Expected the property modelType to be a string, " +
-				"but got %T",
+				"Expected the property modelType to be a string, "+
+					"but got %T",
 				modelTypeAny,
 			),
 		)
@@ -14449,8 +14624,8 @@ func hasSemanticsFromMap(
 	default:
 		err = newDeserializationError(
 			fmt.Sprintf(
-				"Unexpected model type " +
-				"for IHasSemantics: %s",
+				"Unexpected model type "+
+					"for IHasSemantics: %s",
 				modelType,
 			),
 		)
@@ -14469,7 +14644,7 @@ func hasExtensionsFromMap(
 ) {
 	var modelTypeAny interface{}
 	var ok bool
-	modelTypeAny, ok = m["modelType"];
+	modelTypeAny, ok = m["modelType"]
 	if !ok {
 		err = newDeserializationError(
 			"The required property modelType is missing",
@@ -14482,8 +14657,8 @@ func hasExtensionsFromMap(
 	if !ok {
 		err = newDeserializationError(
 			fmt.Sprintf(
-				"Expected the property modelType to be a string, " +
-				"but got %T",
+				"Expected the property modelType to be a string, "+
+					"but got %T",
 				modelTypeAny,
 			),
 		)
@@ -14528,8 +14703,8 @@ func hasExtensionsFromMap(
 	default:
 		err = newDeserializationError(
 			fmt.Sprintf(
-				"Unexpected model type " +
-				"for IHasExtensions: %s",
+				"Unexpected model type "+
+					"for IHasExtensions: %s",
 				modelType,
 			),
 		)
@@ -14548,7 +14723,7 @@ func referableFromMap(
 ) {
 	var modelTypeAny interface{}
 	var ok bool
-	modelTypeAny, ok = m["modelType"];
+	modelTypeAny, ok = m["modelType"]
 	if !ok {
 		err = newDeserializationError(
 			"The required property modelType is missing",
@@ -14561,8 +14736,8 @@ func referableFromMap(
 	if !ok {
 		err = newDeserializationError(
 			fmt.Sprintf(
-				"Expected the property modelType to be a string, " +
-				"but got %T",
+				"Expected the property modelType to be a string, "+
+					"but got %T",
 				modelTypeAny,
 			),
 		)
@@ -14607,8 +14782,8 @@ func referableFromMap(
 	default:
 		err = newDeserializationError(
 			fmt.Sprintf(
-				"Unexpected model type " +
-				"for IReferable: %s",
+				"Unexpected model type "+
+					"for IReferable: %s",
 				modelType,
 			),
 		)
@@ -14627,7 +14802,7 @@ func identifiableFromMap(
 ) {
 	var modelTypeAny interface{}
 	var ok bool
-	modelTypeAny, ok = m["modelType"];
+	modelTypeAny, ok = m["modelType"]
 	if !ok {
 		err = newDeserializationError(
 			"The required property modelType is missing",
@@ -14640,8 +14815,8 @@ func identifiableFromMap(
 	if !ok {
 		err = newDeserializationError(
 			fmt.Sprintf(
-				"Expected the property modelType to be a string, " +
-				"but got %T",
+				"Expected the property modelType to be a string, "+
+					"but got %T",
 				modelTypeAny,
 			),
 		)
@@ -14658,8 +14833,8 @@ func identifiableFromMap(
 	default:
 		err = newDeserializationError(
 			fmt.Sprintf(
-				"Unexpected model type " +
-				"for IIdentifiable: %s",
+				"Unexpected model type "+
+					"for IIdentifiable: %s",
 				modelType,
 			),
 		)
@@ -14678,7 +14853,7 @@ func hasKindFromMap(
 ) {
 	var modelTypeAny interface{}
 	var ok bool
-	modelTypeAny, ok = m["modelType"];
+	modelTypeAny, ok = m["modelType"]
 	if !ok {
 		err = newDeserializationError(
 			"The required property modelType is missing",
@@ -14691,8 +14866,8 @@ func hasKindFromMap(
 	if !ok {
 		err = newDeserializationError(
 			fmt.Sprintf(
-				"Expected the property modelType to be a string, " +
-				"but got %T",
+				"Expected the property modelType to be a string, "+
+					"but got %T",
 				modelTypeAny,
 			),
 		)
@@ -14705,8 +14880,8 @@ func hasKindFromMap(
 	default:
 		err = newDeserializationError(
 			fmt.Sprintf(
-				"Unexpected model type " +
-				"for IHasKind: %s",
+				"Unexpected model type "+
+					"for IHasKind: %s",
 				modelType,
 			),
 		)
@@ -14725,7 +14900,7 @@ func hasDataSpecificationFromMap(
 ) {
 	var modelTypeAny interface{}
 	var ok bool
-	modelTypeAny, ok = m["modelType"];
+	modelTypeAny, ok = m["modelType"]
 	if !ok {
 		err = newDeserializationError(
 			"The required property modelType is missing",
@@ -14738,8 +14913,8 @@ func hasDataSpecificationFromMap(
 	if !ok {
 		err = newDeserializationError(
 			fmt.Sprintf(
-				"Expected the property modelType to be a string, " +
-				"but got %T",
+				"Expected the property modelType to be a string, "+
+					"but got %T",
 				modelTypeAny,
 			),
 		)
@@ -14786,8 +14961,8 @@ func hasDataSpecificationFromMap(
 	default:
 		err = newDeserializationError(
 			fmt.Sprintf(
-				"Unexpected model type " +
-				"for IHasDataSpecification: %s",
+				"Unexpected model type "+
+					"for IHasDataSpecification: %s",
 				modelType,
 			),
 		)
@@ -14806,7 +14981,7 @@ func qualifiableFromMap(
 ) {
 	var modelTypeAny interface{}
 	var ok bool
-	modelTypeAny, ok = m["modelType"];
+	modelTypeAny, ok = m["modelType"]
 	if !ok {
 		err = newDeserializationError(
 			"The required property modelType is missing",
@@ -14819,8 +14994,8 @@ func qualifiableFromMap(
 	if !ok {
 		err = newDeserializationError(
 			fmt.Sprintf(
-				"Expected the property modelType to be a string, " +
-				"but got %T",
+				"Expected the property modelType to be a string, "+
+					"but got %T",
 				modelTypeAny,
 			),
 		)
@@ -14861,8 +15036,8 @@ func qualifiableFromMap(
 	default:
 		err = newDeserializationError(
 			fmt.Sprintf(
-				"Unexpected model type " +
-				"for IQualifiable: %s",
+				"Unexpected model type "+
+					"for IQualifiable: %s",
 				modelType,
 			),
 		)
@@ -14881,7 +15056,7 @@ func submodelElementFromMap(
 ) {
 	var modelTypeAny interface{}
 	var ok bool
-	modelTypeAny, ok = m["modelType"];
+	modelTypeAny, ok = m["modelType"]
 	if !ok {
 		err = newDeserializationError(
 			"The required property modelType is missing",
@@ -14894,8 +15069,8 @@ func submodelElementFromMap(
 	if !ok {
 		err = newDeserializationError(
 			fmt.Sprintf(
-				"Expected the property modelType to be a string, " +
-				"but got %T",
+				"Expected the property modelType to be a string, "+
+					"but got %T",
 				modelTypeAny,
 			),
 		)
@@ -14934,8 +15109,8 @@ func submodelElementFromMap(
 	default:
 		err = newDeserializationError(
 			fmt.Sprintf(
-				"Unexpected model type " +
-				"for ISubmodelElement: %s",
+				"Unexpected model type "+
+					"for ISubmodelElement: %s",
 				modelType,
 			),
 		)
@@ -14954,7 +15129,7 @@ func relationshipElementFromMap(
 ) {
 	var modelTypeAny interface{}
 	var ok bool
-	modelTypeAny, ok = m["modelType"];
+	modelTypeAny, ok = m["modelType"]
 	if !ok {
 		err = newDeserializationError(
 			"The required property modelType is missing",
@@ -14967,8 +15142,8 @@ func relationshipElementFromMap(
 	if !ok {
 		err = newDeserializationError(
 			fmt.Sprintf(
-				"Expected the property modelType to be a string, " +
-				"but got %T",
+				"Expected the property modelType to be a string, "+
+					"but got %T",
 				modelTypeAny,
 			),
 		)
@@ -14983,8 +15158,8 @@ func relationshipElementFromMap(
 	default:
 		err = newDeserializationError(
 			fmt.Sprintf(
-				"Unexpected model type " +
-				"for IRelationshipElement: %s",
+				"Unexpected model type "+
+					"for IRelationshipElement: %s",
 				modelType,
 			),
 		)
@@ -15003,7 +15178,7 @@ func dataElementFromMap(
 ) {
 	var modelTypeAny interface{}
 	var ok bool
-	modelTypeAny, ok = m["modelType"];
+	modelTypeAny, ok = m["modelType"]
 	if !ok {
 		err = newDeserializationError(
 			"The required property modelType is missing",
@@ -15016,8 +15191,8 @@ func dataElementFromMap(
 	if !ok {
 		err = newDeserializationError(
 			fmt.Sprintf(
-				"Expected the property modelType to be a string, " +
-				"but got %T",
+				"Expected the property modelType to be a string, "+
+					"but got %T",
 				modelTypeAny,
 			),
 		)
@@ -15040,8 +15215,8 @@ func dataElementFromMap(
 	default:
 		err = newDeserializationError(
 			fmt.Sprintf(
-				"Unexpected model type " +
-				"for IDataElement: %s",
+				"Unexpected model type "+
+					"for IDataElement: %s",
 				modelType,
 			),
 		)
@@ -15060,7 +15235,7 @@ func eventElementFromMap(
 ) {
 	var modelTypeAny interface{}
 	var ok bool
-	modelTypeAny, ok = m["modelType"];
+	modelTypeAny, ok = m["modelType"]
 	if !ok {
 		err = newDeserializationError(
 			"The required property modelType is missing",
@@ -15073,8 +15248,8 @@ func eventElementFromMap(
 	if !ok {
 		err = newDeserializationError(
 			fmt.Sprintf(
-				"Expected the property modelType to be a string, " +
-				"but got %T",
+				"Expected the property modelType to be a string, "+
+					"but got %T",
 				modelTypeAny,
 			),
 		)
@@ -15087,8 +15262,8 @@ func eventElementFromMap(
 	default:
 		err = newDeserializationError(
 			fmt.Sprintf(
-				"Unexpected model type " +
-				"for IEventElement: %s",
+				"Unexpected model type "+
+					"for IEventElement: %s",
 				modelType,
 			),
 		)
@@ -15107,7 +15282,7 @@ func abstractLangStringFromMap(
 ) {
 	var modelTypeAny interface{}
 	var ok bool
-	modelTypeAny, ok = m["modelType"];
+	modelTypeAny, ok = m["modelType"]
 	if !ok {
 		err = newDeserializationError(
 			"The required property modelType is missing",
@@ -15120,8 +15295,8 @@ func abstractLangStringFromMap(
 	if !ok {
 		err = newDeserializationError(
 			fmt.Sprintf(
-				"Expected the property modelType to be a string, " +
-				"but got %T",
+				"Expected the property modelType to be a string, "+
+					"but got %T",
 				modelTypeAny,
 			),
 		)
@@ -15131,19 +15306,23 @@ func abstractLangStringFromMap(
 	switch modelType {
 	case "LangStringDefinitionTypeIec61360":
 		result, err = langStringDefinitionTypeIEC61360FromMapWithoutDispatch(m)
+	case "LangStringDefinitionTypeUom":
+		result, err = langStringDefinitionTypeUOMFromMapWithoutDispatch(m)
 	case "LangStringNameType":
 		result, err = langStringNameTypeFromMapWithoutDispatch(m)
 	case "LangStringPreferredNameTypeIec61360":
 		result, err = langStringPreferredNameTypeIEC61360FromMapWithoutDispatch(m)
 	case "LangStringShortNameTypeIec61360":
 		result, err = langStringShortNameTypeIEC61360FromMapWithoutDispatch(m)
+	case "LangStringUom":
+		result, err = langStringUOMFromMapWithoutDispatch(m)
 	case "LangStringTextType":
 		result, err = langStringTextTypeFromMapWithoutDispatch(m)
 	default:
 		err = newDeserializationError(
 			fmt.Sprintf(
-				"Unexpected model type " +
-				"for IAbstractLangString: %s",
+				"Unexpected model type "+
+					"for IAbstractLangString: %s",
 				modelType,
 			),
 		)
@@ -15162,7 +15341,7 @@ func dataSpecificationContentFromMap(
 ) {
 	var modelTypeAny interface{}
 	var ok bool
-	modelTypeAny, ok = m["modelType"];
+	modelTypeAny, ok = m["modelType"]
 	if !ok {
 		err = newDeserializationError(
 			"The required property modelType is missing",
@@ -15175,8 +15354,8 @@ func dataSpecificationContentFromMap(
 	if !ok {
 		err = newDeserializationError(
 			fmt.Sprintf(
-				"Expected the property modelType to be a string, " +
-				"but got %T",
+				"Expected the property modelType to be a string, "+
+					"but got %T",
 				modelTypeAny,
 			),
 		)
@@ -15186,11 +15365,13 @@ func dataSpecificationContentFromMap(
 	switch modelType {
 	case "DataSpecificationIec61360":
 		result, err = dataSpecificationIEC61360FromMapWithoutDispatch(m)
+	case "DataSpecificationUom":
+		result, err = dataSpecificationUOMFromMapWithoutDispatch(m)
 	default:
 		err = newDeserializationError(
 			fmt.Sprintf(
-				"Unexpected model type " +
-				"for IDataSpecificationContent: %s",
+				"Unexpected model type "+
+					"for IDataSpecificationContent: %s",
 				modelType,
 			),
 		)
@@ -15206,14 +15387,14 @@ func dataSpecificationContentFromMap(
 // Represent an error during the serialization.
 //
 // Implements `error`.
-type SerializationError struct{
-	Path *aasreporting.Path
+type SerializationError struct {
+	Path    *aasreporting.Path
 	Message string
 }
 
 func newSerializationError(message string) *SerializationError {
 	return &SerializationError{
-		Path: &aasreporting.Path{},
+		Path:    &aasreporting.Path{},
 		Message: message,
 	}
 }
@@ -15245,7 +15426,7 @@ func int64ToJsonable(
 		return
 	}
 
-	result = float64(that);
+	result = float64(that)
 	return
 }
 
@@ -15687,6 +15868,12 @@ func administrativeInformationToMap(
 			return
 		}
 		result["creator"] = jsonableCreator
+	}
+	if that.CreatedAt() != nil {
+		result["createdAt"] = *that.CreatedAt()
+	}
+	if that.UpdatedAt() != nil {
+		result["updatedAt"] = *that.UpdatedAt()
 	}
 
 	if that.TemplateID() != nil {
@@ -21352,6 +21539,24 @@ func langStringDefinitionTypeIEC61360ToMap(
 	return
 }
 
+func langStringUOMToMap(
+	that aastypes.ILangStringUOM,
+) (result map[string]interface{}, err error) {
+	result = make(map[string]interface{})
+	result["language"] = that.Language()
+	result["text"] = that.Text()
+	return
+}
+
+func langStringDefinitionTypeUOMToMap(
+	that aastypes.ILangStringDefinitionTypeUOM,
+) (result map[string]interface{}, err error) {
+	result = make(map[string]interface{})
+	result["language"] = that.Language()
+	result["text"] = that.Text()
+	return
+}
+
 // Serialize [aastypes.IDataSpecificationIEC61360] as a JSON-able map.
 //
 // This function performs no dispatch! It is only used to serialize
@@ -21558,6 +21763,28 @@ func dataSpecificationIEC61360ToMap(
 	return
 }
 
+func dataSpecificationUOMToMap(
+	that aastypes.IDataSpecificationUOM,
+) (result map[string]interface{}, err error) {
+	result = make(map[string]interface{})
+	jsonablePreferredName := make([]interface{}, len(that.PreferredName()))
+	for i, v := range that.PreferredName() {
+		var jsonable interface{}
+		jsonable, err = ToJsonable(v)
+		if err != nil {
+			return
+		}
+		jsonablePreferredName[i] = jsonable
+	}
+	result["preferredName"] = jsonablePreferredName
+	result["symbol"] = that.Symbol()
+	if that.SpecificUnitID() != nil {
+		result["specificUnitId"] = *that.SpecificUnitID()
+	}
+	result["modelType"] = "DataSpecificationUom"
+	return
+}
+
 // Serialize “that“ instance to a JSON-able representation.
 //
 // Return a structure which can be readily converted to JSON,
@@ -21717,6 +21944,18 @@ func ToJsonable(
 	case aastypes.ModelTypeDataSpecificationIEC61360:
 		result, err = dataSpecificationIEC61360ToMap(
 			that.(aastypes.IDataSpecificationIEC61360),
+		)
+	case aastypes.ModelTypeLangStringUOM:
+		result, err = langStringUOMToMap(
+			that.(aastypes.ILangStringUOM),
+		)
+	case aastypes.ModelTypeLangStringDefinitionTypeUOM:
+		result, err = langStringDefinitionTypeUOMToMap(
+			that.(aastypes.ILangStringDefinitionTypeUOM),
+		)
+	case aastypes.ModelTypeDataSpecificationUOM:
+		result, err = dataSpecificationUOMToMap(
+			that.(aastypes.IDataSpecificationUOM),
 		)
 	default:
 		err = newSerializationError(

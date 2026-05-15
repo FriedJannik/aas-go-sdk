@@ -9,45 +9,48 @@ import (
 	aastypes "github.com/FriedJannik/aas-go-sdk/types"
 )
 
-var modelTypeFromStringMap = map[string]aastypes.ModelType {
-	"Extension": aastypes.ModelTypeExtension,
-	"AdministrativeInformation": aastypes.ModelTypeAdministrativeInformation,
-	"Qualifier": aastypes.ModelTypeQualifier,
-	"AssetAdministrationShell": aastypes.ModelTypeAssetAdministrationShell,
-	"AssetInformation": aastypes.ModelTypeAssetInformation,
-	"Resource": aastypes.ModelTypeResource,
-	"SpecificAssetId": aastypes.ModelTypeSpecificAssetID,
-	"Submodel": aastypes.ModelTypeSubmodel,
-	"RelationshipElement": aastypes.ModelTypeRelationshipElement,
-	"SubmodelElementList": aastypes.ModelTypeSubmodelElementList,
-	"SubmodelElementCollection": aastypes.ModelTypeSubmodelElementCollection,
-	"Property": aastypes.ModelTypeProperty,
-	"MultiLanguageProperty": aastypes.ModelTypeMultiLanguageProperty,
-	"Range": aastypes.ModelTypeRange,
-	"ReferenceElement": aastypes.ModelTypeReferenceElement,
-	"Blob": aastypes.ModelTypeBlob,
-	"File": aastypes.ModelTypeFile,
-	"AnnotatedRelationshipElement": aastypes.ModelTypeAnnotatedRelationshipElement,
-	"Entity": aastypes.ModelTypeEntity,
-	"EventPayload": aastypes.ModelTypeEventPayload,
-	"BasicEventElement": aastypes.ModelTypeBasicEventElement,
-	"Operation": aastypes.ModelTypeOperation,
-	"OperationVariable": aastypes.ModelTypeOperationVariable,
-	"Capability": aastypes.ModelTypeCapability,
-	"ConceptDescription": aastypes.ModelTypeConceptDescription,
-	"Reference": aastypes.ModelTypeReference,
-	"Key": aastypes.ModelTypeKey,
-	"LangStringNameType": aastypes.ModelTypeLangStringNameType,
-	"LangStringTextType": aastypes.ModelTypeLangStringTextType,
-	"Environment": aastypes.ModelTypeEnvironment,
-	"EmbeddedDataSpecification": aastypes.ModelTypeEmbeddedDataSpecification,
-	"LevelType": aastypes.ModelTypeLevelType,
-	"ValueReferencePair": aastypes.ModelTypeValueReferencePair,
-	"ValueList": aastypes.ModelTypeValueList,
+var modelTypeFromStringMap = map[string]aastypes.ModelType{
+	"Extension":                           aastypes.ModelTypeExtension,
+	"AdministrativeInformation":           aastypes.ModelTypeAdministrativeInformation,
+	"Qualifier":                           aastypes.ModelTypeQualifier,
+	"AssetAdministrationShell":            aastypes.ModelTypeAssetAdministrationShell,
+	"AssetInformation":                    aastypes.ModelTypeAssetInformation,
+	"Resource":                            aastypes.ModelTypeResource,
+	"SpecificAssetId":                     aastypes.ModelTypeSpecificAssetID,
+	"Submodel":                            aastypes.ModelTypeSubmodel,
+	"RelationshipElement":                 aastypes.ModelTypeRelationshipElement,
+	"SubmodelElementList":                 aastypes.ModelTypeSubmodelElementList,
+	"SubmodelElementCollection":           aastypes.ModelTypeSubmodelElementCollection,
+	"Property":                            aastypes.ModelTypeProperty,
+	"MultiLanguageProperty":               aastypes.ModelTypeMultiLanguageProperty,
+	"Range":                               aastypes.ModelTypeRange,
+	"ReferenceElement":                    aastypes.ModelTypeReferenceElement,
+	"Blob":                                aastypes.ModelTypeBlob,
+	"File":                                aastypes.ModelTypeFile,
+	"AnnotatedRelationshipElement":        aastypes.ModelTypeAnnotatedRelationshipElement,
+	"Entity":                              aastypes.ModelTypeEntity,
+	"EventPayload":                        aastypes.ModelTypeEventPayload,
+	"BasicEventElement":                   aastypes.ModelTypeBasicEventElement,
+	"Operation":                           aastypes.ModelTypeOperation,
+	"OperationVariable":                   aastypes.ModelTypeOperationVariable,
+	"Capability":                          aastypes.ModelTypeCapability,
+	"ConceptDescription":                  aastypes.ModelTypeConceptDescription,
+	"Reference":                           aastypes.ModelTypeReference,
+	"Key":                                 aastypes.ModelTypeKey,
+	"LangStringNameType":                  aastypes.ModelTypeLangStringNameType,
+	"LangStringTextType":                  aastypes.ModelTypeLangStringTextType,
+	"Environment":                         aastypes.ModelTypeEnvironment,
+	"EmbeddedDataSpecification":           aastypes.ModelTypeEmbeddedDataSpecification,
+	"LevelType":                           aastypes.ModelTypeLevelType,
+	"ValueReferencePair":                  aastypes.ModelTypeValueReferencePair,
+	"ValueList":                           aastypes.ModelTypeValueList,
 	"LangStringPreferredNameTypeIec61360": aastypes.ModelTypeLangStringPreferredNameTypeIEC61360,
-	"LangStringShortNameTypeIec61360": aastypes.ModelTypeLangStringShortNameTypeIEC61360,
-	"LangStringDefinitionTypeIec61360": aastypes.ModelTypeLangStringDefinitionTypeIEC61360,
-	"DataSpecificationIec61360": aastypes.ModelTypeDataSpecificationIEC61360,
+	"LangStringShortNameTypeIec61360":     aastypes.ModelTypeLangStringShortNameTypeIEC61360,
+	"LangStringDefinitionTypeIec61360":    aastypes.ModelTypeLangStringDefinitionTypeIEC61360,
+	"DataSpecificationIec61360":           aastypes.ModelTypeDataSpecificationIEC61360,
+	"LangStringUom":                       aastypes.ModelTypeLangStringUOM,
+	"LangStringDefinitionTypeUom":         aastypes.ModelTypeLangStringDefinitionTypeUOM,
+	"DataSpecificationUom":                aastypes.ModelTypeDataSpecificationUOM,
 }
 
 // Parse `text` as a string representation of [aastypes.ModelType].
@@ -60,7 +63,7 @@ func ModelTypeFromString(
 	return
 }
 
-var modelTypeToStringArray = [...]string {
+var modelTypeToStringArray = [...]string{
 	"Extension",
 	"AdministrativeInformation",
 	"Qualifier",
@@ -99,6 +102,9 @@ var modelTypeToStringArray = [...]string {
 	"LangStringShortNameTypeIec61360",
 	"LangStringDefinitionTypeIec61360",
 	"DataSpecificationIec61360",
+	"LangStringUom",
+	"LangStringDefinitionTypeUom",
+	"DataSpecificationUom",
 }
 
 // Translate `value` from [aastypes.ModelType] to a string.
@@ -111,7 +117,7 @@ func ModelTypeToString(
 	i := int(value)
 	ok =
 		i >= 0 &&
-		i < len(modelTypeToStringArray)
+			i < len(modelTypeToStringArray)
 
 	if !ok {
 		return
@@ -138,7 +144,7 @@ func MustModelTypeToString(
 	return result
 }
 
-var modellingKindFromStringMap = map[string]aastypes.ModellingKind {
+var modellingKindFromStringMap = map[string]aastypes.ModellingKind{
 	"Template": aastypes.ModellingKindTemplate,
 	"Instance": aastypes.ModellingKindInstance,
 }
@@ -153,7 +159,7 @@ func ModellingKindFromString(
 	return
 }
 
-var modellingKindToStringArray = [...]string {
+var modellingKindToStringArray = [...]string{
 	"Template",
 	"Instance",
 }
@@ -168,7 +174,7 @@ func ModellingKindToString(
 	i := int(value)
 	ok =
 		i >= 0 &&
-		i < len(modellingKindToStringArray)
+			i < len(modellingKindToStringArray)
 
 	if !ok {
 		return
@@ -195,9 +201,9 @@ func MustModellingKindToString(
 	return result
 }
 
-var qualifierKindFromStringMap = map[string]aastypes.QualifierKind {
-	"ValueQualifier": aastypes.QualifierKindValueQualifier,
-	"ConceptQualifier": aastypes.QualifierKindConceptQualifier,
+var qualifierKindFromStringMap = map[string]aastypes.QualifierKind{
+	"ValueQualifier":    aastypes.QualifierKindValueQualifier,
+	"ConceptQualifier":  aastypes.QualifierKindConceptQualifier,
 	"TemplateQualifier": aastypes.QualifierKindTemplateQualifier,
 }
 
@@ -211,7 +217,7 @@ func QualifierKindFromString(
 	return
 }
 
-var qualifierKindToStringArray = [...]string {
+var qualifierKindToStringArray = [...]string{
 	"ValueQualifier",
 	"ConceptQualifier",
 	"TemplateQualifier",
@@ -227,7 +233,7 @@ func QualifierKindToString(
 	i := int(value)
 	ok =
 		i >= 0 &&
-		i < len(qualifierKindToStringArray)
+			i < len(qualifierKindToStringArray)
 
 	if !ok {
 		return
@@ -254,10 +260,11 @@ func MustQualifierKindToString(
 	return result
 }
 
-var assetKindFromStringMap = map[string]aastypes.AssetKind {
-	"Type": aastypes.AssetKindType,
-	"Instance": aastypes.AssetKindInstance,
-	"Role": aastypes.AssetKindRole,
+var assetKindFromStringMap = map[string]aastypes.AssetKind{
+	"Type":          aastypes.AssetKindType,
+	"Instance":      aastypes.AssetKindInstance,
+	"Role":          aastypes.AssetKindRole,
+	"Batch":         aastypes.AssetKindBatch,
 	"NotApplicable": aastypes.AssetKindNotApplicable,
 }
 
@@ -271,10 +278,11 @@ func AssetKindFromString(
 	return
 }
 
-var assetKindToStringArray = [...]string {
+var assetKindToStringArray = [...]string{
 	"Type",
 	"Instance",
 	"Role",
+	"Batch",
 	"NotApplicable",
 }
 
@@ -288,7 +296,7 @@ func AssetKindToString(
 	i := int(value)
 	ok =
 		i >= 0 &&
-		i < len(assetKindToStringArray)
+			i < len(assetKindToStringArray)
 
 	if !ok {
 		return
@@ -315,24 +323,24 @@ func MustAssetKindToString(
 	return result
 }
 
-var aasSubmodelElementsFromStringMap = map[string]aastypes.AASSubmodelElements {
+var aasSubmodelElementsFromStringMap = map[string]aastypes.AASSubmodelElements{
 	"AnnotatedRelationshipElement": aastypes.AASSubmodelElementsAnnotatedRelationshipElement,
-	"BasicEventElement": aastypes.AASSubmodelElementsBasicEventElement,
-	"Blob": aastypes.AASSubmodelElementsBlob,
-	"Capability": aastypes.AASSubmodelElementsCapability,
-	"DataElement": aastypes.AASSubmodelElementsDataElement,
-	"Entity": aastypes.AASSubmodelElementsEntity,
-	"EventElement": aastypes.AASSubmodelElementsEventElement,
-	"File": aastypes.AASSubmodelElementsFile,
-	"MultiLanguageProperty": aastypes.AASSubmodelElementsMultiLanguageProperty,
-	"Operation": aastypes.AASSubmodelElementsOperation,
-	"Property": aastypes.AASSubmodelElementsProperty,
-	"Range": aastypes.AASSubmodelElementsRange,
-	"ReferenceElement": aastypes.AASSubmodelElementsReferenceElement,
-	"RelationshipElement": aastypes.AASSubmodelElementsRelationshipElement,
-	"SubmodelElement": aastypes.AASSubmodelElementsSubmodelElement,
-	"SubmodelElementList": aastypes.AASSubmodelElementsSubmodelElementList,
-	"SubmodelElementCollection": aastypes.AASSubmodelElementsSubmodelElementCollection,
+	"BasicEventElement":            aastypes.AASSubmodelElementsBasicEventElement,
+	"Blob":                         aastypes.AASSubmodelElementsBlob,
+	"Capability":                   aastypes.AASSubmodelElementsCapability,
+	"DataElement":                  aastypes.AASSubmodelElementsDataElement,
+	"Entity":                       aastypes.AASSubmodelElementsEntity,
+	"EventElement":                 aastypes.AASSubmodelElementsEventElement,
+	"File":                         aastypes.AASSubmodelElementsFile,
+	"MultiLanguageProperty":        aastypes.AASSubmodelElementsMultiLanguageProperty,
+	"Operation":                    aastypes.AASSubmodelElementsOperation,
+	"Property":                     aastypes.AASSubmodelElementsProperty,
+	"Range":                        aastypes.AASSubmodelElementsRange,
+	"ReferenceElement":             aastypes.AASSubmodelElementsReferenceElement,
+	"RelationshipElement":          aastypes.AASSubmodelElementsRelationshipElement,
+	"SubmodelElement":              aastypes.AASSubmodelElementsSubmodelElement,
+	"SubmodelElementList":          aastypes.AASSubmodelElementsSubmodelElementList,
+	"SubmodelElementCollection":    aastypes.AASSubmodelElementsSubmodelElementCollection,
 }
 
 // Parse `text` as a string representation of [aastypes.AASSubmodelElements].
@@ -345,7 +353,7 @@ func AASSubmodelElementsFromString(
 	return
 }
 
-var aasSubmodelElementsToStringArray = [...]string {
+var aasSubmodelElementsToStringArray = [...]string{
 	"AnnotatedRelationshipElement",
 	"BasicEventElement",
 	"Blob",
@@ -375,7 +383,7 @@ func AASSubmodelElementsToString(
 	i := int(value)
 	ok =
 		i >= 0 &&
-		i < len(aasSubmodelElementsToStringArray)
+			i < len(aasSubmodelElementsToStringArray)
 
 	if !ok {
 		return
@@ -402,8 +410,8 @@ func MustAASSubmodelElementsToString(
 	return result
 }
 
-var entityTypeFromStringMap = map[string]aastypes.EntityType {
-	"CoManagedEntity": aastypes.EntityTypeCoManagedEntity,
+var entityTypeFromStringMap = map[string]aastypes.EntityType{
+	"CoManagedEntity":   aastypes.EntityTypeCoManagedEntity,
 	"SelfManagedEntity": aastypes.EntityTypeSelfManagedEntity,
 }
 
@@ -417,7 +425,7 @@ func EntityTypeFromString(
 	return
 }
 
-var entityTypeToStringArray = [...]string {
+var entityTypeToStringArray = [...]string{
 	"CoManagedEntity",
 	"SelfManagedEntity",
 }
@@ -432,7 +440,7 @@ func EntityTypeToString(
 	i := int(value)
 	ok =
 		i >= 0 &&
-		i < len(entityTypeToStringArray)
+			i < len(entityTypeToStringArray)
 
 	if !ok {
 		return
@@ -459,8 +467,8 @@ func MustEntityTypeToString(
 	return result
 }
 
-var directionFromStringMap = map[string]aastypes.Direction {
-	"input": aastypes.DirectionInput,
+var directionFromStringMap = map[string]aastypes.Direction{
+	"input":  aastypes.DirectionInput,
 	"output": aastypes.DirectionOutput,
 }
 
@@ -474,7 +482,7 @@ func DirectionFromString(
 	return
 }
 
-var directionToStringArray = [...]string {
+var directionToStringArray = [...]string{
 	"input",
 	"output",
 }
@@ -489,7 +497,7 @@ func DirectionToString(
 	i := int(value)
 	ok =
 		i >= 0 &&
-		i < len(directionToStringArray)
+			i < len(directionToStringArray)
 
 	if !ok {
 		return
@@ -516,8 +524,8 @@ func MustDirectionToString(
 	return result
 }
 
-var stateOfEventFromStringMap = map[string]aastypes.StateOfEvent {
-	"on": aastypes.StateOfEventOn,
+var stateOfEventFromStringMap = map[string]aastypes.StateOfEvent{
+	"on":  aastypes.StateOfEventOn,
 	"off": aastypes.StateOfEventOff,
 }
 
@@ -531,7 +539,7 @@ func StateOfEventFromString(
 	return
 }
 
-var stateOfEventToStringArray = [...]string {
+var stateOfEventToStringArray = [...]string{
 	"on",
 	"off",
 }
@@ -546,7 +554,7 @@ func StateOfEventToString(
 	i := int(value)
 	ok =
 		i >= 0 &&
-		i < len(stateOfEventToStringArray)
+			i < len(stateOfEventToStringArray)
 
 	if !ok {
 		return
@@ -573,9 +581,9 @@ func MustStateOfEventToString(
 	return result
 }
 
-var referenceTypesFromStringMap = map[string]aastypes.ReferenceTypes {
+var referenceTypesFromStringMap = map[string]aastypes.ReferenceTypes{
 	"ExternalReference": aastypes.ReferenceTypesExternalReference,
-	"ModelReference": aastypes.ReferenceTypesModelReference,
+	"ModelReference":    aastypes.ReferenceTypesModelReference,
 }
 
 // Parse `text` as a string representation of [aastypes.ReferenceTypes].
@@ -588,7 +596,7 @@ func ReferenceTypesFromString(
 	return
 }
 
-var referenceTypesToStringArray = [...]string {
+var referenceTypesToStringArray = [...]string{
 	"ExternalReference",
 	"ModelReference",
 }
@@ -603,7 +611,7 @@ func ReferenceTypesToString(
 	i := int(value)
 	ok =
 		i >= 0 &&
-		i < len(referenceTypesToStringArray)
+			i < len(referenceTypesToStringArray)
 
 	if !ok {
 		return
@@ -630,31 +638,31 @@ func MustReferenceTypesToString(
 	return result
 }
 
-var keyTypesFromStringMap = map[string]aastypes.KeyTypes {
+var keyTypesFromStringMap = map[string]aastypes.KeyTypes{
 	"AnnotatedRelationshipElement": aastypes.KeyTypesAnnotatedRelationshipElement,
-	"AssetAdministrationShell": aastypes.KeyTypesAssetAdministrationShell,
-	"BasicEventElement": aastypes.KeyTypesBasicEventElement,
-	"Blob": aastypes.KeyTypesBlob,
-	"Capability": aastypes.KeyTypesCapability,
-	"ConceptDescription": aastypes.KeyTypesConceptDescription,
-	"DataElement": aastypes.KeyTypesDataElement,
-	"Entity": aastypes.KeyTypesEntity,
-	"EventElement": aastypes.KeyTypesEventElement,
-	"File": aastypes.KeyTypesFile,
-	"FragmentReference": aastypes.KeyTypesFragmentReference,
-	"GlobalReference": aastypes.KeyTypesGlobalReference,
-	"Identifiable": aastypes.KeyTypesIdentifiable,
-	"MultiLanguageProperty": aastypes.KeyTypesMultiLanguageProperty,
-	"Operation": aastypes.KeyTypesOperation,
-	"Property": aastypes.KeyTypesProperty,
-	"Range": aastypes.KeyTypesRange,
-	"Referable": aastypes.KeyTypesReferable,
-	"ReferenceElement": aastypes.KeyTypesReferenceElement,
-	"RelationshipElement": aastypes.KeyTypesRelationshipElement,
-	"Submodel": aastypes.KeyTypesSubmodel,
-	"SubmodelElement": aastypes.KeyTypesSubmodelElement,
-	"SubmodelElementCollection": aastypes.KeyTypesSubmodelElementCollection,
-	"SubmodelElementList": aastypes.KeyTypesSubmodelElementList,
+	"AssetAdministrationShell":     aastypes.KeyTypesAssetAdministrationShell,
+	"BasicEventElement":            aastypes.KeyTypesBasicEventElement,
+	"Blob":                         aastypes.KeyTypesBlob,
+	"Capability":                   aastypes.KeyTypesCapability,
+	"ConceptDescription":           aastypes.KeyTypesConceptDescription,
+	"DataElement":                  aastypes.KeyTypesDataElement,
+	"Entity":                       aastypes.KeyTypesEntity,
+	"EventElement":                 aastypes.KeyTypesEventElement,
+	"File":                         aastypes.KeyTypesFile,
+	"FragmentReference":            aastypes.KeyTypesFragmentReference,
+	"GlobalReference":              aastypes.KeyTypesGlobalReference,
+	"Identifiable":                 aastypes.KeyTypesIdentifiable,
+	"MultiLanguageProperty":        aastypes.KeyTypesMultiLanguageProperty,
+	"Operation":                    aastypes.KeyTypesOperation,
+	"Property":                     aastypes.KeyTypesProperty,
+	"Range":                        aastypes.KeyTypesRange,
+	"Referable":                    aastypes.KeyTypesReferable,
+	"ReferenceElement":             aastypes.KeyTypesReferenceElement,
+	"RelationshipElement":          aastypes.KeyTypesRelationshipElement,
+	"Submodel":                     aastypes.KeyTypesSubmodel,
+	"SubmodelElement":              aastypes.KeyTypesSubmodelElement,
+	"SubmodelElementCollection":    aastypes.KeyTypesSubmodelElementCollection,
+	"SubmodelElementList":          aastypes.KeyTypesSubmodelElementList,
 }
 
 // Parse `text` as a string representation of [aastypes.KeyTypes].
@@ -667,7 +675,7 @@ func KeyTypesFromString(
 	return
 }
 
-var keyTypesToStringArray = [...]string {
+var keyTypesToStringArray = [...]string{
 	"AnnotatedRelationshipElement",
 	"AssetAdministrationShell",
 	"BasicEventElement",
@@ -704,7 +712,7 @@ func KeyTypesToString(
 	i := int(value)
 	ok =
 		i >= 0 &&
-		i < len(keyTypesToStringArray)
+			i < len(keyTypesToStringArray)
 
 	if !ok {
 		return
@@ -731,37 +739,37 @@ func MustKeyTypesToString(
 	return result
 }
 
-var dataTypeDefXSDFromStringMap = map[string]aastypes.DataTypeDefXSD {
-	"xs:anyURI": aastypes.DataTypeDefXSDAnyURI,
-	"xs:base64Binary": aastypes.DataTypeDefXSDBase64Binary,
-	"xs:boolean": aastypes.DataTypeDefXSDBoolean,
-	"xs:byte": aastypes.DataTypeDefXSDByte,
-	"xs:date": aastypes.DataTypeDefXSDDate,
-	"xs:dateTime": aastypes.DataTypeDefXSDDateTime,
-	"xs:decimal": aastypes.DataTypeDefXSDDecimal,
-	"xs:double": aastypes.DataTypeDefXSDDouble,
-	"xs:duration": aastypes.DataTypeDefXSDDuration,
-	"xs:float": aastypes.DataTypeDefXSDFloat,
-	"xs:gDay": aastypes.DataTypeDefXSDGDay,
-	"xs:gMonth": aastypes.DataTypeDefXSDGMonth,
-	"xs:gMonthDay": aastypes.DataTypeDefXSDGMonthDay,
-	"xs:gYear": aastypes.DataTypeDefXSDGYear,
-	"xs:gYearMonth": aastypes.DataTypeDefXSDGYearMonth,
-	"xs:hexBinary": aastypes.DataTypeDefXSDHexBinary,
-	"xs:int": aastypes.DataTypeDefXSDInt,
-	"xs:integer": aastypes.DataTypeDefXSDInteger,
-	"xs:long": aastypes.DataTypeDefXSDLong,
-	"xs:negativeInteger": aastypes.DataTypeDefXSDNegativeInteger,
+var dataTypeDefXSDFromStringMap = map[string]aastypes.DataTypeDefXSD{
+	"xs:anyURI":             aastypes.DataTypeDefXSDAnyURI,
+	"xs:base64Binary":       aastypes.DataTypeDefXSDBase64Binary,
+	"xs:boolean":            aastypes.DataTypeDefXSDBoolean,
+	"xs:byte":               aastypes.DataTypeDefXSDByte,
+	"xs:date":               aastypes.DataTypeDefXSDDate,
+	"xs:dateTime":           aastypes.DataTypeDefXSDDateTime,
+	"xs:decimal":            aastypes.DataTypeDefXSDDecimal,
+	"xs:double":             aastypes.DataTypeDefXSDDouble,
+	"xs:duration":           aastypes.DataTypeDefXSDDuration,
+	"xs:float":              aastypes.DataTypeDefXSDFloat,
+	"xs:gDay":               aastypes.DataTypeDefXSDGDay,
+	"xs:gMonth":             aastypes.DataTypeDefXSDGMonth,
+	"xs:gMonthDay":          aastypes.DataTypeDefXSDGMonthDay,
+	"xs:gYear":              aastypes.DataTypeDefXSDGYear,
+	"xs:gYearMonth":         aastypes.DataTypeDefXSDGYearMonth,
+	"xs:hexBinary":          aastypes.DataTypeDefXSDHexBinary,
+	"xs:int":                aastypes.DataTypeDefXSDInt,
+	"xs:integer":            aastypes.DataTypeDefXSDInteger,
+	"xs:long":               aastypes.DataTypeDefXSDLong,
+	"xs:negativeInteger":    aastypes.DataTypeDefXSDNegativeInteger,
 	"xs:nonNegativeInteger": aastypes.DataTypeDefXSDNonNegativeInteger,
 	"xs:nonPositiveInteger": aastypes.DataTypeDefXSDNonPositiveInteger,
-	"xs:positiveInteger": aastypes.DataTypeDefXSDPositiveInteger,
-	"xs:short": aastypes.DataTypeDefXSDShort,
-	"xs:string": aastypes.DataTypeDefXSDString,
-	"xs:time": aastypes.DataTypeDefXSDTime,
-	"xs:unsignedByte": aastypes.DataTypeDefXSDUnsignedByte,
-	"xs:unsignedInt": aastypes.DataTypeDefXSDUnsignedInt,
-	"xs:unsignedLong": aastypes.DataTypeDefXSDUnsignedLong,
-	"xs:unsignedShort": aastypes.DataTypeDefXSDUnsignedShort,
+	"xs:positiveInteger":    aastypes.DataTypeDefXSDPositiveInteger,
+	"xs:short":              aastypes.DataTypeDefXSDShort,
+	"xs:string":             aastypes.DataTypeDefXSDString,
+	"xs:time":               aastypes.DataTypeDefXSDTime,
+	"xs:unsignedByte":       aastypes.DataTypeDefXSDUnsignedByte,
+	"xs:unsignedInt":        aastypes.DataTypeDefXSDUnsignedInt,
+	"xs:unsignedLong":       aastypes.DataTypeDefXSDUnsignedLong,
+	"xs:unsignedShort":      aastypes.DataTypeDefXSDUnsignedShort,
 }
 
 // Parse `text` as a string representation of [aastypes.DataTypeDefXSD].
@@ -774,7 +782,7 @@ func DataTypeDefXSDFromString(
 	return
 }
 
-var dataTypeDefXSDToStringArray = [...]string {
+var dataTypeDefXSDToStringArray = [...]string{
 	"xs:anyURI",
 	"xs:base64Binary",
 	"xs:boolean",
@@ -817,7 +825,7 @@ func DataTypeDefXSDToString(
 	i := int(value)
 	ok =
 		i >= 0 &&
-		i < len(dataTypeDefXSDToStringArray)
+			i < len(dataTypeDefXSDToStringArray)
 
 	if !ok {
 		return
@@ -844,26 +852,26 @@ func MustDataTypeDefXSDToString(
 	return result
 }
 
-var dataTypeIEC61360FromStringMap = map[string]aastypes.DataTypeIEC61360 {
-	"DATE": aastypes.DataTypeIEC61360Date,
-	"STRING": aastypes.DataTypeIEC61360String,
+var dataTypeIEC61360FromStringMap = map[string]aastypes.DataTypeIEC61360{
+	"DATE":                aastypes.DataTypeIEC61360Date,
+	"STRING":              aastypes.DataTypeIEC61360String,
 	"STRING_TRANSLATABLE": aastypes.DataTypeIEC61360StringTranslatable,
-	"INTEGER_MEASURE": aastypes.DataTypeIEC61360IntegerMeasure,
-	"INTEGER_COUNT": aastypes.DataTypeIEC61360IntegerCount,
-	"INTEGER_CURRENCY": aastypes.DataTypeIEC61360IntegerCurrency,
-	"REAL_MEASURE": aastypes.DataTypeIEC61360RealMeasure,
-	"REAL_COUNT": aastypes.DataTypeIEC61360RealCount,
-	"REAL_CURRENCY": aastypes.DataTypeIEC61360RealCurrency,
-	"BOOLEAN": aastypes.DataTypeIEC61360Boolean,
-	"IRI": aastypes.DataTypeIEC61360IRI,
-	"IRDI": aastypes.DataTypeIEC61360IRDI,
-	"RATIONAL": aastypes.DataTypeIEC61360Rational,
-	"RATIONAL_MEASURE": aastypes.DataTypeIEC61360RationalMeasure,
-	"TIME": aastypes.DataTypeIEC61360Time,
-	"TIMESTAMP": aastypes.DataTypeIEC61360Timestamp,
-	"FILE": aastypes.DataTypeIEC61360File,
-	"HTML": aastypes.DataTypeIEC61360HTML,
-	"BLOB": aastypes.DataTypeIEC61360Blob,
+	"INTEGER_MEASURE":     aastypes.DataTypeIEC61360IntegerMeasure,
+	"INTEGER_COUNT":       aastypes.DataTypeIEC61360IntegerCount,
+	"INTEGER_CURRENCY":    aastypes.DataTypeIEC61360IntegerCurrency,
+	"REAL_MEASURE":        aastypes.DataTypeIEC61360RealMeasure,
+	"REAL_COUNT":          aastypes.DataTypeIEC61360RealCount,
+	"REAL_CURRENCY":       aastypes.DataTypeIEC61360RealCurrency,
+	"BOOLEAN":             aastypes.DataTypeIEC61360Boolean,
+	"IRI":                 aastypes.DataTypeIEC61360IRI,
+	"IRDI":                aastypes.DataTypeIEC61360IRDI,
+	"RATIONAL":            aastypes.DataTypeIEC61360Rational,
+	"RATIONAL_MEASURE":    aastypes.DataTypeIEC61360RationalMeasure,
+	"TIME":                aastypes.DataTypeIEC61360Time,
+	"TIMESTAMP":           aastypes.DataTypeIEC61360Timestamp,
+	"FILE":                aastypes.DataTypeIEC61360File,
+	"HTML":                aastypes.DataTypeIEC61360HTML,
+	"BLOB":                aastypes.DataTypeIEC61360Blob,
 }
 
 // Parse `text` as a string representation of [aastypes.DataTypeIEC61360].
@@ -876,7 +884,7 @@ func DataTypeIEC61360FromString(
 	return
 }
 
-var dataTypeIEC61360ToStringArray = [...]string {
+var dataTypeIEC61360ToStringArray = [...]string{
 	"DATE",
 	"STRING",
 	"STRING_TRANSLATABLE",
@@ -908,7 +916,7 @@ func DataTypeIEC61360ToString(
 	i := int(value)
 	ok =
 		i >= 0 &&
-		i < len(dataTypeIEC61360ToStringArray)
+			i < len(dataTypeIEC61360ToStringArray)
 
 	if !ok {
 		return
