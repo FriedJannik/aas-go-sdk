@@ -1,10 +1,10 @@
-# AAS Go SDK V3.1
+# AAS Go SDK V3.2
 
-Go SDK for the Asset Administration Shell (AAS) V3.1 metamodel, auto-generated using [aas-core-codegen](https://github.com/aas-core-works/aas-core-codegen).
+Go SDK for the Asset Administration Shell (AAS) V2 metamodel, auto-generated using [aas-core-codegen](https://github.com/aas-core-works/aas-core-codegen).
 
 ## Features
 
-- **Full V3.1 support** - Generated from the official [aas-core-meta](https://github.com/aas-core-works/aas-core-meta) V3.1 metamodel
+- **Full V3.2 support** - Generated from the official [aas-core-meta](https://github.com/aas-core-works/aas-core-meta) V3.2 metamodel
 - **Proper interfaces** - `IClass`, `ISubmodelElement`, `IReferable`, `IIdentifiable`, etc.
 - **Type-safe** - Go interfaces model the AAS inheritance hierarchy
 - **Verification** - Built-in constraint checking
@@ -72,7 +72,7 @@ func main() {
 
 ## Regenerating the SDK
 
-To regenerate from the latest V3.1 meta-model:
+To regenerate from the latest V3.2 meta-model:
 
 ```bash
 ./_dev_scripts/generate.sh
