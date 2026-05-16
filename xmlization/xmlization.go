@@ -12,15 +12,16 @@ import (
 	b64 "encoding/base64"
 	"encoding/xml"
 	"fmt"
-	"io"
-	"math"
-	"strconv"
-	"strings"
-	"unicode"
+	aascommon "github.com/FriedJannik/aas-go-sdk/common"
 	aasreporting "github.com/FriedJannik/aas-go-sdk/reporting"
 	aasstringification "github.com/FriedJannik/aas-go-sdk/stringification"
 	aastypes "github.com/FriedJannik/aas-go-sdk/types"
-	aasverification "github.com/FriedJannik/aas-go-sdk/verification"
+	"io"
+	"math"
+	"regexp"
+	"strconv"
+	"strings"
+	"unicode"
 )
 
 // region De-serialization
@@ -28,14 +29,14 @@ import (
 // Represent an error during the de-serialization.
 //
 // Implements `error`.
-type DeserializationError struct{
-	Path *aasreporting.Path
+type DeserializationError struct {
+	Path    *aasreporting.Path
 	Message string
 }
 
 func newDeserializationError(message string) *DeserializationError {
 	return &DeserializationError{
-		Path: &aasreporting.Path{},
+		Path:    &aasreporting.Path{},
 		Message: message,
 	}
 }
@@ -250,6 +251,33 @@ func readTextAsLong(
 	return
 }
 
+func constructXsDoubleRe() *regexp.Regexp {
+	doubleRep := "((\\+|-)?([0-9]+(\\.[0-9]*)?|\\.[0-9]+)([Ee](\\+|-)?[0-9]+)?|-?INF|NaN)"
+	pattern := aascommon.Concat(
+		"^",
+		doubleRep,
+		"$",
+	)
+
+	return regexp.MustCompile(
+		pattern,
+	)
+}
+
+var xsDoubleRe = constructXsDoubleRe()
+
+// Check that text conforms to the pattern of an `xs:double`.
+//
+// See: https://www.w3.org/TR/xmlschema-2/#double
+//
+//   - `text`: Text to be checked
+//   - Return True if the text conforms to the pattern
+func isValidXsDouble(text string) bool {
+	return xsDoubleRe.MatchString(
+		text,
+	)
+}
+
 // Consume the text tokens (char data) as a representation of a `xs:double`.
 //
 // Any comment tokens are skipped.
@@ -272,7 +300,7 @@ func readTextAsDouble(
 	// strconv.ParseFloat is too permissive. For example, it accepts "nan"
 	// although only "NaN" is valid.
 	// See: https://www.w3.org/TR/xmlschema-2/#double
-	if !aasverification.MatchesXsDouble(text) {
+	if !isValidXsDouble(text) {
 		err = newDeserializationError(
 			fmt.Sprintf(
 				"Expected a value as xs:double, but got: %s",
@@ -337,7 +365,7 @@ func readTextAsBase64EncodedBytes(
 	return
 }
 
-const Namespace = "https://admin-shell.io/aas/3/1"
+const Namespace = "https://admin-shell.io/aas/3/2"
 
 // Check that the `current` token is a valid start element, *i.e.*, lives in [Namespace]
 // and contains no attributes.
@@ -724,7 +752,7 @@ func readExtensionAsSequence(
 				err = newDeserializationError(
 					fmt.Sprintf(
 						"Expected a sequence of XML elements representing properties "+
-						"of IExtension, but got text: %s",
+							"of IExtension, but got text: %s",
 						string(charData),
 					),
 				)
@@ -749,7 +777,7 @@ func readExtensionAsSequence(
 		var valueErr error
 		switch local {
 		case "semanticId":
-			theSemanticID, current, valueErr =  readReferenceAsSequence(
+			theSemanticID, current, valueErr = readReferenceAsSequence(
 				decoder,
 				current,
 			)
@@ -908,7 +936,7 @@ func readExtensionWithLookahead(
 	instance, current, err = readExtensionAsSequence(
 		decoder,
 		current,
-)
+	)
 	if err != nil {
 		return
 	}
@@ -1440,6 +1468,8 @@ func readAdministrativeInformationAsSequence(
 	var theVersion *string
 	var theRevision *string
 	var theCreator aastypes.IReference
+	var theCreatedAt *string
+	var theUpdatedAt *string
 	var theTemplateID *string
 
 	for {
@@ -1458,7 +1488,7 @@ func readAdministrativeInformationAsSequence(
 				err = newDeserializationError(
 					fmt.Sprintf(
 						"Expected a sequence of XML elements representing properties "+
-						"of IAdministrativeInformation, but got text: %s",
+							"of IAdministrativeInformation, but got text: %s",
 						string(charData),
 					),
 				)
@@ -1506,10 +1536,26 @@ func readAdministrativeInformationAsSequence(
 			theRevision = &value
 
 		case "creator":
-			theCreator, current, valueErr =  readReferenceAsSequence(
+			theCreator, current, valueErr = readReferenceAsSequence(
 				decoder,
 				current,
 			)
+
+		case "createdAt":
+			var value string
+			value, current, valueErr = readText(
+				decoder,
+				current,
+			)
+			theCreatedAt = &value
+
+		case "updatedAt":
+			var value string
+			value, current, valueErr = readText(
+				decoder,
+				current,
+			)
+			theUpdatedAt = &value
 
 		case "templateId":
 			var value string
@@ -1576,6 +1622,12 @@ func readAdministrativeInformationAsSequence(
 	instance.SetCreator(
 		theCreator,
 	)
+	instance.SetCreatedAt(
+		theCreatedAt,
+	)
+	instance.SetUpdatedAt(
+		theUpdatedAt,
+	)
 	instance.SetTemplateID(
 		theTemplateID,
 	)
@@ -1627,7 +1679,7 @@ func readAdministrativeInformationWithLookahead(
 	instance, current, err = readAdministrativeInformationAsSequence(
 		decoder,
 		current,
-)
+	)
 	if err != nil {
 		return
 	}
@@ -1822,7 +1874,7 @@ func readQualifierAsSequence(
 				err = newDeserializationError(
 					fmt.Sprintf(
 						"Expected a sequence of XML elements representing properties "+
-						"of IQualifier, but got text: %s",
+							"of IQualifier, but got text: %s",
 						string(charData),
 					),
 				)
@@ -1847,7 +1899,7 @@ func readQualifierAsSequence(
 		var valueErr error
 		switch local {
 		case "semanticId":
-			theSemanticID, current, valueErr =  readReferenceAsSequence(
+			theSemanticID, current, valueErr = readReferenceAsSequence(
 				decoder,
 				current,
 			)
@@ -1890,7 +1942,7 @@ func readQualifierAsSequence(
 			theValue = &value
 
 		case "valueId":
-			theValueID, current, valueErr =  readReferenceAsSequence(
+			theValueID, current, valueErr = readReferenceAsSequence(
 				decoder,
 				current,
 			)
@@ -2020,7 +2072,7 @@ func readQualifierWithLookahead(
 	instance, current, err = readQualifierAsSequence(
 		decoder,
 		current,
-)
+	)
 	if err != nil {
 		return
 	}
@@ -2073,7 +2125,7 @@ func readAssetAdministrationShellAsSequence(
 				err = newDeserializationError(
 					fmt.Sprintf(
 						"Expected a sequence of XML elements representing properties "+
-						"of IAssetAdministrationShell, but got text: %s",
+							"of IAssetAdministrationShell, but got text: %s",
 						string(charData),
 					),
 				)
@@ -2135,7 +2187,7 @@ func readAssetAdministrationShellAsSequence(
 			)
 
 		case "administration":
-			theAdministration, current, valueErr =  readAdministrativeInformationAsSequence(
+			theAdministration, current, valueErr = readAdministrativeInformationAsSequence(
 				decoder,
 				current,
 			)
@@ -2155,13 +2207,13 @@ func readAssetAdministrationShellAsSequence(
 			)
 
 		case "derivedFrom":
-			theDerivedFrom, current, valueErr =  readReferenceAsSequence(
+			theDerivedFrom, current, valueErr = readReferenceAsSequence(
 				decoder,
 				current,
 			)
 
 		case "assetInformation":
-			theAssetInformation, current, valueErr =  readAssetInformationAsSequence(
+			theAssetInformation, current, valueErr = readAssetInformationAsSequence(
 				decoder,
 				current,
 			)
@@ -2311,7 +2363,7 @@ func readAssetAdministrationShellWithLookahead(
 	instance, current, err = readAssetAdministrationShellAsSequence(
 		decoder,
 		current,
-)
+	)
 	if err != nil {
 		return
 	}
@@ -2357,7 +2409,7 @@ func readAssetInformationAsSequence(
 				err = newDeserializationError(
 					fmt.Sprintf(
 						"Expected a sequence of XML elements representing properties "+
-						"of IAssetInformation, but got text: %s",
+							"of IAssetInformation, but got text: %s",
 						string(charData),
 					),
 				)
@@ -2412,7 +2464,7 @@ func readAssetInformationAsSequence(
 			theAssetType = &value
 
 		case "defaultThumbnail":
-			theDefaultThumbnail, current, valueErr =  readResourceAsSequence(
+			theDefaultThumbnail, current, valueErr = readResourceAsSequence(
 				decoder,
 				current,
 			)
@@ -2531,7 +2583,7 @@ func readAssetInformationWithLookahead(
 	instance, current, err = readAssetInformationAsSequence(
 		decoder,
 		current,
-)
+	)
 	if err != nil {
 		return
 	}
@@ -2574,7 +2626,7 @@ func readResourceAsSequence(
 				err = newDeserializationError(
 					fmt.Sprintf(
 						"Expected a sequence of XML elements representing properties "+
-						"of IResource, but got text: %s",
+							"of IResource, but got text: %s",
 						string(charData),
 					),
 				)
@@ -2718,7 +2770,7 @@ func readResourceWithLookahead(
 	instance, current, err = readResourceAsSequence(
 		decoder,
 		current,
-)
+	)
 	if err != nil {
 		return
 	}
@@ -2802,7 +2854,7 @@ func readSpecificAssetIDAsSequence(
 				err = newDeserializationError(
 					fmt.Sprintf(
 						"Expected a sequence of XML elements representing properties "+
-						"of ISpecificAssetID, but got text: %s",
+							"of ISpecificAssetID, but got text: %s",
 						string(charData),
 					),
 				)
@@ -2827,7 +2879,7 @@ func readSpecificAssetIDAsSequence(
 		var valueErr error
 		switch local {
 		case "semanticId":
-			theSemanticID, current, valueErr =  readReferenceAsSequence(
+			theSemanticID, current, valueErr = readReferenceAsSequence(
 				decoder,
 				current,
 			)
@@ -2854,7 +2906,7 @@ func readSpecificAssetIDAsSequence(
 			foundValue = true
 
 		case "externalSubjectId":
-			theExternalSubjectID, current, valueErr =  readReferenceAsSequence(
+			theExternalSubjectID, current, valueErr = readReferenceAsSequence(
 				decoder,
 				current,
 			)
@@ -2978,7 +3030,7 @@ func readSpecificAssetIDWithLookahead(
 	instance, current, err = readSpecificAssetIDAsSequence(
 		decoder,
 		current,
-)
+	)
 	if err != nil {
 		return
 	}
@@ -3032,7 +3084,7 @@ func readSubmodelAsSequence(
 				err = newDeserializationError(
 					fmt.Sprintf(
 						"Expected a sequence of XML elements representing properties "+
-						"of ISubmodel, but got text: %s",
+							"of ISubmodel, but got text: %s",
 						string(charData),
 					),
 				)
@@ -3094,7 +3146,7 @@ func readSubmodelAsSequence(
 			)
 
 		case "administration":
-			theAdministration, current, valueErr =  readAdministrativeInformationAsSequence(
+			theAdministration, current, valueErr = readAdministrativeInformationAsSequence(
 				decoder,
 				current,
 			)
@@ -3115,7 +3167,7 @@ func readSubmodelAsSequence(
 			theKind = &value
 
 		case "semanticId":
-			theSemanticID, current, valueErr =  readReferenceAsSequence(
+			theSemanticID, current, valueErr = readReferenceAsSequence(
 				decoder,
 				current,
 			)
@@ -3286,7 +3338,7 @@ func readSubmodelWithLookahead(
 	instance, current, err = readSubmodelAsSequence(
 		decoder,
 		current,
-)
+	)
 	if err != nil {
 		return
 	}
@@ -3441,7 +3493,7 @@ func readRelationshipElementAsSequence(
 				err = newDeserializationError(
 					fmt.Sprintf(
 						"Expected a sequence of XML elements representing properties "+
-						"of IRelationshipElement, but got text: %s",
+							"of IRelationshipElement, but got text: %s",
 						string(charData),
 					),
 				)
@@ -3503,7 +3555,7 @@ func readRelationshipElementAsSequence(
 			)
 
 		case "semanticId":
-			theSemanticID, current, valueErr =  readReferenceAsSequence(
+			theSemanticID, current, valueErr = readReferenceAsSequence(
 				decoder,
 				current,
 			)
@@ -3530,13 +3582,13 @@ func readRelationshipElementAsSequence(
 			)
 
 		case "first":
-			theFirst, current, valueErr =  readReferenceAsSequence(
+			theFirst, current, valueErr = readReferenceAsSequence(
 				decoder,
 				current,
 			)
 
 		case "second":
-			theSecond, current, valueErr =  readReferenceAsSequence(
+			theSecond, current, valueErr = readReferenceAsSequence(
 				decoder,
 				current,
 			)
@@ -3762,7 +3814,7 @@ func readSubmodelElementListAsSequence(
 				err = newDeserializationError(
 					fmt.Sprintf(
 						"Expected a sequence of XML elements representing properties "+
-						"of ISubmodelElementList, but got text: %s",
+							"of ISubmodelElementList, but got text: %s",
 						string(charData),
 					),
 				)
@@ -3824,7 +3876,7 @@ func readSubmodelElementListAsSequence(
 			)
 
 		case "semanticId":
-			theSemanticID, current, valueErr =  readReferenceAsSequence(
+			theSemanticID, current, valueErr = readReferenceAsSequence(
 				decoder,
 				current,
 			)
@@ -3859,7 +3911,7 @@ func readSubmodelElementListAsSequence(
 			theOrderRelevant = &value
 
 		case "semanticIdListElement":
-			theSemanticIDListElement, current, valueErr =  readReferenceAsSequence(
+			theSemanticIDListElement, current, valueErr = readReferenceAsSequence(
 				decoder,
 				current,
 			)
@@ -4027,7 +4079,7 @@ func readSubmodelElementListWithLookahead(
 	instance, current, err = readSubmodelElementListAsSequence(
 		decoder,
 		current,
-)
+	)
 	if err != nil {
 		return
 	}
@@ -4076,7 +4128,7 @@ func readSubmodelElementCollectionAsSequence(
 				err = newDeserializationError(
 					fmt.Sprintf(
 						"Expected a sequence of XML elements representing properties "+
-						"of ISubmodelElementCollection, but got text: %s",
+							"of ISubmodelElementCollection, but got text: %s",
 						string(charData),
 					),
 				)
@@ -4138,7 +4190,7 @@ func readSubmodelElementCollectionAsSequence(
 			)
 
 		case "semanticId":
-			theSemanticID, current, valueErr =  readReferenceAsSequence(
+			theSemanticID, current, valueErr = readReferenceAsSequence(
 				decoder,
 				current,
 			)
@@ -4294,7 +4346,7 @@ func readSubmodelElementCollectionWithLookahead(
 	instance, current, err = readSubmodelElementCollectionAsSequence(
 		decoder,
 		current,
-)
+	)
 	if err != nil {
 		return
 	}
@@ -4420,7 +4472,7 @@ func readPropertyAsSequence(
 				err = newDeserializationError(
 					fmt.Sprintf(
 						"Expected a sequence of XML elements representing properties "+
-						"of IProperty, but got text: %s",
+							"of IProperty, but got text: %s",
 						string(charData),
 					),
 				)
@@ -4482,7 +4534,7 @@ func readPropertyAsSequence(
 			)
 
 		case "semanticId":
-			theSemanticID, current, valueErr =  readReferenceAsSequence(
+			theSemanticID, current, valueErr = readReferenceAsSequence(
 				decoder,
 				current,
 			)
@@ -4524,7 +4576,7 @@ func readPropertyAsSequence(
 			theValue = &value
 
 		case "valueId":
-			theValueID, current, valueErr =  readReferenceAsSequence(
+			theValueID, current, valueErr = readReferenceAsSequence(
 				decoder,
 				current,
 			)
@@ -4664,7 +4716,7 @@ func readPropertyWithLookahead(
 	instance, current, err = readPropertyAsSequence(
 		decoder,
 		current,
-)
+	)
 	if err != nil {
 		return
 	}
@@ -4714,7 +4766,7 @@ func readMultiLanguagePropertyAsSequence(
 				err = newDeserializationError(
 					fmt.Sprintf(
 						"Expected a sequence of XML elements representing properties "+
-						"of IMultiLanguageProperty, but got text: %s",
+							"of IMultiLanguageProperty, but got text: %s",
 						string(charData),
 					),
 				)
@@ -4776,7 +4828,7 @@ func readMultiLanguagePropertyAsSequence(
 			)
 
 		case "semanticId":
-			theSemanticID, current, valueErr =  readReferenceAsSequence(
+			theSemanticID, current, valueErr = readReferenceAsSequence(
 				decoder,
 				current,
 			)
@@ -4810,7 +4862,7 @@ func readMultiLanguagePropertyAsSequence(
 			)
 
 		case "valueId":
-			theValueID, current, valueErr =  readReferenceAsSequence(
+			theValueID, current, valueErr = readReferenceAsSequence(
 				decoder,
 				current,
 			)
@@ -4941,7 +4993,7 @@ func readMultiLanguagePropertyWithLookahead(
 	instance, current, err = readMultiLanguagePropertyAsSequence(
 		decoder,
 		current,
-)
+	)
 	if err != nil {
 		return
 	}
@@ -4994,7 +5046,7 @@ func readRangeAsSequence(
 				err = newDeserializationError(
 					fmt.Sprintf(
 						"Expected a sequence of XML elements representing properties "+
-						"of IRange, but got text: %s",
+							"of IRange, but got text: %s",
 						string(charData),
 					),
 				)
@@ -5056,7 +5108,7 @@ func readRangeAsSequence(
 			)
 
 		case "semanticId":
-			theSemanticID, current, valueErr =  readReferenceAsSequence(
+			theSemanticID, current, valueErr = readReferenceAsSequence(
 				decoder,
 				current,
 			)
@@ -5240,7 +5292,7 @@ func readRangeWithLookahead(
 	instance, current, err = readRangeAsSequence(
 		decoder,
 		current,
-)
+	)
 	if err != nil {
 		return
 	}
@@ -5289,7 +5341,7 @@ func readReferenceElementAsSequence(
 				err = newDeserializationError(
 					fmt.Sprintf(
 						"Expected a sequence of XML elements representing properties "+
-						"of IReferenceElement, but got text: %s",
+							"of IReferenceElement, but got text: %s",
 						string(charData),
 					),
 				)
@@ -5351,7 +5403,7 @@ func readReferenceElementAsSequence(
 			)
 
 		case "semanticId":
-			theSemanticID, current, valueErr =  readReferenceAsSequence(
+			theSemanticID, current, valueErr = readReferenceAsSequence(
 				decoder,
 				current,
 			)
@@ -5378,7 +5430,7 @@ func readReferenceElementAsSequence(
 			)
 
 		case "value":
-			theValue, current, valueErr =  readReferenceAsSequence(
+			theValue, current, valueErr = readReferenceAsSequence(
 				decoder,
 				current,
 			)
@@ -5506,7 +5558,7 @@ func readReferenceElementWithLookahead(
 	instance, current, err = readReferenceElementAsSequence(
 		decoder,
 		current,
-)
+	)
 	if err != nil {
 		return
 	}
@@ -5556,7 +5608,7 @@ func readBlobAsSequence(
 				err = newDeserializationError(
 					fmt.Sprintf(
 						"Expected a sequence of XML elements representing properties "+
-						"of IBlob, but got text: %s",
+							"of IBlob, but got text: %s",
 						string(charData),
 					),
 				)
@@ -5618,7 +5670,7 @@ func readBlobAsSequence(
 			)
 
 		case "semanticId":
-			theSemanticID, current, valueErr =  readReferenceAsSequence(
+			theSemanticID, current, valueErr = readReferenceAsSequence(
 				decoder,
 				current,
 			)
@@ -5784,7 +5836,7 @@ func readBlobWithLookahead(
 	instance, current, err = readBlobAsSequence(
 		decoder,
 		current,
-)
+	)
 	if err != nil {
 		return
 	}
@@ -5834,7 +5886,7 @@ func readFileAsSequence(
 				err = newDeserializationError(
 					fmt.Sprintf(
 						"Expected a sequence of XML elements representing properties "+
-						"of IFile, but got text: %s",
+							"of IFile, but got text: %s",
 						string(charData),
 					),
 				)
@@ -5896,7 +5948,7 @@ func readFileAsSequence(
 			)
 
 		case "semanticId":
-			theSemanticID, current, valueErr =  readReferenceAsSequence(
+			theSemanticID, current, valueErr = readReferenceAsSequence(
 				decoder,
 				current,
 			)
@@ -6064,7 +6116,7 @@ func readFileWithLookahead(
 	instance, current, err = readFileAsSequence(
 		decoder,
 		current,
-)
+	)
 	if err != nil {
 		return
 	}
@@ -6115,7 +6167,7 @@ func readAnnotatedRelationshipElementAsSequence(
 				err = newDeserializationError(
 					fmt.Sprintf(
 						"Expected a sequence of XML elements representing properties "+
-						"of IAnnotatedRelationshipElement, but got text: %s",
+							"of IAnnotatedRelationshipElement, but got text: %s",
 						string(charData),
 					),
 				)
@@ -6177,7 +6229,7 @@ func readAnnotatedRelationshipElementAsSequence(
 			)
 
 		case "semanticId":
-			theSemanticID, current, valueErr =  readReferenceAsSequence(
+			theSemanticID, current, valueErr = readReferenceAsSequence(
 				decoder,
 				current,
 			)
@@ -6204,13 +6256,13 @@ func readAnnotatedRelationshipElementAsSequence(
 			)
 
 		case "first":
-			theFirst, current, valueErr =  readReferenceAsSequence(
+			theFirst, current, valueErr = readReferenceAsSequence(
 				decoder,
 				current,
 			)
 
 		case "second":
-			theSecond, current, valueErr =  readReferenceAsSequence(
+			theSecond, current, valueErr = readReferenceAsSequence(
 				decoder,
 				current,
 			)
@@ -6351,7 +6403,7 @@ func readAnnotatedRelationshipElementWithLookahead(
 	instance, current, err = readAnnotatedRelationshipElementAsSequence(
 		decoder,
 		current,
-)
+	)
 	if err != nil {
 		return
 	}
@@ -6403,7 +6455,7 @@ func readEntityAsSequence(
 				err = newDeserializationError(
 					fmt.Sprintf(
 						"Expected a sequence of XML elements representing properties "+
-						"of IEntity, but got text: %s",
+							"of IEntity, but got text: %s",
 						string(charData),
 					),
 				)
@@ -6465,7 +6517,7 @@ func readEntityAsSequence(
 			)
 
 		case "semanticId":
-			theSemanticID, current, valueErr =  readReferenceAsSequence(
+			theSemanticID, current, valueErr = readReferenceAsSequence(
 				decoder,
 				current,
 			)
@@ -6653,7 +6705,7 @@ func readEntityWithLookahead(
 	instance, current, err = readEntityAsSequence(
 		decoder,
 		current,
-)
+	)
 	if err != nil {
 		return
 	}
@@ -6815,7 +6867,7 @@ func readEventPayloadAsSequence(
 				err = newDeserializationError(
 					fmt.Sprintf(
 						"Expected a sequence of XML elements representing properties "+
-						"of IEventPayload, but got text: %s",
+							"of IEventPayload, but got text: %s",
 						string(charData),
 					),
 				)
@@ -6840,27 +6892,27 @@ func readEventPayloadAsSequence(
 		var valueErr error
 		switch local {
 		case "source":
-			theSource, current, valueErr =  readReferenceAsSequence(
+			theSource, current, valueErr = readReferenceAsSequence(
 				decoder,
 				current,
 			)
 			foundSource = true
 
 		case "sourceSemanticId":
-			theSourceSemanticID, current, valueErr =  readReferenceAsSequence(
+			theSourceSemanticID, current, valueErr = readReferenceAsSequence(
 				decoder,
 				current,
 			)
 
 		case "observableReference":
-			theObservableReference, current, valueErr =  readReferenceAsSequence(
+			theObservableReference, current, valueErr = readReferenceAsSequence(
 				decoder,
 				current,
 			)
 			foundObservableReference = true
 
 		case "observableSemanticId":
-			theObservableSemanticID, current, valueErr =  readReferenceAsSequence(
+			theObservableSemanticID, current, valueErr = readReferenceAsSequence(
 				decoder,
 				current,
 			)
@@ -6874,7 +6926,7 @@ func readEventPayloadAsSequence(
 			theTopic = &value
 
 		case "subjectId":
-			theSubjectID, current, valueErr =  readReferenceAsSequence(
+			theSubjectID, current, valueErr = readReferenceAsSequence(
 				decoder,
 				current,
 			)
@@ -7025,7 +7077,7 @@ func readEventPayloadWithLookahead(
 	instance, current, err = readEventPayloadAsSequence(
 		decoder,
 		current,
-)
+	)
 	if err != nil {
 		return
 	}
@@ -7138,7 +7190,7 @@ func readBasicEventElementAsSequence(
 				err = newDeserializationError(
 					fmt.Sprintf(
 						"Expected a sequence of XML elements representing properties "+
-						"of IBasicEventElement, but got text: %s",
+							"of IBasicEventElement, but got text: %s",
 						string(charData),
 					),
 				)
@@ -7200,7 +7252,7 @@ func readBasicEventElementAsSequence(
 			)
 
 		case "semanticId":
-			theSemanticID, current, valueErr =  readReferenceAsSequence(
+			theSemanticID, current, valueErr = readReferenceAsSequence(
 				decoder,
 				current,
 			)
@@ -7227,7 +7279,7 @@ func readBasicEventElementAsSequence(
 			)
 
 		case "observed":
-			theObserved, current, valueErr =  readReferenceAsSequence(
+			theObserved, current, valueErr = readReferenceAsSequence(
 				decoder,
 				current,
 			)
@@ -7256,7 +7308,7 @@ func readBasicEventElementAsSequence(
 			theMessageTopic = &value
 
 		case "messageBroker":
-			theMessageBroker, current, valueErr =  readReferenceAsSequence(
+			theMessageBroker, current, valueErr = readReferenceAsSequence(
 				decoder,
 				current,
 			)
@@ -7445,7 +7497,7 @@ func readBasicEventElementWithLookahead(
 	instance, current, err = readBasicEventElementAsSequence(
 		decoder,
 		current,
-)
+	)
 	if err != nil {
 		return
 	}
@@ -7496,7 +7548,7 @@ func readOperationAsSequence(
 				err = newDeserializationError(
 					fmt.Sprintf(
 						"Expected a sequence of XML elements representing properties "+
-						"of IOperation, but got text: %s",
+							"of IOperation, but got text: %s",
 						string(charData),
 					),
 				)
@@ -7558,7 +7610,7 @@ func readOperationAsSequence(
 			)
 
 		case "semanticId":
-			theSemanticID, current, valueErr =  readReferenceAsSequence(
+			theSemanticID, current, valueErr = readReferenceAsSequence(
 				decoder,
 				current,
 			)
@@ -7734,7 +7786,7 @@ func readOperationWithLookahead(
 	instance, current, err = readOperationAsSequence(
 		decoder,
 		current,
-)
+	)
 	if err != nil {
 		return
 	}
@@ -7776,7 +7828,7 @@ func readOperationVariableAsSequence(
 				err = newDeserializationError(
 					fmt.Sprintf(
 						"Expected a sequence of XML elements representing properties "+
-						"of IOperationVariable, but got text: %s",
+							"of IOperationVariable, but got text: %s",
 						string(charData),
 					),
 				)
@@ -7801,7 +7853,7 @@ func readOperationVariableAsSequence(
 		var valueErr error
 		switch local {
 		case "value":
-			theValue, valueErr =  readSubmodelElementWithLookahead(
+			theValue, valueErr = readSubmodelElementWithLookahead(
 				decoder,
 				current,
 			)
@@ -7914,7 +7966,7 @@ func readOperationVariableWithLookahead(
 	instance, current, err = readOperationVariableAsSequence(
 		decoder,
 		current,
-)
+	)
 	if err != nil {
 		return
 	}
@@ -7962,7 +8014,7 @@ func readCapabilityAsSequence(
 				err = newDeserializationError(
 					fmt.Sprintf(
 						"Expected a sequence of XML elements representing properties "+
-						"of ICapability, but got text: %s",
+							"of ICapability, but got text: %s",
 						string(charData),
 					),
 				)
@@ -8024,7 +8076,7 @@ func readCapabilityAsSequence(
 			)
 
 		case "semanticId":
-			theSemanticID, current, valueErr =  readReferenceAsSequence(
+			theSemanticID, current, valueErr = readReferenceAsSequence(
 				decoder,
 				current,
 			)
@@ -8170,7 +8222,7 @@ func readCapabilityWithLookahead(
 	instance, current, err = readCapabilityAsSequence(
 		decoder,
 		current,
-)
+	)
 	if err != nil {
 		return
 	}
@@ -8220,7 +8272,7 @@ func readConceptDescriptionAsSequence(
 				err = newDeserializationError(
 					fmt.Sprintf(
 						"Expected a sequence of XML elements representing properties "+
-						"of IConceptDescription, but got text: %s",
+							"of IConceptDescription, but got text: %s",
 						string(charData),
 					),
 				)
@@ -8282,7 +8334,7 @@ func readConceptDescriptionAsSequence(
 			)
 
 		case "administration":
-			theAdministration, current, valueErr =  readAdministrativeInformationAsSequence(
+			theAdministration, current, valueErr = readAdministrativeInformationAsSequence(
 				decoder,
 				current,
 			)
@@ -8434,7 +8486,7 @@ func readConceptDescriptionWithLookahead(
 	instance, current, err = readConceptDescriptionAsSequence(
 		decoder,
 		current,
-)
+	)
 	if err != nil {
 		return
 	}
@@ -8516,7 +8568,7 @@ func readReferenceAsSequence(
 				err = newDeserializationError(
 					fmt.Sprintf(
 						"Expected a sequence of XML elements representing properties "+
-						"of IReference, but got text: %s",
+							"of IReference, but got text: %s",
 						string(charData),
 					),
 				)
@@ -8548,7 +8600,7 @@ func readReferenceAsSequence(
 			foundType = true
 
 		case "referredSemanticId":
-			theReferredSemanticID, current, valueErr =  readReferenceAsSequence(
+			theReferredSemanticID, current, valueErr = readReferenceAsSequence(
 				decoder,
 				current,
 			)
@@ -8674,7 +8726,7 @@ func readReferenceWithLookahead(
 	instance, current, err = readReferenceAsSequence(
 		decoder,
 		current,
-)
+	)
 	if err != nil {
 		return
 	}
@@ -8718,7 +8770,7 @@ func readKeyAsSequence(
 				err = newDeserializationError(
 					fmt.Sprintf(
 						"Expected a sequence of XML elements representing properties "+
-						"of IKey, but got text: %s",
+							"of IKey, but got text: %s",
 						string(charData),
 					),
 				)
@@ -8866,7 +8918,7 @@ func readKeyWithLookahead(
 	instance, current, err = readKeyAsSequence(
 		decoder,
 		current,
-)
+	)
 	if err != nil {
 		return
 	}
@@ -9053,7 +9105,7 @@ func readLangStringNameTypeAsSequence(
 				err = newDeserializationError(
 					fmt.Sprintf(
 						"Expected a sequence of XML elements representing properties "+
-						"of ILangStringNameType, but got text: %s",
+							"of ILangStringNameType, but got text: %s",
 						string(charData),
 					),
 				)
@@ -9201,7 +9253,7 @@ func readLangStringNameTypeWithLookahead(
 	instance, current, err = readLangStringNameTypeAsSequence(
 		decoder,
 		current,
-)
+	)
 	if err != nil {
 		return
 	}
@@ -9245,7 +9297,7 @@ func readLangStringTextTypeAsSequence(
 				err = newDeserializationError(
 					fmt.Sprintf(
 						"Expected a sequence of XML elements representing properties "+
-						"of ILangStringTextType, but got text: %s",
+							"of ILangStringTextType, but got text: %s",
 						string(charData),
 					),
 				)
@@ -9393,7 +9445,7 @@ func readLangStringTextTypeWithLookahead(
 	instance, current, err = readLangStringTextTypeAsSequence(
 		decoder,
 		current,
-)
+	)
 	if err != nil {
 		return
 	}
@@ -9435,7 +9487,7 @@ func readEnvironmentAsSequence(
 				err = newDeserializationError(
 					fmt.Sprintf(
 						"Expected a sequence of XML elements representing properties "+
-						"of IEnvironment, but got text: %s",
+							"of IEnvironment, but got text: %s",
 						string(charData),
 					),
 				)
@@ -9582,7 +9634,7 @@ func readEnvironmentWithLookahead(
 	instance, current, err = readEnvironmentAsSequence(
 		decoder,
 		current,
-)
+	)
 	if err != nil {
 		return
 	}
@@ -9679,7 +9731,7 @@ func readEmbeddedDataSpecificationAsSequence(
 				err = newDeserializationError(
 					fmt.Sprintf(
 						"Expected a sequence of XML elements representing properties "+
-						"of IEmbeddedDataSpecification, but got text: %s",
+							"of IEmbeddedDataSpecification, but got text: %s",
 						string(charData),
 					),
 				)
@@ -9704,14 +9756,14 @@ func readEmbeddedDataSpecificationAsSequence(
 		var valueErr error
 		switch local {
 		case "dataSpecification":
-			theDataSpecification, current, valueErr =  readReferenceAsSequence(
+			theDataSpecification, current, valueErr = readReferenceAsSequence(
 				decoder,
 				current,
 			)
 			foundDataSpecification = true
 
 		case "dataSpecificationContent":
-			theDataSpecificationContent, valueErr =  readDataSpecificationContentWithLookahead(
+			theDataSpecificationContent, valueErr = readDataSpecificationContentWithLookahead(
 				decoder,
 				current,
 			)
@@ -9832,7 +9884,7 @@ func readEmbeddedDataSpecificationWithLookahead(
 	instance, current, err = readEmbeddedDataSpecificationAsSequence(
 		decoder,
 		current,
-)
+	)
 	if err != nil {
 		return
 	}
@@ -9917,7 +9969,7 @@ func readLevelTypeAsSequence(
 				err = newDeserializationError(
 					fmt.Sprintf(
 						"Expected a sequence of XML elements representing properties "+
-						"of ILevelType, but got text: %s",
+							"of ILevelType, but got text: %s",
 						string(charData),
 					),
 				)
@@ -10095,7 +10147,7 @@ func readLevelTypeWithLookahead(
 	instance, current, err = readLevelTypeAsSequence(
 		decoder,
 		current,
-)
+	)
 	if err != nil {
 		return
 	}
@@ -10138,7 +10190,7 @@ func readValueReferencePairAsSequence(
 				err = newDeserializationError(
 					fmt.Sprintf(
 						"Expected a sequence of XML elements representing properties "+
-						"of IValueReferencePair, but got text: %s",
+							"of IValueReferencePair, but got text: %s",
 						string(charData),
 					),
 				)
@@ -10170,7 +10222,7 @@ func readValueReferencePairAsSequence(
 			foundValue = true
 
 		case "valueId":
-			theValueID, current, valueErr =  readReferenceAsSequence(
+			theValueID, current, valueErr = readReferenceAsSequence(
 				decoder,
 				current,
 			)
@@ -10280,7 +10332,7 @@ func readValueReferencePairWithLookahead(
 	instance, current, err = readValueReferencePairAsSequence(
 		decoder,
 		current,
-)
+	)
 	if err != nil {
 		return
 	}
@@ -10322,7 +10374,7 @@ func readValueListAsSequence(
 				err = newDeserializationError(
 					fmt.Sprintf(
 						"Expected a sequence of XML elements representing properties "+
-						"of IValueList, but got text: %s",
+							"of IValueList, but got text: %s",
 						string(charData),
 					),
 				)
@@ -10456,7 +10508,7 @@ func readValueListWithLookahead(
 	instance, current, err = readValueListAsSequence(
 		decoder,
 		current,
-)
+	)
 	if err != nil {
 		return
 	}
@@ -10500,7 +10552,7 @@ func readLangStringPreferredNameTypeIEC61360AsSequence(
 				err = newDeserializationError(
 					fmt.Sprintf(
 						"Expected a sequence of XML elements representing properties "+
-						"of ILangStringPreferredNameTypeIEC61360, but got text: %s",
+							"of ILangStringPreferredNameTypeIEC61360, but got text: %s",
 						string(charData),
 					),
 				)
@@ -10648,7 +10700,7 @@ func readLangStringPreferredNameTypeIEC61360WithLookahead(
 	instance, current, err = readLangStringPreferredNameTypeIEC61360AsSequence(
 		decoder,
 		current,
-)
+	)
 	if err != nil {
 		return
 	}
@@ -10692,7 +10744,7 @@ func readLangStringShortNameTypeIEC61360AsSequence(
 				err = newDeserializationError(
 					fmt.Sprintf(
 						"Expected a sequence of XML elements representing properties "+
-						"of ILangStringShortNameTypeIEC61360, but got text: %s",
+							"of ILangStringShortNameTypeIEC61360, but got text: %s",
 						string(charData),
 					),
 				)
@@ -10840,7 +10892,7 @@ func readLangStringShortNameTypeIEC61360WithLookahead(
 	instance, current, err = readLangStringShortNameTypeIEC61360AsSequence(
 		decoder,
 		current,
-)
+	)
 	if err != nil {
 		return
 	}
@@ -10884,7 +10936,7 @@ func readLangStringDefinitionTypeIEC61360AsSequence(
 				err = newDeserializationError(
 					fmt.Sprintf(
 						"Expected a sequence of XML elements representing properties "+
-						"of ILangStringDefinitionTypeIEC61360, but got text: %s",
+							"of ILangStringDefinitionTypeIEC61360, but got text: %s",
 						string(charData),
 					),
 				)
@@ -11032,7 +11084,7 @@ func readLangStringDefinitionTypeIEC61360WithLookahead(
 	instance, current, err = readLangStringDefinitionTypeIEC61360AsSequence(
 		decoder,
 		current,
-)
+	)
 	if err != nil {
 		return
 	}
@@ -11085,7 +11137,7 @@ func readDataSpecificationIEC61360AsSequence(
 				err = newDeserializationError(
 					fmt.Sprintf(
 						"Expected a sequence of XML elements representing properties "+
-						"of IDataSpecificationIEC61360, but got text: %s",
+							"of IDataSpecificationIEC61360, but got text: %s",
 						string(charData),
 					),
 				)
@@ -11133,7 +11185,7 @@ func readDataSpecificationIEC61360AsSequence(
 			theUnit = &value
 
 		case "unitId":
-			theUnitID, current, valueErr =  readReferenceAsSequence(
+			theUnitID, current, valueErr = readReferenceAsSequence(
 				decoder,
 				current,
 			)
@@ -11178,7 +11230,7 @@ func readDataSpecificationIEC61360AsSequence(
 			theValueFormat = &value
 
 		case "valueList":
-			theValueList, current, valueErr =  readValueListAsSequence(
+			theValueList, current, valueErr = readValueListAsSequence(
 				decoder,
 				current,
 			)
@@ -11192,7 +11244,7 @@ func readDataSpecificationIEC61360AsSequence(
 			theValue = &value
 
 		case "levelType":
-			theLevelType, current, valueErr =  readLevelTypeAsSequence(
+			theLevelType, current, valueErr = readLevelTypeAsSequence(
 				decoder,
 				current,
 			)
@@ -11332,7 +11384,7 @@ func readDataSpecificationIEC61360WithLookahead(
 	instance, current, err = readDataSpecificationIEC61360AsSequence(
 		decoder,
 		current,
-)
+	)
 	if err != nil {
 		return
 	}
@@ -11373,165 +11425,165 @@ func Unmarshal(
 	}
 
 	switch local {
-		case "extension":
-			instance, current, err = readExtensionAsSequence(
-				decoder, current,
-			)
-		case "administrativeInformation":
-			instance, current, err = readAdministrativeInformationAsSequence(
-				decoder, current,
-			)
-		case "qualifier":
-			instance, current, err = readQualifierAsSequence(
-				decoder, current,
-			)
-		case "assetAdministrationShell":
-			instance, current, err = readAssetAdministrationShellAsSequence(
-				decoder, current,
-			)
-		case "assetInformation":
-			instance, current, err = readAssetInformationAsSequence(
-				decoder, current,
-			)
-		case "resource":
-			instance, current, err = readResourceAsSequence(
-				decoder, current,
-			)
-		case "specificAssetId":
-			instance, current, err = readSpecificAssetIDAsSequence(
-				decoder, current,
-			)
-		case "submodel":
-			instance, current, err = readSubmodelAsSequence(
-				decoder, current,
-			)
-		case "relationshipElement":
-			instance, current, err = readRelationshipElementAsSequence(
-				decoder, current,
-			)
-		case "submodelElementList":
-			instance, current, err = readSubmodelElementListAsSequence(
-				decoder, current,
-			)
-		case "submodelElementCollection":
-			instance, current, err = readSubmodelElementCollectionAsSequence(
-				decoder, current,
-			)
-		case "property":
-			instance, current, err = readPropertyAsSequence(
-				decoder, current,
-			)
-		case "multiLanguageProperty":
-			instance, current, err = readMultiLanguagePropertyAsSequence(
-				decoder, current,
-			)
-		case "range":
-			instance, current, err = readRangeAsSequence(
-				decoder, current,
-			)
-		case "referenceElement":
-			instance, current, err = readReferenceElementAsSequence(
-				decoder, current,
-			)
-		case "blob":
-			instance, current, err = readBlobAsSequence(
-				decoder, current,
-			)
-		case "file":
-			instance, current, err = readFileAsSequence(
-				decoder, current,
-			)
-		case "annotatedRelationshipElement":
-			instance, current, err = readAnnotatedRelationshipElementAsSequence(
-				decoder, current,
-			)
-		case "entity":
-			instance, current, err = readEntityAsSequence(
-				decoder, current,
-			)
-		case "eventPayload":
-			instance, current, err = readEventPayloadAsSequence(
-				decoder, current,
-			)
-		case "basicEventElement":
-			instance, current, err = readBasicEventElementAsSequence(
-				decoder, current,
-			)
-		case "operation":
-			instance, current, err = readOperationAsSequence(
-				decoder, current,
-			)
-		case "operationVariable":
-			instance, current, err = readOperationVariableAsSequence(
-				decoder, current,
-			)
-		case "capability":
-			instance, current, err = readCapabilityAsSequence(
-				decoder, current,
-			)
-		case "conceptDescription":
-			instance, current, err = readConceptDescriptionAsSequence(
-				decoder, current,
-			)
-		case "reference":
-			instance, current, err = readReferenceAsSequence(
-				decoder, current,
-			)
-		case "key":
-			instance, current, err = readKeyAsSequence(
-				decoder, current,
-			)
-		case "langStringNameType":
-			instance, current, err = readLangStringNameTypeAsSequence(
-				decoder, current,
-			)
-		case "langStringTextType":
-			instance, current, err = readLangStringTextTypeAsSequence(
-				decoder, current,
-			)
-		case "environment":
-			instance, current, err = readEnvironmentAsSequence(
-				decoder, current,
-			)
-		case "embeddedDataSpecification":
-			instance, current, err = readEmbeddedDataSpecificationAsSequence(
-				decoder, current,
-			)
-		case "levelType":
-			instance, current, err = readLevelTypeAsSequence(
-				decoder, current,
-			)
-		case "valueReferencePair":
-			instance, current, err = readValueReferencePairAsSequence(
-				decoder, current,
-			)
-		case "valueList":
-			instance, current, err = readValueListAsSequence(
-				decoder, current,
-			)
-		case "langStringPreferredNameTypeIec61360":
-			instance, current, err = readLangStringPreferredNameTypeIEC61360AsSequence(
-				decoder, current,
-			)
-		case "langStringShortNameTypeIec61360":
-			instance, current, err = readLangStringShortNameTypeIEC61360AsSequence(
-				decoder, current,
-			)
-		case "langStringDefinitionTypeIec61360":
-			instance, current, err = readLangStringDefinitionTypeIEC61360AsSequence(
-				decoder, current,
-			)
-		case "dataSpecificationIec61360":
-			instance, current, err = readDataSpecificationIEC61360AsSequence(
-				decoder, current,
-			)
-		default:
-				err = newDeserializationError(
-					fmt.Sprintf(
-						"Unexpected XML element name %s as class discriminator",
-						local,
-					),
-				)
+	case "extension":
+		instance, current, err = readExtensionAsSequence(
+			decoder, current,
+		)
+	case "administrativeInformation":
+		instance, current, err = readAdministrativeInformationAsSequence(
+			decoder, current,
+		)
+	case "qualifier":
+		instance, current, err = readQualifierAsSequence(
+			decoder, current,
+		)
+	case "assetAdministrationShell":
+		instance, current, err = readAssetAdministrationShellAsSequence(
+			decoder, current,
+		)
+	case "assetInformation":
+		instance, current, err = readAssetInformationAsSequence(
+			decoder, current,
+		)
+	case "resource":
+		instance, current, err = readResourceAsSequence(
+			decoder, current,
+		)
+	case "specificAssetId":
+		instance, current, err = readSpecificAssetIDAsSequence(
+			decoder, current,
+		)
+	case "submodel":
+		instance, current, err = readSubmodelAsSequence(
+			decoder, current,
+		)
+	case "relationshipElement":
+		instance, current, err = readRelationshipElementAsSequence(
+			decoder, current,
+		)
+	case "submodelElementList":
+		instance, current, err = readSubmodelElementListAsSequence(
+			decoder, current,
+		)
+	case "submodelElementCollection":
+		instance, current, err = readSubmodelElementCollectionAsSequence(
+			decoder, current,
+		)
+	case "property":
+		instance, current, err = readPropertyAsSequence(
+			decoder, current,
+		)
+	case "multiLanguageProperty":
+		instance, current, err = readMultiLanguagePropertyAsSequence(
+			decoder, current,
+		)
+	case "range":
+		instance, current, err = readRangeAsSequence(
+			decoder, current,
+		)
+	case "referenceElement":
+		instance, current, err = readReferenceElementAsSequence(
+			decoder, current,
+		)
+	case "blob":
+		instance, current, err = readBlobAsSequence(
+			decoder, current,
+		)
+	case "file":
+		instance, current, err = readFileAsSequence(
+			decoder, current,
+		)
+	case "annotatedRelationshipElement":
+		instance, current, err = readAnnotatedRelationshipElementAsSequence(
+			decoder, current,
+		)
+	case "entity":
+		instance, current, err = readEntityAsSequence(
+			decoder, current,
+		)
+	case "eventPayload":
+		instance, current, err = readEventPayloadAsSequence(
+			decoder, current,
+		)
+	case "basicEventElement":
+		instance, current, err = readBasicEventElementAsSequence(
+			decoder, current,
+		)
+	case "operation":
+		instance, current, err = readOperationAsSequence(
+			decoder, current,
+		)
+	case "operationVariable":
+		instance, current, err = readOperationVariableAsSequence(
+			decoder, current,
+		)
+	case "capability":
+		instance, current, err = readCapabilityAsSequence(
+			decoder, current,
+		)
+	case "conceptDescription":
+		instance, current, err = readConceptDescriptionAsSequence(
+			decoder, current,
+		)
+	case "reference":
+		instance, current, err = readReferenceAsSequence(
+			decoder, current,
+		)
+	case "key":
+		instance, current, err = readKeyAsSequence(
+			decoder, current,
+		)
+	case "langStringNameType":
+		instance, current, err = readLangStringNameTypeAsSequence(
+			decoder, current,
+		)
+	case "langStringTextType":
+		instance, current, err = readLangStringTextTypeAsSequence(
+			decoder, current,
+		)
+	case "environment":
+		instance, current, err = readEnvironmentAsSequence(
+			decoder, current,
+		)
+	case "embeddedDataSpecification":
+		instance, current, err = readEmbeddedDataSpecificationAsSequence(
+			decoder, current,
+		)
+	case "levelType":
+		instance, current, err = readLevelTypeAsSequence(
+			decoder, current,
+		)
+	case "valueReferencePair":
+		instance, current, err = readValueReferencePairAsSequence(
+			decoder, current,
+		)
+	case "valueList":
+		instance, current, err = readValueListAsSequence(
+			decoder, current,
+		)
+	case "langStringPreferredNameTypeIec61360":
+		instance, current, err = readLangStringPreferredNameTypeIEC61360AsSequence(
+			decoder, current,
+		)
+	case "langStringShortNameTypeIec61360":
+		instance, current, err = readLangStringShortNameTypeIEC61360AsSequence(
+			decoder, current,
+		)
+	case "langStringDefinitionTypeIec61360":
+		instance, current, err = readLangStringDefinitionTypeIEC61360AsSequence(
+			decoder, current,
+		)
+	case "dataSpecificationIec61360":
+		instance, current, err = readDataSpecificationIEC61360AsSequence(
+			decoder, current,
+		)
+	default:
+		err = newDeserializationError(
+			fmt.Sprintf(
+				"Unexpected XML element name %s as class discriminator",
+				local,
+			),
+		)
 	}
 	if err != nil {
 		return
@@ -11681,7 +11733,6 @@ func writeLongProperty(
 	encoder *xml.Encoder,
 	local string,
 	value int64,
-	withNamespace bool,
 ) (err error) {
 	err = writeStartElement(
 		encoder,
@@ -12099,7 +12150,7 @@ func writeExtension(
 	withNamespace bool,
 ) (err error) {
 	local := "extension"
-	
+
 	err = writeStartElement(
 		encoder,
 		local,
@@ -12116,7 +12167,7 @@ func writeExtension(
 	if err != nil {
 		return
 	}
-	
+
 	err = writeEndElement(
 		encoder,
 		local,
@@ -12300,6 +12351,64 @@ func writeAdministrativeInformationAsSequence(
 
 	// endregion
 
+	// region CreatedAt
+
+	theCreatedAt := that.CreatedAt()
+
+	if theCreatedAt != nil {
+		err = writeStringProperty(
+			encoder,
+			"createdAt",
+			*theCreatedAt,
+		)
+		if err != nil {
+			if seriaErr, ok := err.(*SerializationError); ok {
+				seriaErr.Path.PrependName(
+					&aasreporting.NameSegment{
+						Name: "CreatedAt()",
+					},
+				)
+			}
+			return
+		}
+	}
+
+	err = encoder.Flush()
+	if err != nil {
+		return err
+	}
+
+	// endregion
+
+	// region UpdatedAt
+
+	theUpdatedAt := that.UpdatedAt()
+
+	if theUpdatedAt != nil {
+		err = writeStringProperty(
+			encoder,
+			"updatedAt",
+			*theUpdatedAt,
+		)
+		if err != nil {
+			if seriaErr, ok := err.(*SerializationError); ok {
+				seriaErr.Path.PrependName(
+					&aasreporting.NameSegment{
+						Name: "UpdatedAt()",
+					},
+				)
+			}
+			return
+		}
+	}
+
+	err = encoder.Flush()
+	if err != nil {
+		return err
+	}
+
+	// endregion
+
 	// region TemplateID
 
 	theTemplateID := that.TemplateID()
@@ -12344,7 +12453,7 @@ func writeAdministrativeInformation(
 	withNamespace bool,
 ) (err error) {
 	local := "administrativeInformation"
-	
+
 	err = writeStartElement(
 		encoder,
 		local,
@@ -12361,7 +12470,7 @@ func writeAdministrativeInformation(
 	if err != nil {
 		return
 	}
-	
+
 	err = writeEndElement(
 		encoder,
 		local,
@@ -12654,7 +12763,7 @@ func writeQualifier(
 	withNamespace bool,
 ) (err error) {
 	local := "qualifier"
-	
+
 	err = writeStartElement(
 		encoder,
 		local,
@@ -12671,7 +12780,7 @@ func writeQualifier(
 	if err != nil {
 		return
 	}
-	
+
 	err = writeEndElement(
 		encoder,
 		local,
@@ -13068,7 +13177,7 @@ func writeAssetAdministrationShell(
 	withNamespace bool,
 ) (err error) {
 	local := "assetAdministrationShell"
-	
+
 	err = writeStartElement(
 		encoder,
 		local,
@@ -13085,7 +13194,7 @@ func writeAssetAdministrationShell(
 	if err != nil {
 		return
 	}
-	
+
 	err = writeEndElement(
 		encoder,
 		local,
@@ -13282,7 +13391,7 @@ func writeAssetInformation(
 	withNamespace bool,
 ) (err error) {
 	local := "assetInformation"
-	
+
 	err = writeStartElement(
 		encoder,
 		local,
@@ -13299,7 +13408,7 @@ func writeAssetInformation(
 	if err != nil {
 		return
 	}
-	
+
 	err = writeEndElement(
 		encoder,
 		local,
@@ -13394,7 +13503,7 @@ func writeResource(
 	withNamespace bool,
 ) (err error) {
 	local := "resource"
-	
+
 	err = writeStartElement(
 		encoder,
 		local,
@@ -13411,7 +13520,7 @@ func writeResource(
 	if err != nil {
 		return
 	}
-	
+
 	err = writeEndElement(
 		encoder,
 		local,
@@ -13646,7 +13755,7 @@ func writeSpecificAssetID(
 	withNamespace bool,
 ) (err error) {
 	local := "specificAssetId"
-	
+
 	err = writeStartElement(
 		encoder,
 		local,
@@ -13663,7 +13772,7 @@ func writeSpecificAssetID(
 	if err != nil {
 		return
 	}
-	
+
 	err = writeEndElement(
 		encoder,
 		local,
@@ -14107,7 +14216,7 @@ func writeSubmodel(
 	withNamespace bool,
 ) (err error) {
 	local := "submodel"
-	
+
 	err = writeStartElement(
 		encoder,
 		local,
@@ -14124,7 +14233,7 @@ func writeSubmodel(
 	if err != nil {
 		return
 	}
-	
+
 	err = writeEndElement(
 		encoder,
 		local,
@@ -14533,7 +14642,7 @@ func writeRelationshipElementWithoutDispatch(
 	withNamespace bool,
 ) (err error) {
 	local := "relationshipElement"
-	
+
 	err = writeStartElement(
 		encoder,
 		local,
@@ -14550,7 +14659,7 @@ func writeRelationshipElementWithoutDispatch(
 	if err != nil {
 		return
 	}
-	
+
 	err = writeEndElement(
 		encoder,
 		local,
@@ -15050,7 +15159,7 @@ func writeSubmodelElementList(
 	withNamespace bool,
 ) (err error) {
 	local := "submodelElementList"
-	
+
 	err = writeStartElement(
 		encoder,
 		local,
@@ -15067,7 +15176,7 @@ func writeSubmodelElementList(
 	if err != nil {
 		return
 	}
-	
+
 	err = writeEndElement(
 		encoder,
 		local,
@@ -15413,7 +15522,7 @@ func writeSubmodelElementCollection(
 	withNamespace bool,
 ) (err error) {
 	local := "submodelElementCollection"
-	
+
 	err = writeStartElement(
 		encoder,
 		local,
@@ -15430,7 +15539,7 @@ func writeSubmodelElementCollection(
 	if err != nil {
 		return
 	}
-	
+
 	err = writeEndElement(
 		encoder,
 		local,
@@ -15845,7 +15954,7 @@ func writeProperty(
 	withNamespace bool,
 ) (err error) {
 	local := "property"
-	
+
 	err = writeStartElement(
 		encoder,
 		local,
@@ -15862,7 +15971,7 @@ func writeProperty(
 	if err != nil {
 		return
 	}
-	
+
 	err = writeEndElement(
 		encoder,
 		local,
@@ -16252,7 +16361,7 @@ func writeMultiLanguageProperty(
 	withNamespace bool,
 ) (err error) {
 	local := "multiLanguageProperty"
-	
+
 	err = writeStartElement(
 		encoder,
 		local,
@@ -16269,7 +16378,7 @@ func writeMultiLanguageProperty(
 	if err != nil {
 		return
 	}
-	
+
 	err = writeEndElement(
 		encoder,
 		local,
@@ -16669,7 +16778,7 @@ func writeRange(
 	withNamespace bool,
 ) (err error) {
 	local := "range"
-	
+
 	err = writeStartElement(
 		encoder,
 		local,
@@ -16686,7 +16795,7 @@ func writeRange(
 	if err != nil {
 		return
 	}
-	
+
 	err = writeEndElement(
 		encoder,
 		local,
@@ -17047,7 +17156,7 @@ func writeReferenceElement(
 	withNamespace bool,
 ) (err error) {
 	local := "referenceElement"
-	
+
 	err = writeStartElement(
 		encoder,
 		local,
@@ -17064,7 +17173,7 @@ func writeReferenceElement(
 	if err != nil {
 		return
 	}
-	
+
 	err = writeEndElement(
 		encoder,
 		local,
@@ -17439,7 +17548,7 @@ func writeBlob(
 	withNamespace bool,
 ) (err error) {
 	local := "blob"
-	
+
 	err = writeStartElement(
 		encoder,
 		local,
@@ -17456,7 +17565,7 @@ func writeBlob(
 	if err != nil {
 		return
 	}
-	
+
 	err = writeEndElement(
 		encoder,
 		local,
@@ -17831,7 +17940,7 @@ func writeFile(
 	withNamespace bool,
 ) (err error) {
 	local := "file"
-	
+
 	err = writeStartElement(
 		encoder,
 		local,
@@ -17848,7 +17957,7 @@ func writeFile(
 	if err != nil {
 		return
 	}
-	
+
 	err = writeEndElement(
 		encoder,
 		local,
@@ -18282,7 +18391,7 @@ func writeAnnotatedRelationshipElement(
 	withNamespace bool,
 ) (err error) {
 	local := "annotatedRelationshipElement"
-	
+
 	err = writeStartElement(
 		encoder,
 		local,
@@ -18299,7 +18408,7 @@ func writeAnnotatedRelationshipElement(
 	if err != nil {
 		return
 	}
-	
+
 	err = writeEndElement(
 		encoder,
 		local,
@@ -18732,7 +18841,7 @@ func writeEntity(
 	withNamespace bool,
 ) (err error) {
 	local := "entity"
-	
+
 	err = writeStartElement(
 		encoder,
 		local,
@@ -18749,7 +18858,7 @@ func writeEntity(
 	if err != nil {
 		return
 	}
-	
+
 	err = writeEndElement(
 		encoder,
 		local,
@@ -19166,7 +19275,7 @@ func writeEventPayload(
 	withNamespace bool,
 ) (err error) {
 	local := "eventPayload"
-	
+
 	err = writeStartElement(
 		encoder,
 		local,
@@ -19183,7 +19292,7 @@ func writeEventPayload(
 	if err != nil {
 		return
 	}
-	
+
 	err = writeEndElement(
 		encoder,
 		local,
@@ -19750,7 +19859,7 @@ func writeBasicEventElement(
 	withNamespace bool,
 ) (err error) {
 	local := "basicEventElement"
-	
+
 	err = writeStartElement(
 		encoder,
 		local,
@@ -19767,7 +19876,7 @@ func writeBasicEventElement(
 	if err != nil {
 		return
 	}
-	
+
 	err = writeEndElement(
 		encoder,
 		local,
@@ -20171,7 +20280,7 @@ func writeOperation(
 	withNamespace bool,
 ) (err error) {
 	local := "operation"
-	
+
 	err = writeStartElement(
 		encoder,
 		local,
@@ -20188,7 +20297,7 @@ func writeOperation(
 	if err != nil {
 		return
 	}
-	
+
 	err = writeEndElement(
 		encoder,
 		local,
@@ -20219,7 +20328,7 @@ func writeOperationVariableAsSequence(
 	err = writeStartElement(
 		encoder,
 		"value",
-	false,
+		false,
 	)
 	if err != nil {
 		return
@@ -20242,7 +20351,7 @@ func writeOperationVariableAsSequence(
 	err = writeEndElement(
 		encoder,
 		"value",
-	false,
+		false,
 	)
 	if err != nil {
 		return
@@ -20270,7 +20379,7 @@ func writeOperationVariable(
 	withNamespace bool,
 ) (err error) {
 	local := "operationVariable"
-	
+
 	err = writeStartElement(
 		encoder,
 		local,
@@ -20287,7 +20396,7 @@ func writeOperationVariable(
 	if err != nil {
 		return
 	}
-	
+
 	err = writeEndElement(
 		encoder,
 		local,
@@ -20604,7 +20713,7 @@ func writeCapability(
 	withNamespace bool,
 ) (err error) {
 	local := "capability"
-	
+
 	err = writeStartElement(
 		encoder,
 		local,
@@ -20621,7 +20730,7 @@ func writeCapability(
 	if err != nil {
 		return
 	}
-	
+
 	err = writeEndElement(
 		encoder,
 		local,
@@ -20934,7 +21043,7 @@ func writeConceptDescription(
 	withNamespace bool,
 ) (err error) {
 	local := "conceptDescription"
-	
+
 	err = writeStartElement(
 		encoder,
 		local,
@@ -20951,7 +21060,7 @@ func writeConceptDescription(
 	if err != nil {
 		return
 	}
-	
+
 	err = writeEndElement(
 		encoder,
 		local,
@@ -21113,7 +21222,7 @@ func writeReference(
 	withNamespace bool,
 ) (err error) {
 	local := "reference"
-	
+
 	err = writeStartElement(
 		encoder,
 		local,
@@ -21130,7 +21239,7 @@ func writeReference(
 	if err != nil {
 		return
 	}
-	
+
 	err = writeEndElement(
 		encoder,
 		local,
@@ -21221,7 +21330,7 @@ func writeKey(
 	withNamespace bool,
 ) (err error) {
 	local := "key"
-	
+
 	err = writeStartElement(
 		encoder,
 		local,
@@ -21238,7 +21347,7 @@ func writeKey(
 	if err != nil {
 		return
 	}
-	
+
 	err = writeEndElement(
 		encoder,
 		local,
@@ -21383,7 +21492,7 @@ func writeLangStringNameType(
 	withNamespace bool,
 ) (err error) {
 	local := "langStringNameType"
-	
+
 	err = writeStartElement(
 		encoder,
 		local,
@@ -21400,7 +21509,7 @@ func writeLangStringNameType(
 	if err != nil {
 		return
 	}
-	
+
 	err = writeEndElement(
 		encoder,
 		local,
@@ -21491,7 +21600,7 @@ func writeLangStringTextType(
 	withNamespace bool,
 ) (err error) {
 	local := "langStringTextType"
-	
+
 	err = writeStartElement(
 		encoder,
 		local,
@@ -21508,7 +21617,7 @@ func writeLangStringTextType(
 	if err != nil {
 		return
 	}
-	
+
 	err = writeEndElement(
 		encoder,
 		local,
@@ -21636,7 +21745,7 @@ func writeEnvironment(
 	withNamespace bool,
 ) (err error) {
 	local := "environment"
-	
+
 	err = writeStartElement(
 		encoder,
 		local,
@@ -21653,7 +21762,7 @@ func writeEnvironment(
 	if err != nil {
 		return
 	}
-	
+
 	err = writeEndElement(
 		encoder,
 		local,
@@ -21724,7 +21833,7 @@ func writeEmbeddedDataSpecificationAsSequence(
 	err = writeStartElement(
 		encoder,
 		"dataSpecificationContent",
-	false,
+		false,
 	)
 	if err != nil {
 		return
@@ -21747,7 +21856,7 @@ func writeEmbeddedDataSpecificationAsSequence(
 	err = writeEndElement(
 		encoder,
 		"dataSpecificationContent",
-	false,
+		false,
 	)
 	if err != nil {
 		return
@@ -21775,7 +21884,7 @@ func writeEmbeddedDataSpecification(
 	withNamespace bool,
 ) (err error) {
 	local := "embeddedDataSpecification"
-	
+
 	err = writeStartElement(
 		encoder,
 		local,
@@ -21792,7 +21901,7 @@ func writeEmbeddedDataSpecification(
 	if err != nil {
 		return
 	}
-	
+
 	err = writeEndElement(
 		encoder,
 		local,
@@ -21960,7 +22069,7 @@ func writeLevelType(
 	withNamespace bool,
 ) (err error) {
 	local := "levelType"
-	
+
 	err = writeStartElement(
 		encoder,
 		local,
@@ -21977,7 +22086,7 @@ func writeLevelType(
 	if err != nil {
 		return
 	}
-	
+
 	err = writeEndElement(
 		encoder,
 		local,
@@ -22087,7 +22196,7 @@ func writeValueReferencePair(
 	withNamespace bool,
 ) (err error) {
 	local := "valueReferencePair"
-	
+
 	err = writeStartElement(
 		encoder,
 		local,
@@ -22104,7 +22213,7 @@ func writeValueReferencePair(
 	if err != nil {
 		return
 	}
-	
+
 	err = writeEndElement(
 		encoder,
 		local,
@@ -22170,7 +22279,7 @@ func writeValueList(
 	withNamespace bool,
 ) (err error) {
 	local := "valueList"
-	
+
 	err = writeStartElement(
 		encoder,
 		local,
@@ -22187,7 +22296,7 @@ func writeValueList(
 	if err != nil {
 		return
 	}
-	
+
 	err = writeEndElement(
 		encoder,
 		local,
@@ -22278,7 +22387,7 @@ func writeLangStringPreferredNameTypeIEC61360(
 	withNamespace bool,
 ) (err error) {
 	local := "langStringPreferredNameTypeIec61360"
-	
+
 	err = writeStartElement(
 		encoder,
 		local,
@@ -22295,7 +22404,7 @@ func writeLangStringPreferredNameTypeIEC61360(
 	if err != nil {
 		return
 	}
-	
+
 	err = writeEndElement(
 		encoder,
 		local,
@@ -22386,7 +22495,7 @@ func writeLangStringShortNameTypeIEC61360(
 	withNamespace bool,
 ) (err error) {
 	local := "langStringShortNameTypeIec61360"
-	
+
 	err = writeStartElement(
 		encoder,
 		local,
@@ -22403,7 +22512,7 @@ func writeLangStringShortNameTypeIEC61360(
 	if err != nil {
 		return
 	}
-	
+
 	err = writeEndElement(
 		encoder,
 		local,
@@ -22494,7 +22603,7 @@ func writeLangStringDefinitionTypeIEC61360(
 	withNamespace bool,
 ) (err error) {
 	local := "langStringDefinitionTypeIec61360"
-	
+
 	err = writeStartElement(
 		encoder,
 		local,
@@ -22511,7 +22620,7 @@ func writeLangStringDefinitionTypeIEC61360(
 	if err != nil {
 		return
 	}
-	
+
 	err = writeEndElement(
 		encoder,
 		local,
@@ -22941,7 +23050,7 @@ func writeDataSpecificationIEC61360(
 	withNamespace bool,
 ) (err error) {
 	local := "dataSpecificationIec61360"
-	
+
 	err = writeStartElement(
 		encoder,
 		local,
@@ -22958,7 +23067,7 @@ func writeDataSpecificationIEC61360(
 	if err != nil {
 		return
 	}
-	
+
 	err = writeEndElement(
 		encoder,
 		local,

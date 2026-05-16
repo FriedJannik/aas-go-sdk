@@ -48,9 +48,6 @@ var modelTypeFromStringMap = map[string]aastypes.ModelType{
 	"LangStringShortNameTypeIec61360":     aastypes.ModelTypeLangStringShortNameTypeIEC61360,
 	"LangStringDefinitionTypeIec61360":    aastypes.ModelTypeLangStringDefinitionTypeIEC61360,
 	"DataSpecificationIec61360":           aastypes.ModelTypeDataSpecificationIEC61360,
-	"LangStringUom":                       aastypes.ModelTypeLangStringUOM,
-	"LangStringDefinitionTypeUom":         aastypes.ModelTypeLangStringDefinitionTypeUOM,
-	"DataSpecificationUom":                aastypes.ModelTypeDataSpecificationUOM,
 }
 
 // Parse `text` as a string representation of [aastypes.ModelType].
@@ -102,9 +99,6 @@ var modelTypeToStringArray = [...]string{
 	"LangStringShortNameTypeIec61360",
 	"LangStringDefinitionTypeIec61360",
 	"DataSpecificationIec61360",
-	"LangStringUom",
-	"LangStringDefinitionTypeUom",
-	"DataSpecificationUom",
 }
 
 // Translate `value` from [aastypes.ModelType] to a string.
@@ -263,8 +257,8 @@ func MustQualifierKindToString(
 var assetKindFromStringMap = map[string]aastypes.AssetKind{
 	"Type":          aastypes.AssetKindType,
 	"Instance":      aastypes.AssetKindInstance,
-	"Role":          aastypes.AssetKindRole,
 	"Batch":         aastypes.AssetKindBatch,
+	"Role":          aastypes.AssetKindRole,
 	"NotApplicable": aastypes.AssetKindNotApplicable,
 }
 
@@ -281,8 +275,8 @@ func AssetKindFromString(
 var assetKindToStringArray = [...]string{
 	"Type",
 	"Instance",
-	"Role",
 	"Batch",
+	"Role",
 	"NotApplicable",
 }
 

@@ -1,7 +1,7 @@
 // Package types provides the data structures corresponding to the meta-model.
 //
 // --- WORK IN PROGRESS ---
-// Provide an implementation of the Asset Administration Shell (AAS) V3.1.
+// Provide an implementation of the Asset Administration Shell (AAS) V3.2.
 //
 // The presented version of the Metamodel is related to the work of
 // aas-core-works, which can be found here: https://github.com/aas-core-works.
@@ -141,9 +141,6 @@ const (
 	ModelTypeLangStringShortNameTypeIEC61360
 	ModelTypeLangStringDefinitionTypeIEC61360
 	ModelTypeDataSpecificationIEC61360
-	ModelTypeLangStringUOM
-	ModelTypeLangStringDefinitionTypeUOM
-	ModelTypeDataSpecificationUOM
 )
 
 // Represent the most general interface of an AAS model.
@@ -872,14 +869,14 @@ type IAdministrativeInformation interface {
 		value IReference,
 	)
 
-	// Date and time of creation.
+	// date of creation.
 	CreatedAt() *string
 
 	SetCreatedAt(
 		value *string,
 	)
 
-	// Date and time of last update.
+	// date of update.
 	UpdatedAt() *string
 
 	SetUpdatedAt(
@@ -1902,7 +1899,9 @@ func NewAssetAdministrationShell(
 //
 // Constraint AASd-116:
 // `globalAssetId` is a reserved key for [ISpecificAssetID.Name] with the
-// semantics as defined in [IAssetInformation.GlobalAssetID].
+// semantics as defined in
+// `https://admin-shell.io/aas/3/x/AssetInformation/globalAssetId`
+// where `x` is the minor version.
 //
 // NOTE: Constraint AASd-116 is important to enable a generic search across
 // global and specific asset IDs.
@@ -2248,7 +2247,8 @@ func NewResource(
 }
 
 // Enumeration for denoting whether an asset is a type asset or an instance
-// asset or is a role or whether this kind of classification is not applicable.
+// asset or a batch asset or is a role or whether this kind of classification
+// is not applicable.
 type AssetKind int
 
 const (
@@ -2256,10 +2256,10 @@ const (
 	AssetKindType AssetKind = iota
 	// Instance asset
 	AssetKindInstance
-	// Role asset
-	AssetKindRole
 	// Batch asset
 	AssetKindBatch
+	// Role asset
+	AssetKindRole
 	// Neither a type asset nor an instance asset nor a role asset
 	AssetKindNotApplicable
 )
@@ -2273,8 +2273,8 @@ const (
 var LiteralsOfAssetKind = [...]AssetKind{
 	AssetKindType,
 	AssetKindInstance,
-	AssetKindRole,
 	AssetKindBatch,
+	AssetKindRole,
 	AssetKindNotApplicable,
 }
 
@@ -2985,6 +2985,7 @@ func NewSubmodel(
 // then the submodel element shall be part of a submodel template, i.e.
 // a Submodel with [ISubmodel.Kind] (attribute kind inherited via
 // [IHasKind]) value is equal to [ModellingKindTemplate].
+// Exception: the submodel element is part of an [IOperationVariable].
 type ISubmodelElement interface {
 	IReferable
 
@@ -5346,8 +5347,6 @@ type IRange interface {
 	)
 
 	// The minimum value of the range.
-	//
-	// If the min value is missing, then the value is assumed to be negative infinite.
 	Min() *string
 
 	SetMin(
@@ -5355,8 +5354,6 @@ type IRange interface {
 	)
 
 	// The maximum value of the range.
-	//
-	// If the max value is missing, then the value is assumed to be positive infinite.
 	Max() *string
 
 	SetMax(
@@ -10206,6 +10203,12 @@ var LiteralsOfReferenceTypes = [...]ReferenceTypes{
 // [aasconstants.GenericGloballyIdentifiables] or one of
 // [aasconstants.GenericFragmentKeys].
 //
+// Constraint AASd-137:
+// For external references, i.e. [IReference]'s with
+// [IReference.Type] = [ReferenceTypesExternalReference],
+// the value of [IKey.Type] of any key in [IReference.Keys]
+// shall not be one of [aasconstants.AASReferables].
+//
 // Constraint AASd-125:
 // For model references, i.e. [IReference]'s with
 // [IReference.Type] = [ReferenceTypesModelReference], with more
@@ -10723,10 +10726,6 @@ func IsAbstractLangString(
 		ok = true
 	case ModelTypeLangStringDefinitionTypeIEC61360:
 		ok = true
-	case ModelTypeLangStringUOM:
-		ok = true
-	case ModelTypeLangStringDefinitionTypeUOM:
-		ok = true
 	}
 	return
 }
@@ -11128,8 +11127,6 @@ func IsDataSpecificationContent(
 ) (ok bool) {
 	switch that.ModelType() {
 	case ModelTypeDataSpecificationIEC61360:
-		ok = true
-	case ModelTypeDataSpecificationUOM:
 		ok = true
 	}
 	return
@@ -12048,240 +12045,6 @@ func NewLangStringDefinitionTypeIEC61360(
 	return &LangStringDefinitionTypeIEC61360{
 		language: language,
 		text:     text,
-	}
-}
-
-// String with length 256 maximum and minimum 1 characters and with language tags.
-type ILangStringUOM interface {
-	IAbstractLangString
-}
-
-func IsLangStringUOM(
-	that IClass,
-) (ok bool) {
-	ok = that.ModelType() == ModelTypeLangStringUOM
-	return
-}
-
-type LangStringUOM struct {
-	language string
-	text     string
-}
-
-func (lsu *LangStringUOM) Language() string                                  { return lsu.language }
-func (lsu *LangStringUOM) SetLanguage(value string)                          { lsu.language = value }
-func (lsu *LangStringUOM) Text() string                                      { return lsu.text }
-func (lsu *LangStringUOM) SetText(value string)                              { lsu.text = value }
-func (lsu *LangStringUOM) ModelType() ModelType                              { return ModelTypeLangStringUOM }
-func (lsu *LangStringUOM) DescendOnce(action func(IClass) bool) (abort bool) { return }
-func (lsu *LangStringUOM) Descend(action func(IClass) bool) (abort bool)     { return }
-
-func NewLangStringUOM(
-	language string,
-	text string,
-) *LangStringUOM {
-	return &LangStringUOM{
-		language: language,
-		text:     text,
-	}
-}
-
-// String with length 2048 maximum and minimum 1 characters and with language tags.
-type ILangStringDefinitionTypeUOM interface {
-	IAbstractLangString
-}
-
-func IsLangStringDefinitionTypeUOM(
-	that IClass,
-) (ok bool) {
-	ok = that.ModelType() == ModelTypeLangStringDefinitionTypeUOM
-	return
-}
-
-type LangStringDefinitionTypeUOM struct {
-	language string
-	text     string
-}
-
-func (lsdtu *LangStringDefinitionTypeUOM) Language() string         { return lsdtu.language }
-func (lsdtu *LangStringDefinitionTypeUOM) SetLanguage(value string) { lsdtu.language = value }
-func (lsdtu *LangStringDefinitionTypeUOM) Text() string             { return lsdtu.text }
-func (lsdtu *LangStringDefinitionTypeUOM) SetText(value string)     { lsdtu.text = value }
-func (lsdtu *LangStringDefinitionTypeUOM) ModelType() ModelType {
-	return ModelTypeLangStringDefinitionTypeUOM
-}
-func (lsdtu *LangStringDefinitionTypeUOM) DescendOnce(action func(IClass) bool) (abort bool) {
-	return
-}
-func (lsdtu *LangStringDefinitionTypeUOM) Descend(action func(IClass) bool) (abort bool) {
-	return
-}
-
-func NewLangStringDefinitionTypeUOM(
-	language string,
-	text string,
-) *LangStringDefinitionTypeUOM {
-	return &LangStringDefinitionTypeUOM{
-		language: language,
-		text:     text,
-	}
-}
-
-type IDataSpecificationUOM interface {
-	IDataSpecificationContent
-
-	PreferredName() []ILangStringUOM
-	SetPreferredName(value []ILangStringUOM)
-
-	Symbol() string
-	SetSymbol(value string)
-
-	SpecificUnitID() *string
-	SetSpecificUnitID(value *string)
-
-	Definition() []ILangStringDefinitionTypeUOM
-	SetDefinition(value []ILangStringDefinitionTypeUOM)
-
-	PreferredNameQuantity() []ILangStringUOM
-	SetPreferredNameQuantity(value []ILangStringUOM)
-
-	QuantityID() *string
-	SetQuantityID(value *string)
-
-	ClassificationSystem() *string
-	SetClassificationSystem(value *string)
-
-	ClassificationSystemVersion() *string
-	SetClassificationSystemVersion(value *string)
-}
-
-func IsDataSpecificationUOM(
-	that IClass,
-) (ok bool) {
-	ok = that.ModelType() == ModelTypeDataSpecificationUOM
-	return
-}
-
-type DataSpecificationUOM struct {
-	preferredName               []ILangStringUOM
-	symbol                      string
-	specificUnitID              *string
-	definition                  []ILangStringDefinitionTypeUOM
-	preferredNameQuantity       []ILangStringUOM
-	quantityID                  *string
-	classificationSystem        *string
-	classificationSystemVersion *string
-}
-
-func (dsu *DataSpecificationUOM) PreferredName() []ILangStringUOM            { return dsu.preferredName }
-func (dsu *DataSpecificationUOM) SetPreferredName(value []ILangStringUOM)    { dsu.preferredName = value }
-func (dsu *DataSpecificationUOM) Symbol() string                             { return dsu.symbol }
-func (dsu *DataSpecificationUOM) SetSymbol(value string)                     { dsu.symbol = value }
-func (dsu *DataSpecificationUOM) SpecificUnitID() *string                    { return dsu.specificUnitID }
-func (dsu *DataSpecificationUOM) SetSpecificUnitID(value *string)            { dsu.specificUnitID = value }
-func (dsu *DataSpecificationUOM) Definition() []ILangStringDefinitionTypeUOM { return dsu.definition }
-func (dsu *DataSpecificationUOM) SetDefinition(value []ILangStringDefinitionTypeUOM) {
-	dsu.definition = value
-}
-func (dsu *DataSpecificationUOM) PreferredNameQuantity() []ILangStringUOM {
-	return dsu.preferredNameQuantity
-}
-func (dsu *DataSpecificationUOM) SetPreferredNameQuantity(value []ILangStringUOM) {
-	dsu.preferredNameQuantity = value
-}
-func (dsu *DataSpecificationUOM) QuantityID() *string           { return dsu.quantityID }
-func (dsu *DataSpecificationUOM) SetQuantityID(value *string)   { dsu.quantityID = value }
-func (dsu *DataSpecificationUOM) ClassificationSystem() *string { return dsu.classificationSystem }
-func (dsu *DataSpecificationUOM) SetClassificationSystem(value *string) {
-	dsu.classificationSystem = value
-}
-func (dsu *DataSpecificationUOM) ClassificationSystemVersion() *string {
-	return dsu.classificationSystemVersion
-}
-func (dsu *DataSpecificationUOM) SetClassificationSystemVersion(value *string) {
-	dsu.classificationSystemVersion = value
-}
-func (dsu *DataSpecificationUOM) ModelType() ModelType { return ModelTypeDataSpecificationUOM }
-func (dsu *DataSpecificationUOM) DescendOnce(action func(IClass) bool) (abort bool) {
-	if dsu.preferredName != nil {
-		for _, v := range dsu.preferredName {
-			abort = action(v)
-			if abort {
-				return
-			}
-		}
-	}
-	if dsu.definition != nil {
-		for _, v := range dsu.definition {
-			abort = action(v)
-			if abort {
-				return
-			}
-		}
-	}
-	if dsu.preferredNameQuantity != nil {
-		for _, v := range dsu.preferredNameQuantity {
-			abort = action(v)
-			if abort {
-				return
-			}
-		}
-	}
-	return
-}
-func (dsu *DataSpecificationUOM) Descend(action func(IClass) bool) (abort bool) {
-	if dsu.preferredName != nil {
-		for _, v := range dsu.preferredName {
-			abort = action(v)
-			if abort {
-				return
-			}
-			abort = v.Descend(action)
-			if abort {
-				return
-			}
-		}
-	}
-	if dsu.definition != nil {
-		for _, v := range dsu.definition {
-			abort = action(v)
-			if abort {
-				return
-			}
-			abort = v.Descend(action)
-			if abort {
-				return
-			}
-		}
-	}
-	if dsu.preferredNameQuantity != nil {
-		for _, v := range dsu.preferredNameQuantity {
-			abort = action(v)
-			if abort {
-				return
-			}
-			abort = v.Descend(action)
-			if abort {
-				return
-			}
-		}
-	}
-	return
-}
-
-func NewDataSpecificationUOM(
-	preferredName []ILangStringUOM,
-	symbol string,
-) *DataSpecificationUOM {
-	return &DataSpecificationUOM{
-		preferredName:               preferredName,
-		symbol:                      symbol,
-		specificUnitID:              nil,
-		definition:                  nil,
-		preferredNameQuantity:       nil,
-		quantityID:                  nil,
-		classificationSystem:        nil,
-		classificationSystemVersion: nil,
 	}
 }
 

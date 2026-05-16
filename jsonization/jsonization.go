@@ -858,11 +858,15 @@ func administrativeInformationFromMapWithoutDispatch(
 
 		case "createdAt":
 			var parsed string
-			parsed, err = stringFromJsonable(v)
+			parsed, err = stringFromJsonable(
+				v,
+			)
 			if err != nil {
 				if deseriaErr, ok := err.(*DeserializationError); ok {
 					deseriaErr.Path.PrependName(
-						&aasreporting.NameSegment{Name: "createdAt"},
+						&aasreporting.NameSegment{
+							Name: "createdAt",
+						},
 					)
 				}
 				return
@@ -871,11 +875,15 @@ func administrativeInformationFromMapWithoutDispatch(
 
 		case "updatedAt":
 			var parsed string
-			parsed, err = stringFromJsonable(v)
+			parsed, err = stringFromJsonable(
+				v,
+			)
 			if err != nil {
 				if deseriaErr, ok := err.(*DeserializationError); ok {
 					deseriaErr.Path.PrependName(
-						&aasreporting.NameSegment{Name: "updatedAt"},
+						&aasreporting.NameSegment{
+							Name: "updatedAt",
+						},
 					)
 				}
 				return
@@ -13949,82 +13957,6 @@ func langStringDefinitionTypeIEC61360FromMapWithoutDispatch(
 	return
 }
 
-// Parse [aastypes.ILangStringUOM] from a map, or return an error.
-func langStringUOMFromMapWithoutDispatch(
-	m map[string]interface{},
-) (
-	result aastypes.ILangStringUOM,
-	err error,
-) {
-	var theLanguage string
-	var theText string
-	foundLanguage := false
-	foundText := false
-	for k, v := range m {
-		switch k {
-		case "language":
-			theLanguage, err = stringFromJsonable(v)
-			if err != nil {
-				return
-			}
-			foundLanguage = true
-		case "text":
-			theText, err = stringFromJsonable(v)
-			if err != nil {
-				return
-			}
-			foundText = true
-		default:
-			err = newDeserializationError(fmt.Sprintf("Unexpected property: %s", k))
-			return
-		}
-	}
-	if !foundLanguage || !foundText {
-		err = newDeserializationError("The required properties 'language' and 'text' must be set")
-		return
-	}
-	result = aastypes.NewLangStringUOM(theLanguage, theText)
-	return
-}
-
-// Parse [aastypes.ILangStringDefinitionTypeUOM] from a map, or return an error.
-func langStringDefinitionTypeUOMFromMapWithoutDispatch(
-	m map[string]interface{},
-) (
-	result aastypes.ILangStringDefinitionTypeUOM,
-	err error,
-) {
-	var theLanguage string
-	var theText string
-	foundLanguage := false
-	foundText := false
-	for k, v := range m {
-		switch k {
-		case "language":
-			theLanguage, err = stringFromJsonable(v)
-			if err != nil {
-				return
-			}
-			foundLanguage = true
-		case "text":
-			theText, err = stringFromJsonable(v)
-			if err != nil {
-				return
-			}
-			foundText = true
-		default:
-			err = newDeserializationError(fmt.Sprintf("Unexpected property: %s", k))
-			return
-		}
-	}
-	if !foundLanguage || !foundText {
-		err = newDeserializationError("The required properties 'language' and 'text' must be set")
-		return
-	}
-	result = aastypes.NewLangStringDefinitionTypeUOM(theLanguage, theText)
-	return
-}
-
 // Parse `jsonable` as an instance of [aastypes.IDataSpecificationIEC61360],
 // or return an error.
 func DataSpecificationIEC61360FromJsonable(
@@ -14485,71 +14417,6 @@ func dataSpecificationIEC61360FromMapWithoutDispatch(
 		theLevelType,
 	)
 
-	return
-}
-
-func dataSpecificationUOMFromMapWithoutDispatch(
-	m map[string]interface{},
-) (
-	result aastypes.IDataSpecificationUOM,
-	err error,
-) {
-	var thePreferredName []aastypes.ILangStringUOM
-	var theSymbol string
-	var theSpecificUnitID *string
-	var foundPreferredName bool
-	var foundSymbol bool
-
-	for k, v := range m {
-		switch k {
-		case "preferredName":
-			jsonableArray, ok := v.([]interface{})
-			if !ok {
-				err = newDeserializationError(fmt.Sprintf("Expected an array, but got %T", v))
-				return
-			}
-			array := make([]aastypes.ILangStringUOM, len(jsonableArray))
-			for i, item := range jsonableArray {
-				itemMap, ok := item.(map[string]interface{})
-				if !ok {
-					err = newDeserializationError(fmt.Sprintf("Expected an object at index %d", i))
-					return
-				}
-				array[i], err = langStringUOMFromMapWithoutDispatch(itemMap)
-				if err != nil {
-					return
-				}
-			}
-			thePreferredName = array
-			foundPreferredName = true
-		case "symbol":
-			theSymbol, err = stringFromJsonable(v)
-			if err != nil {
-				return
-			}
-			foundSymbol = true
-		case "specificUnitId":
-			var parsed string
-			parsed, err = stringFromJsonable(v)
-			if err != nil {
-				return
-			}
-			theSpecificUnitID = &parsed
-		case "definition", "preferredNameQuantity", "quantityId", "classificationSystem", "classificationSystemVersion", "modelType":
-			// Parsed/serialized as optional extensions in manual 3.2 uplift.
-		default:
-			err = newDeserializationError(fmt.Sprintf("Unexpected property: %s", k))
-			return
-		}
-	}
-
-	if !foundPreferredName || !foundSymbol {
-		err = newDeserializationError("The required properties 'preferredName' and 'symbol' are missing")
-		return
-	}
-
-	result = aastypes.NewDataSpecificationUOM(thePreferredName, theSymbol)
-	result.SetSpecificUnitID(theSpecificUnitID)
 	return
 }
 
@@ -15306,16 +15173,12 @@ func abstractLangStringFromMap(
 	switch modelType {
 	case "LangStringDefinitionTypeIec61360":
 		result, err = langStringDefinitionTypeIEC61360FromMapWithoutDispatch(m)
-	case "LangStringDefinitionTypeUom":
-		result, err = langStringDefinitionTypeUOMFromMapWithoutDispatch(m)
 	case "LangStringNameType":
 		result, err = langStringNameTypeFromMapWithoutDispatch(m)
 	case "LangStringPreferredNameTypeIec61360":
 		result, err = langStringPreferredNameTypeIEC61360FromMapWithoutDispatch(m)
 	case "LangStringShortNameTypeIec61360":
 		result, err = langStringShortNameTypeIEC61360FromMapWithoutDispatch(m)
-	case "LangStringUom":
-		result, err = langStringUOMFromMapWithoutDispatch(m)
 	case "LangStringTextType":
 		result, err = langStringTextTypeFromMapWithoutDispatch(m)
 	default:
@@ -15365,8 +15228,6 @@ func dataSpecificationContentFromMap(
 	switch modelType {
 	case "DataSpecificationIec61360":
 		result, err = dataSpecificationIEC61360FromMapWithoutDispatch(m)
-	case "DataSpecificationUom":
-		result, err = dataSpecificationUOMFromMapWithoutDispatch(m)
 	default:
 		err = newDeserializationError(
 			fmt.Sprintf(
@@ -15869,9 +15730,11 @@ func administrativeInformationToMap(
 		}
 		result["creator"] = jsonableCreator
 	}
+
 	if that.CreatedAt() != nil {
 		result["createdAt"] = *that.CreatedAt()
 	}
+
 	if that.UpdatedAt() != nil {
 		result["updatedAt"] = *that.UpdatedAt()
 	}
@@ -21539,24 +21402,6 @@ func langStringDefinitionTypeIEC61360ToMap(
 	return
 }
 
-func langStringUOMToMap(
-	that aastypes.ILangStringUOM,
-) (result map[string]interface{}, err error) {
-	result = make(map[string]interface{})
-	result["language"] = that.Language()
-	result["text"] = that.Text()
-	return
-}
-
-func langStringDefinitionTypeUOMToMap(
-	that aastypes.ILangStringDefinitionTypeUOM,
-) (result map[string]interface{}, err error) {
-	result = make(map[string]interface{})
-	result["language"] = that.Language()
-	result["text"] = that.Text()
-	return
-}
-
 // Serialize [aastypes.IDataSpecificationIEC61360] as a JSON-able map.
 //
 // This function performs no dispatch! It is only used to serialize
@@ -21763,28 +21608,6 @@ func dataSpecificationIEC61360ToMap(
 	return
 }
 
-func dataSpecificationUOMToMap(
-	that aastypes.IDataSpecificationUOM,
-) (result map[string]interface{}, err error) {
-	result = make(map[string]interface{})
-	jsonablePreferredName := make([]interface{}, len(that.PreferredName()))
-	for i, v := range that.PreferredName() {
-		var jsonable interface{}
-		jsonable, err = ToJsonable(v)
-		if err != nil {
-			return
-		}
-		jsonablePreferredName[i] = jsonable
-	}
-	result["preferredName"] = jsonablePreferredName
-	result["symbol"] = that.Symbol()
-	if that.SpecificUnitID() != nil {
-		result["specificUnitId"] = *that.SpecificUnitID()
-	}
-	result["modelType"] = "DataSpecificationUom"
-	return
-}
-
 // Serialize “that“ instance to a JSON-able representation.
 //
 // Return a structure which can be readily converted to JSON,
@@ -21944,18 +21767,6 @@ func ToJsonable(
 	case aastypes.ModelTypeDataSpecificationIEC61360:
 		result, err = dataSpecificationIEC61360ToMap(
 			that.(aastypes.IDataSpecificationIEC61360),
-		)
-	case aastypes.ModelTypeLangStringUOM:
-		result, err = langStringUOMToMap(
-			that.(aastypes.ILangStringUOM),
-		)
-	case aastypes.ModelTypeLangStringDefinitionTypeUOM:
-		result, err = langStringDefinitionTypeUOMToMap(
-			that.(aastypes.ILangStringDefinitionTypeUOM),
-		)
-	case aastypes.ModelTypeDataSpecificationUOM:
-		result, err = dataSpecificationUOMToMap(
-			that.(aastypes.IDataSpecificationUOM),
 		)
 	default:
 		err = newSerializationError(

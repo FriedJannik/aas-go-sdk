@@ -11,28 +11,28 @@ package verification
 // Do NOT edit or append.
 
 import (
-	"math/big"
 	"fmt"
-	"regexp"
-	"strconv"
-	"strings"
 	aascommon "github.com/FriedJannik/aas-go-sdk/common"
 	aasconstants "github.com/FriedJannik/aas-go-sdk/constants"
 	aasreporting "github.com/FriedJannik/aas-go-sdk/reporting"
 	aastypes "github.com/FriedJannik/aas-go-sdk/types"
+	"math/big"
+	"regexp"
+	"strconv"
+	"strings"
 )
 
 // Represent a verification violation.
 //
 // Implements `error`.
-type VerificationError struct{
-	Path *aasreporting.Path
+type VerificationError struct {
+	Path    *aasreporting.Path
 	Message string
 }
 
 func newVerificationError(message string) *VerificationError {
 	return &VerificationError{
-		Path: &aasreporting.Path{},
+		Path:    &aasreporting.Path{},
 		Message: message,
 	}
 }
@@ -176,8 +176,8 @@ var matchesXsDateTimeUTCRe = constructMatchesXsDateTimeUTC()
 //
 // See: https://www.w3.org/TR/xmlschema-2/#dateTime
 //
-//   • `text`: Text to be checked
-//   • Return True if the text conforms to the pattern
+//   - `text`: Text to be checked
+//   - Return True if the text conforms to the pattern
 func MatchesXsDateTimeUTC(text string) bool {
 	return matchesXsDateTimeUTCRe.MatchString(
 		text,
@@ -195,8 +195,8 @@ func IsXsDateTimeUTC(value string) bool {
 	if !ok {
 		panic(
 			fmt.Sprintf(
-				"Expected 'T' in the date-time if it matches the expected regex, " +
-				"but got: %s",
+				"Expected 'T' in the date-time if it matches the expected regex, "+
+					"but got: %s",
 				value,
 			),
 		)
@@ -267,8 +267,8 @@ var matchesMIMETypeRe = constructMatchesMIMEType()
 // https://www.rfc-editor.org/rfc/rfc7230#section-3.2.3 and
 // https://www.rfc-editor.org/rfc/rfc7230#section-3.2.6.
 //
-//   • `text`: Text to be checked
-//   • Return True if the text conforms to the pattern
+//   - `text`: Text to be checked
+//   - Return True if the text conforms to the pattern
 func MatchesMIMEType(text string) bool {
 	return matchesMIMETypeRe.MatchString(
 		text,
@@ -496,8 +496,8 @@ var matchesRFC2396Re = constructMatchesRFC2396()
 // XSD version 1.0, as that specifies URI together with the amendment of
 // RFC 2732.
 //
-//   • `text`: Text to be checked
-//   • Return True if the text conforms to the pattern
+//   - `text`: Text to be checked
+//   - Return True if the text conforms to the pattern
 func MatchesRFC2396(text string) bool {
 	return matchesRFC2396Re.MatchString(
 		text,
@@ -637,8 +637,8 @@ var matchesXMLSerializableStringRe = constructMatchesXMLSerializableString()
 // Ensures that encoding is possible and interoperability between different
 // serializations is possible.
 //
-//   • `text`: Text to be checked
-//   • Return True if the text conforms to the pattern
+//   - `text`: Text to be checked
+//   - Return True if the text conforms to the pattern
 func MatchesXMLSerializableString(text string) bool {
 	return matchesXMLSerializableStringRe.MatchString(
 		text,
@@ -900,8 +900,8 @@ var matchesXsAnyURIRe = constructMatchesXsAnyURI()
 // be confused with `matches_RFC_2396`, which does not include those
 // amendments and is used in different parts of the specification.
 //
-//   • `text`: Text to be checked
-//   • Return True if the text conforms to the pattern
+//   - `text`: Text to be checked
+//   - Return True if the text conforms to the pattern
 func MatchesXsAnyURI(text string) bool {
 	return matchesXsAnyURIRe.MatchString(
 		text,
@@ -984,8 +984,8 @@ var matchesXsBase64BinaryRe = constructMatchesXsBase64Binary()
 //
 // See: https://www.w3.org/TR/xmlschema-2/#base64Binary
 //
-//   • `text`: Text to be checked
-//   • Return True if the text conforms to the pattern
+//   - `text`: Text to be checked
+//   - Return True if the text conforms to the pattern
 func MatchesXsBase64Binary(text string) bool {
 	return matchesXsBase64BinaryRe.MatchString(
 		text,
@@ -1006,8 +1006,8 @@ var matchesXsBooleanRe = constructMatchesXsBoolean()
 //
 // See: https://www.w3.org/TR/xmlschema-2/#boolean
 //
-//   • `text`: Text to be checked
-//   • Return True if the text conforms to the pattern
+//   - `text`: Text to be checked
+//   - Return True if the text conforms to the pattern
 func MatchesXsBoolean(text string) bool {
 	return matchesXsBooleanRe.MatchString(
 		text,
@@ -1070,8 +1070,8 @@ var matchesXsDateRe = constructMatchesXsDate()
 //
 // See: https://www.w3.org/TR/xmlschema-2/#date
 //
-//   • `text`: Text to be checked
-//   • Return True if the text conforms to the pattern
+//   - `text`: Text to be checked
+//   - Return True if the text conforms to the pattern
 func MatchesXsDate(text string) bool {
 	return matchesXsDateRe.MatchString(
 		text,
@@ -1156,8 +1156,8 @@ var matchesXsDateTimeRe = constructMatchesXsDateTime()
 //
 // See: https://www.w3.org/TR/xmlschema-2/#dateTime
 //
-//   • `text`: Text to be checked
-//   • Return True if the text conforms to the pattern
+//   - `text`: Text to be checked
+//   - Return True if the text conforms to the pattern
 func MatchesXsDateTime(text string) bool {
 	return matchesXsDateTimeRe.MatchString(
 		text,
@@ -1170,7 +1170,7 @@ func MatchesXsDateTime(text string) bool {
 // See https://www.w3.org/TR/xmlschema-2/#dateTime.
 func IsXsDateTime(value string) bool {
 	// NOTE (mristin, 2023-05-09):
-  	// We can not use date functions from the standard library as it does not
+	// We can not use date functions from the standard library as it does not
 	// handle years BCE (*e.g.*, `-0003-01-02`).
 
 	if !MatchesXsDateTime(value) {
@@ -1181,8 +1181,8 @@ func IsXsDateTime(value string) bool {
 	if !ok {
 		panic(
 			fmt.Sprintf(
-				"Expected 'T' in the date-time if it matches the expected regex, " +
-				"but got: %s",
+				"Expected 'T' in the date-time if it matches the expected regex, "+
+					"but got: %s",
 				value,
 			),
 		)
@@ -1241,8 +1241,8 @@ var matchesXsDecimalRe = constructMatchesXsDecimal()
 //
 // See: https://www.w3.org/TR/xmlschema-2/#decimal
 //
-//   • `text`: Text to be checked
-//   • Return True if the text conforms to the pattern
+//   - `text`: Text to be checked
+//   - Return True if the text conforms to the pattern
 func MatchesXsDecimal(text string) bool {
 	return matchesXsDecimalRe.MatchString(
 		text,
@@ -1268,8 +1268,8 @@ var matchesXsDoubleRe = constructMatchesXsDouble()
 //
 // See: https://www.w3.org/TR/xmlschema-2/#double
 //
-//   • `text`: Text to be checked
-//   • Return True if the text conforms to the pattern
+//   - `text`: Text to be checked
+//   - Return True if the text conforms to the pattern
 func MatchesXsDouble(text string) bool {
 	return matchesXsDoubleRe.MatchString(
 		text,
@@ -1295,8 +1295,8 @@ var matchesXsDurationRe = constructMatchesXsDuration()
 //
 // See: https://www.w3.org/TR/xmlschema-2/#duration
 //
-//   • `text`: Text to be checked
-//   • Return True if the text conforms to the pattern
+//   - `text`: Text to be checked
+//   - Return True if the text conforms to the pattern
 func MatchesXsDuration(text string) bool {
 	return matchesXsDurationRe.MatchString(
 		text,
@@ -1322,8 +1322,8 @@ var matchesXsFloatRe = constructMatchesXsFloat()
 //
 // See: https://www.w3.org/TR/xmlschema-2/#float
 //
-//   • `text`: Text to be checked
-//   • Return True if the text conforms to the pattern
+//   - `text`: Text to be checked
+//   - Return True if the text conforms to the pattern
 func MatchesXsFloat(text string) bool {
 	return matchesXsFloatRe.MatchString(
 		text,
@@ -1349,8 +1349,8 @@ var matchesXsGDayRe = constructMatchesXsGDay()
 //
 // See: https://www.w3.org/TR/xmlschema-2/#gDay
 //
-//   • `text`: Text to be checked
-//   • Return True if the text conforms to the pattern
+//   - `text`: Text to be checked
+//   - Return True if the text conforms to the pattern
 func MatchesXsGDay(text string) bool {
 	return matchesXsGDayRe.MatchString(
 		text,
@@ -1376,8 +1376,8 @@ var matchesXsGMonthRe = constructMatchesXsGMonth()
 //
 // See: https://www.w3.org/TR/xmlschema-2/#gMonth
 //
-//   • `text`: Text to be checked
-//   • Return True if the text conforms to the pattern
+//   - `text`: Text to be checked
+//   - Return True if the text conforms to the pattern
 func MatchesXsGMonth(text string) bool {
 	return matchesXsGMonthRe.MatchString(
 		text,
@@ -1403,8 +1403,8 @@ var matchesXsGMonthDayRe = constructMatchesXsGMonthDay()
 //
 // See: https://www.w3.org/TR/xmlschema-2/#gMonthDay
 //
-//   • `text`: Text to be checked
-//   • Return True if the text conforms to the pattern
+//   - `text`: Text to be checked
+//   - Return True if the text conforms to the pattern
 func MatchesXsGMonthDay(text string) bool {
 	return matchesXsGMonthDayRe.MatchString(
 		text,
@@ -1430,8 +1430,8 @@ var matchesXsGYearRe = constructMatchesXsGYear()
 //
 // See: https://www.w3.org/TR/xmlschema-2/#gYear
 //
-//   • `text`: Text to be checked
-//   • Return True if the text conforms to the pattern
+//   - `text`: Text to be checked
+//   - Return True if the text conforms to the pattern
 func MatchesXsGYear(text string) bool {
 	return matchesXsGYearRe.MatchString(
 		text,
@@ -1457,8 +1457,8 @@ var matchesXsGYearMonthRe = constructMatchesXsGYearMonth()
 //
 // See: https://www.w3.org/TR/xmlschema-2/#gYearMonth
 //
-//   • `text`: Text to be checked
-//   • Return True if the text conforms to the pattern
+//   - `text`: Text to be checked
+//   - Return True if the text conforms to the pattern
 func MatchesXsGYearMonth(text string) bool {
 	return matchesXsGYearMonthRe.MatchString(
 		text,
@@ -1484,8 +1484,8 @@ var matchesXsHexBinaryRe = constructMatchesXsHexBinary()
 //
 // See: https://www.w3.org/TR/xmlschema-2/#hexBinary
 //
-//   • `text`: Text to be checked
-//   • Return True if the text conforms to the pattern
+//   - `text`: Text to be checked
+//   - Return True if the text conforms to the pattern
 func MatchesXsHexBinary(text string) bool {
 	return matchesXsHexBinaryRe.MatchString(
 		text,
@@ -1511,8 +1511,8 @@ var matchesXsTimeRe = constructMatchesXsTime()
 //
 // See: https://www.w3.org/TR/xmlschema-2/#time
 //
-//   • `text`: Text to be checked
-//   • Return True if the text conforms to the pattern
+//   - `text`: Text to be checked
+//   - Return True if the text conforms to the pattern
 func MatchesXsTime(text string) bool {
 	return matchesXsTimeRe.MatchString(
 		text,
@@ -1538,8 +1538,8 @@ var matchesXsIntegerRe = constructMatchesXsInteger()
 //
 // See: https://www.w3.org/TR/xmlschema-2/#integer
 //
-//   • `text`: Text to be checked
-//   • Return True if the text conforms to the pattern
+//   - `text`: Text to be checked
+//   - Return True if the text conforms to the pattern
 func MatchesXsInteger(text string) bool {
 	return matchesXsIntegerRe.MatchString(
 		text,
@@ -1565,8 +1565,8 @@ var matchesXsLongRe = constructMatchesXsLong()
 //
 // See: https://www.w3.org/TR/xmlschema-2/#long
 //
-//   • `text`: Text to be checked
-//   • Return True if the text conforms to the pattern
+//   - `text`: Text to be checked
+//   - Return True if the text conforms to the pattern
 func MatchesXsLong(text string) bool {
 	return matchesXsLongRe.MatchString(
 		text,
@@ -1592,8 +1592,8 @@ var matchesXsIntRe = constructMatchesXsInt()
 //
 // See: https://www.w3.org/TR/xmlschema-2/#int
 //
-//   • `text`: Text to be checked
-//   • Return True if the text conforms to the pattern
+//   - `text`: Text to be checked
+//   - Return True if the text conforms to the pattern
 func MatchesXsInt(text string) bool {
 	return matchesXsIntRe.MatchString(
 		text,
@@ -1619,8 +1619,8 @@ var matchesXsShortRe = constructMatchesXsShort()
 //
 // See: https://www.w3.org/TR/xmlschema-2/#short
 //
-//   • `text`: Text to be checked
-//   • Return True if the text conforms to the pattern
+//   - `text`: Text to be checked
+//   - Return True if the text conforms to the pattern
 func MatchesXsShort(text string) bool {
 	return matchesXsShortRe.MatchString(
 		text,
@@ -1646,8 +1646,8 @@ var matchesXsByteRe = constructMatchesXsByte()
 //
 // See: https://www.w3.org/TR/xmlschema-2/#byte
 //
-//   • `text`: Text to be checked
-//   • Return True if the text conforms to the pattern
+//   - `text`: Text to be checked
+//   - Return True if the text conforms to the pattern
 func MatchesXsByte(text string) bool {
 	return matchesXsByteRe.MatchString(
 		text,
@@ -1673,8 +1673,8 @@ var matchesXsNonNegativeIntegerRe = constructMatchesXsNonNegativeInteger()
 //
 // See: https://www.w3.org/TR/xmlschema-2/#nonNegativeInteger
 //
-//   • `text`: Text to be checked
-//   • Return True if the text conforms to the pattern
+//   - `text`: Text to be checked
+//   - Return True if the text conforms to the pattern
 func MatchesXsNonNegativeInteger(text string) bool {
 	return matchesXsNonNegativeIntegerRe.MatchString(
 		text,
@@ -1700,8 +1700,8 @@ var matchesXsPositiveIntegerRe = constructMatchesXsPositiveInteger()
 //
 // See: https://www.w3.org/TR/xmlschema-2/#positiveInteger
 //
-//   • `text`: Text to be checked
-//   • Return True if the text conforms to the pattern
+//   - `text`: Text to be checked
+//   - Return True if the text conforms to the pattern
 func MatchesXsPositiveInteger(text string) bool {
 	return matchesXsPositiveIntegerRe.MatchString(
 		text,
@@ -1727,8 +1727,8 @@ var matchesXsUnsignedLongRe = constructMatchesXsUnsignedLong()
 //
 // See: https://www.w3.org/TR/xmlschema-2/#unsignedLong
 //
-//   • `text`: Text to be checked
-//   • Return True if the text conforms to the pattern
+//   - `text`: Text to be checked
+//   - Return True if the text conforms to the pattern
 func MatchesXsUnsignedLong(text string) bool {
 	return matchesXsUnsignedLongRe.MatchString(
 		text,
@@ -1754,8 +1754,8 @@ var matchesXsUnsignedIntRe = constructMatchesXsUnsignedInt()
 //
 // See: https://www.w3.org/TR/xmlschema-2/#unsignedInt
 //
-//   • `text`: Text to be checked
-//   • Return True if the text conforms to the pattern
+//   - `text`: Text to be checked
+//   - Return True if the text conforms to the pattern
 func MatchesXsUnsignedInt(text string) bool {
 	return matchesXsUnsignedIntRe.MatchString(
 		text,
@@ -1781,8 +1781,8 @@ var matchesXsUnsignedShortRe = constructMatchesXsUnsignedShort()
 //
 // See: https://www.w3.org/TR/xmlschema-2/#unsignedShort
 //
-//   • `text`: Text to be checked
-//   • Return True if the text conforms to the pattern
+//   - `text`: Text to be checked
+//   - Return True if the text conforms to the pattern
 func MatchesXsUnsignedShort(text string) bool {
 	return matchesXsUnsignedShortRe.MatchString(
 		text,
@@ -1808,8 +1808,8 @@ var matchesXsUnsignedByteRe = constructMatchesXsUnsignedByte()
 //
 // See: https://www.w3.org/TR/xmlschema-2/#unsignedByte
 //
-//   • `text`: Text to be checked
-//   • Return True if the text conforms to the pattern
+//   - `text`: Text to be checked
+//   - Return True if the text conforms to the pattern
 func MatchesXsUnsignedByte(text string) bool {
 	return matchesXsUnsignedByteRe.MatchString(
 		text,
@@ -1835,8 +1835,8 @@ var matchesXsNonPositiveIntegerRe = constructMatchesXsNonPositiveInteger()
 //
 // See: https://www.w3.org/TR/xmlschema-2/#nonPositiveInteger
 //
-//   • `text`: Text to be checked
-//   • Return True if the text conforms to the pattern
+//   - `text`: Text to be checked
+//   - Return True if the text conforms to the pattern
 func MatchesXsNonPositiveInteger(text string) bool {
 	return matchesXsNonPositiveIntegerRe.MatchString(
 		text,
@@ -1862,8 +1862,8 @@ var matchesXsNegativeIntegerRe = constructMatchesXsNegativeInteger()
 //
 // See: https://www.w3.org/TR/xmlschema-2/#negativeInteger
 //
-//   • `text`: Text to be checked
-//   • Return True if the text conforms to the pattern
+//   - `text`: Text to be checked
+//   - Return True if the text conforms to the pattern
 func MatchesXsNegativeInteger(text string) bool {
 	return matchesXsNegativeIntegerRe.MatchString(
 		text,
@@ -1884,8 +1884,8 @@ var matchesXsStringRe = constructMatchesXsString()
 //
 // See: https://www.w3.org/TR/xmlschema-2/#string
 //
-//   • `text`: Text to be checked
-//   • Return True if the text conforms to the pattern
+//   - `text`: Text to be checked
+//   - Return True if the text conforms to the pattern
 func MatchesXsString(text string) bool {
 	return matchesXsStringRe.MatchString(
 		text,
@@ -1972,18 +1972,18 @@ func IsXsDate(value string) bool {
 	// to handle years BCE according to the XML date type.
 
 	// NOTE (mristin, 2023-05-12):
-    // We need to match the prefix as zone offsets are allowed in the dates. Optimally,
-    // we would re-use the pattern matching from `MatchesXsDate`, but this
-    // would make the code generation and constraint inference for schemas much more
-    // difficult. Hence, we sacrifice the efficiency a bit for the clearer code & code
-    // generation.
+	// We need to match the prefix as zone offsets are allowed in the dates. Optimally,
+	// we would re-use the pattern matching from `MatchesXsDate`, but this
+	// would make the code generation and constraint inference for schemas much more
+	// difficult. Hence, we sacrifice the efficiency a bit for the clearer code & code
+	// generation.
 
 	match := datePrefixRe.FindStringSubmatch(value)
 	if len(match) == 0 {
 		panic(
 			fmt.Sprintf(
-				"Expected value to match %v if we got thus far, " +
-				"but it does not: %s",
+				"Expected value to match %v if we got thus far, "+
+					"but it does not: %s",
 				datePrefixRe, value,
 			),
 		)
@@ -2070,10 +2070,10 @@ func IsXsDouble(value string) bool {
 	_, err := strconv.ParseFloat(value, 64)
 	if err != nil {
 		if numError, ok := err.(*strconv.NumError); ok {
-            if numError.Err == strconv.ErrRange {
-                return false
-            }
-        }
+			if numError.Err == strconv.ErrRange {
+				return false
+			}
+		}
 
 		panic(
 			fmt.Sprintf(
@@ -2105,11 +2105,11 @@ func IsXsFloat(value string) bool {
 
 	_, err := strconv.ParseFloat(value, 32)
 	if err != nil {
-        if numError, ok := err.(*strconv.NumError); ok {
-            if numError.Err == strconv.ErrRange {
-                return false
-            }
-        }
+		if numError, ok := err.(*strconv.NumError); ok {
+			if numError.Err == strconv.ErrRange {
+				return false
+			}
+		}
 
 		panic(
 			fmt.Sprintf(
@@ -2269,68 +2269,68 @@ func ValueConsistentWithXSDType(
 	valueType aastypes.DataTypeDefXSD,
 ) bool {
 	switch valueType {
-		case aastypes.DataTypeDefXSDAnyURI:
-			return MatchesXsAnyURI(value)
-		case aastypes.DataTypeDefXSDBase64Binary:
-			return MatchesXsBase64Binary(value)
-		case aastypes.DataTypeDefXSDBoolean:
-			return MatchesXsBoolean(value)
-		case aastypes.DataTypeDefXSDByte:
-			return IsXsByte(value)
-		case aastypes.DataTypeDefXSDDate:
-			return IsXsDate(value)
-		case aastypes.DataTypeDefXSDDateTime:
-			return IsXsDateTime(value)
-		case aastypes.DataTypeDefXSDDecimal:
-			return MatchesXsDecimal(value)
-		case aastypes.DataTypeDefXSDDouble:
-			return IsXsDouble(value)
-		case aastypes.DataTypeDefXSDDuration:
-			return MatchesXsDuration(value)
-		case aastypes.DataTypeDefXSDFloat:
-		 	return IsXsFloat(value)
-		case aastypes.DataTypeDefXSDGDay:
-			return MatchesXsGDay(value)
-		case aastypes.DataTypeDefXSDGMonth:
-			return MatchesXsGMonth(value)
-		case aastypes.DataTypeDefXSDGMonthDay:
-			return IsXsGMonthDay(value)
-		case aastypes.DataTypeDefXSDGYear:
-			return MatchesXsGYear(value)
-		case aastypes.DataTypeDefXSDGYearMonth:
-			return MatchesXsGYearMonth(value)
-		case aastypes.DataTypeDefXSDHexBinary:
-			return MatchesXsHexBinary(value)
-		case aastypes.DataTypeDefXSDInt:
-			return IsXsInt(value)
-		case aastypes.DataTypeDefXSDInteger:
-			return MatchesXsInteger(value)
-		case aastypes.DataTypeDefXSDLong:
-			return IsXsLong(value)
-		case aastypes.DataTypeDefXSDNegativeInteger:
-			return MatchesXsNegativeInteger(value)
-		case aastypes.DataTypeDefXSDNonNegativeInteger:
-			return MatchesXsNonNegativeInteger(value)
-		case aastypes.DataTypeDefXSDNonPositiveInteger:
-			return MatchesXsNonPositiveInteger(value)
-		case aastypes.DataTypeDefXSDPositiveInteger:
-			return MatchesXsPositiveInteger(value)
-		case aastypes.DataTypeDefXSDShort:
-			return IsXsShort(value)
-		case aastypes.DataTypeDefXSDString:
-			return MatchesXsString(value)
-		case aastypes.DataTypeDefXSDTime:
-			return MatchesXsTime(value)
-		case aastypes.DataTypeDefXSDUnsignedByte:
-			return IsXsUnsignedByte(value)
-		case aastypes.DataTypeDefXSDUnsignedInt:
-			return IsXsUnsignedInt(value)
-		case aastypes.DataTypeDefXSDUnsignedLong:
-			return IsXsUnsignedLong(value)
-		case aastypes.DataTypeDefXSDUnsignedShort:
-			return IsXsUnsignedShort(value)
-		default:
-			panic(fmt.Sprintf("Unhandled value type: %v", valueType))
+	case aastypes.DataTypeDefXSDAnyURI:
+		return MatchesXsAnyURI(value)
+	case aastypes.DataTypeDefXSDBase64Binary:
+		return MatchesXsBase64Binary(value)
+	case aastypes.DataTypeDefXSDBoolean:
+		return MatchesXsBoolean(value)
+	case aastypes.DataTypeDefXSDByte:
+		return IsXsByte(value)
+	case aastypes.DataTypeDefXSDDate:
+		return IsXsDate(value)
+	case aastypes.DataTypeDefXSDDateTime:
+		return IsXsDateTime(value)
+	case aastypes.DataTypeDefXSDDecimal:
+		return MatchesXsDecimal(value)
+	case aastypes.DataTypeDefXSDDouble:
+		return IsXsDouble(value)
+	case aastypes.DataTypeDefXSDDuration:
+		return MatchesXsDuration(value)
+	case aastypes.DataTypeDefXSDFloat:
+		return IsXsFloat(value)
+	case aastypes.DataTypeDefXSDGDay:
+		return MatchesXsGDay(value)
+	case aastypes.DataTypeDefXSDGMonth:
+		return MatchesXsGMonth(value)
+	case aastypes.DataTypeDefXSDGMonthDay:
+		return IsXsGMonthDay(value)
+	case aastypes.DataTypeDefXSDGYear:
+		return MatchesXsGYear(value)
+	case aastypes.DataTypeDefXSDGYearMonth:
+		return MatchesXsGYearMonth(value)
+	case aastypes.DataTypeDefXSDHexBinary:
+		return MatchesXsHexBinary(value)
+	case aastypes.DataTypeDefXSDInt:
+		return IsXsInt(value)
+	case aastypes.DataTypeDefXSDInteger:
+		return MatchesXsInteger(value)
+	case aastypes.DataTypeDefXSDLong:
+		return IsXsLong(value)
+	case aastypes.DataTypeDefXSDNegativeInteger:
+		return MatchesXsNegativeInteger(value)
+	case aastypes.DataTypeDefXSDNonNegativeInteger:
+		return MatchesXsNonNegativeInteger(value)
+	case aastypes.DataTypeDefXSDNonPositiveInteger:
+		return MatchesXsNonPositiveInteger(value)
+	case aastypes.DataTypeDefXSDPositiveInteger:
+		return MatchesXsPositiveInteger(value)
+	case aastypes.DataTypeDefXSDShort:
+		return IsXsShort(value)
+	case aastypes.DataTypeDefXSDString:
+		return MatchesXsString(value)
+	case aastypes.DataTypeDefXSDTime:
+		return MatchesXsTime(value)
+	case aastypes.DataTypeDefXSDUnsignedByte:
+		return IsXsUnsignedByte(value)
+	case aastypes.DataTypeDefXSDUnsignedInt:
+		return IsXsUnsignedInt(value)
+	case aastypes.DataTypeDefXSDUnsignedLong:
+		return IsXsUnsignedLong(value)
+	case aastypes.DataTypeDefXSDUnsignedShort:
+		return IsXsUnsignedShort(value)
+	default:
+		panic(fmt.Sprintf("Unhandled value type: %v", valueType))
 	}
 }
 
@@ -2341,7 +2341,7 @@ func IsModelReferenceTo(
 ) bool {
 	return reference.Type() == aastypes.ReferenceTypesModelReference &&
 		len(reference.Keys()) != 0 &&
-		reference.Keys()[len(reference.Keys()) - 1].Type() == expectedType
+		reference.Keys()[len(reference.Keys())-1].Type() == expectedType
 }
 
 // Check that the target of the reference matches a [aasconstants.AASReferables].
@@ -2352,7 +2352,7 @@ func IsModelReferenceToReferable(
 		len(reference.Keys()) != 0 &&
 		aascommon.MapContains(
 			aasconstants.AASReferables,
-			reference.Keys()[len(reference.Keys()) - 1].Type(),
+			reference.Keys()[len(reference.Keys())-1].Type(),
 		)
 }
 
@@ -2382,8 +2382,8 @@ func IDShortsAreUnique[R aastypes.IReferable](
 // Check that [aastypes.IReferable.IDShort]'s among all the `inputVariables`,
 // `outputVariables` and `inoutputVariables` are unique.
 func IDShortsOfVariablesAreUnique[O1 aastypes.IOperationVariable,
-		O2 aastypes.IOperationVariable,
-		O3 aastypes.IOperationVariable] (
+	O2 aastypes.IOperationVariable,
+	O3 aastypes.IOperationVariable](
 	inputVariables []O1,
 	outputVariables []O2,
 	inoutputVariables []O3) bool {
@@ -2433,6 +2433,79 @@ func IDShortsOfVariablesAreUnique[O1 aastypes.IOperationVariable,
 
 				idShortSet[*idShort] = struct{}{}
 			}
+		}
+	}
+
+	return true
+}
+
+// Check that all [aastypes.ISubmodelElementList] instances in the tree rooted at
+// `that` have exactly one value element.
+func SubmodelElementListsHaveExactlyOneElementInTree[C aastypes.IClass](
+	that C,
+) bool {
+	checkOne := func(instance aastypes.IClass) bool {
+		list, ok := instance.(aastypes.ISubmodelElementList)
+		if !ok {
+			return true
+		}
+
+		return len(list.Value()) == 1
+	}
+
+	if !checkOne(that) {
+		return false
+	}
+
+	ok := true
+	that.Descend(
+		func(instance aastypes.IClass) bool {
+			ok = checkOne(instance)
+			return !ok
+		},
+	)
+
+	return ok
+}
+
+// Check that all [aastypes.ISubmodelElementList] instances reachable from
+// `submodelElements` have exactly one value element.
+func SubmodelElementListsInSubmodelElementsHaveExactlyOneElement[S aastypes.ISubmodelElement](
+	submodelElements []S,
+) bool {
+	for _, submodelElement := range submodelElements {
+		if !SubmodelElementListsHaveExactlyOneElementInTree(submodelElement) {
+			return false
+		}
+	}
+
+	return true
+}
+
+// Check that all [aastypes.ISubmodelElementList] instances reachable from
+// `operationVariables` have exactly one value element.
+func SubmodelElementListsInOperationVariablesHaveExactlyOneElement[
+	O1 aastypes.IOperationVariable,
+	O2 aastypes.IOperationVariable,
+	O3 aastypes.IOperationVariable,
+](
+	inputVariables []O1,
+	outputVariables []O2,
+	inoutputVariables []O3,
+) bool {
+	for _, operationVariable := range inputVariables {
+		if !SubmodelElementListsHaveExactlyOneElementInTree(operationVariable.Value()) {
+			return false
+		}
+	}
+	for _, operationVariable := range outputVariables {
+		if !SubmodelElementListsHaveExactlyOneElementInTree(operationVariable.Value()) {
+			return false
+		}
+	}
+	for _, operationVariable := range inoutputVariables {
+		if !SubmodelElementListsHaveExactlyOneElementInTree(operationVariable.Value()) {
+			return false
 		}
 	}
 
@@ -2589,7 +2662,7 @@ func PropertiesOrRangesHaveValueType[E aastypes.ISubmodelElement](
 			if rng.ValueType() != valueType {
 				return false
 			}
-		// default passes.
+			// default passes.
 		}
 	}
 	return true
@@ -2794,13 +2867,12 @@ func VerifyExtension(
 ) (abort bool) {
 	abort = false
 
-	if !(
-		!(that.SupplementalSemanticIDs() != nil) ||
+	if !(!(that.SupplementalSemanticIDs() != nil) ||
 		(len(that.SupplementalSemanticIDs()) >= 1)) {
 		abort = onError(
 			newVerificationError(
 				"Supplemental semantic IDs must be either not set or have at " +
-				"least one item.",
+					"least one item.",
 			),
 		)
 		if abort {
@@ -2808,13 +2880,12 @@ func VerifyExtension(
 		}
 	}
 
-	if !(
-		!(that.SupplementalSemanticIDs() != nil) ||
+	if !(!(that.SupplementalSemanticIDs() != nil) ||
 		(that.SemanticID() != nil)) {
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-118: If there are supplemental semantic IDs " +
-				"defined then there shall be also a main semantic ID.",
+					"defined then there shall be also a main semantic ID.",
 			),
 		)
 		if abort {
@@ -2822,27 +2893,25 @@ func VerifyExtension(
 		}
 	}
 
-	if !(
-		!(that.RefersTo() != nil) ||
+	if !(!(that.RefersTo() != nil) ||
 		(len(that.RefersTo()) >= 1)) {
 		abort = onError(
 			newVerificationError(
-				"Refers-to must be either not set or have at least one item.",),
+				"Refers-to must be either not set or have at least one item."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		!(that.Value() != nil) ||
+	if !(!(that.Value() != nil) ||
 		ValueConsistentWithXSDType(
 			*that.Value(),
 			that.ValueTypeOrDefault(),
 		)) {
 		abort = onError(
 			newVerificationError(
-				"The value must match the value type.",),
+				"The value must match the value type."),
 		)
 		if abort {
 			return
@@ -2908,8 +2977,7 @@ func VerifyExtension(
 	}
 
 	if that.ValueType() != nil {
-		if
-			*that.ValueType() < aastypes.DataTypeDefXSDAnyURI ||
+		if *that.ValueType() < aastypes.DataTypeDefXSDAnyURI ||
 			*that.ValueType() > aastypes.DataTypeDefXSDUnsignedShort {
 			err := newVerificationError(
 				fmt.Sprintf(
@@ -2987,13 +3055,12 @@ func VerifyAdministrativeInformation(
 ) (abort bool) {
 	abort = false
 
-	if !(
-		!(that.EmbeddedDataSpecifications() != nil) ||
+	if !(!(that.EmbeddedDataSpecifications() != nil) ||
 		(len(that.EmbeddedDataSpecifications()) >= 1)) {
 		abort = onError(
 			newVerificationError(
 				"Embedded data specifications must be either not set or have " +
-				"at least one item.",
+					"at least one item.",
 			),
 		)
 		if abort {
@@ -3001,15 +3068,14 @@ func VerifyAdministrativeInformation(
 		}
 	}
 
-	if !(
-		!(that.Revision() != nil) ||
+	if !(!(that.Revision() != nil) ||
 		(that.Version() != nil)) {
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-005: If version is not specified then also " +
-				"revision shall be unspecified. This means, a revision " +
-				"requires a version. If there is no version there is no " +
-				"revision either. Revision is optional.",
+					"revision shall be unspecified. This means, a revision " +
+					"requires a version. If there is no version there is no " +
+					"revision either. Revision is optional.",
 			),
 		)
 		if abort {
@@ -3094,6 +3160,40 @@ func VerifyAdministrativeInformation(
 		}
 	}
 
+	if that.CreatedAt() != nil {
+		abort = VerifyDateTimeUTC(
+			*that.CreatedAt(),
+			func(err *VerificationError) bool {
+				err.Path.PrependName(
+					&aasreporting.NameSegment{
+						Name: "CreatedAt",
+					},
+				)
+				return onError(err)
+			},
+		)
+		if abort {
+			return
+		}
+	}
+
+	if that.UpdatedAt() != nil {
+		abort = VerifyDateTimeUTC(
+			*that.UpdatedAt(),
+			func(err *VerificationError) bool {
+				err.Path.PrependName(
+					&aasreporting.NameSegment{
+						Name: "UpdatedAt",
+					},
+				)
+				return onError(err)
+			},
+		)
+		if abort {
+			return
+		}
+	}
+
 	if that.TemplateID() != nil {
 		abort = VerifyIdentifier(
 			*that.TemplateID(),
@@ -3126,13 +3226,12 @@ func VerifyQualifier(
 ) (abort bool) {
 	abort = false
 
-	if !(
-		!(that.SupplementalSemanticIDs() != nil) ||
+	if !(!(that.SupplementalSemanticIDs() != nil) ||
 		(len(that.SupplementalSemanticIDs()) >= 1)) {
 		abort = onError(
 			newVerificationError(
 				"Supplemental semantic IDs must be either not set or have at " +
-				"least one item.",
+					"least one item.",
 			),
 		)
 		if abort {
@@ -3140,13 +3239,12 @@ func VerifyQualifier(
 		}
 	}
 
-	if !(
-		!(that.SupplementalSemanticIDs() != nil) ||
+	if !(!(that.SupplementalSemanticIDs() != nil) ||
 		(that.SemanticID() != nil)) {
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-118: If there are supplemental semantic IDs " +
-				"defined then there shall be also a main semantic ID.",
+					"defined then there shall be also a main semantic ID.",
 			),
 		)
 		if abort {
@@ -3154,8 +3252,7 @@ func VerifyQualifier(
 		}
 	}
 
-	if !(
-		!(that.Value() != nil) ||
+	if !(!(that.Value() != nil) ||
 		ValueConsistentWithXSDType(
 			*that.Value(),
 			that.ValueType(),
@@ -3163,7 +3260,7 @@ func VerifyQualifier(
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-020: The value shall be consistent to " +
-				"the data type as defined in value type.",
+					"the data type as defined in value type.",
 			),
 		)
 		if abort {
@@ -3215,8 +3312,7 @@ func VerifyQualifier(
 	}
 
 	if that.Kind() != nil {
-		if
-			*that.Kind() < aastypes.QualifierKindValueQualifier ||
+		if *that.Kind() < aastypes.QualifierKindValueQualifier ||
 			*that.Kind() > aastypes.QualifierKindTemplateQualifier {
 			err := newVerificationError(
 				fmt.Sprintf(
@@ -3251,8 +3347,7 @@ func VerifyQualifier(
 		return
 	}
 
-	if
-		that.ValueType() < aastypes.DataTypeDefXSDAnyURI ||
+	if that.ValueType() < aastypes.DataTypeDefXSDAnyURI ||
 		that.ValueType() > aastypes.DataTypeDefXSDUnsignedShort {
 		err := newVerificationError(
 			fmt.Sprintf(
@@ -3320,25 +3415,23 @@ func VerifyAssetAdministrationShell(
 ) (abort bool) {
 	abort = false
 
-	if !(
-		!(that.Extensions() != nil) ||
+	if !(!(that.Extensions() != nil) ||
 		(len(that.Extensions()) >= 1)) {
 		abort = onError(
 			newVerificationError(
-				"Extensions must be either not set or have at least one item.",),
+				"Extensions must be either not set or have at least one item."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		!(that.Extensions() != nil) ||
+	if !(!(that.Extensions() != nil) ||
 		ExtensionNamesAreUnique(that.Extensions())) {
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-077: The name of an extension within " +
-				"Has-Extensions needs to be unique.",
+					"Has-Extensions needs to be unique.",
 			),
 		)
 		if abort {
@@ -3346,13 +3439,12 @@ func VerifyAssetAdministrationShell(
 		}
 	}
 
-	if !(
-		!(that.Description() != nil) ||
+	if !(!(that.Description() != nil) ||
 		(len(that.Description()) >= 1)) {
 		abort = onError(
 			newVerificationError(
 				"Description must be either not set or have at least one " +
-				"item.",
+					"item.",
 			),
 		)
 		if abort {
@@ -3360,25 +3452,23 @@ func VerifyAssetAdministrationShell(
 		}
 	}
 
-	if !(
-		!(that.Description() != nil) ||
+	if !(!(that.Description() != nil) ||
 		LangStringsHaveUniqueLanguages(that.Description())) {
 		abort = onError(
 			newVerificationError(
-				"Description must specify unique languages.",),
+				"Description must specify unique languages."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		!(that.DisplayName() != nil) ||
+	if !(!(that.DisplayName() != nil) ||
 		(len(that.DisplayName()) >= 1)) {
 		abort = onError(
 			newVerificationError(
 				"Display name must be either not set or have at least one " +
-				"item.",
+					"item.",
 			),
 		)
 		if abort {
@@ -3386,25 +3476,23 @@ func VerifyAssetAdministrationShell(
 		}
 	}
 
-	if !(
-		!(that.DisplayName() != nil) ||
+	if !(!(that.DisplayName() != nil) ||
 		LangStringsHaveUniqueLanguages(that.DisplayName())) {
 		abort = onError(
 			newVerificationError(
-				"Display name must specify unique languages.",),
+				"Display name must specify unique languages."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		!(that.EmbeddedDataSpecifications() != nil) ||
+	if !(!(that.EmbeddedDataSpecifications() != nil) ||
 		(len(that.EmbeddedDataSpecifications()) >= 1)) {
 		abort = onError(
 			newVerificationError(
 				"Embedded data specifications must be either not set or have " +
-				"at least one item.",
+					"at least one item.",
 			),
 		)
 		if abort {
@@ -3412,20 +3500,18 @@ func VerifyAssetAdministrationShell(
 		}
 	}
 
-	if !(
-		!(that.Submodels() != nil) ||
+	if !(!(that.Submodels() != nil) ||
 		(len(that.Submodels()) >= 1)) {
 		abort = onError(
 			newVerificationError(
-				"Submodels must be either not set or have at least one item.",),
+				"Submodels must be either not set or have at least one item."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		!(that.DerivedFrom() != nil) ||
+	if !(!(that.DerivedFrom() != nil) ||
 		IsModelReferenceTo(
 			that.DerivedFrom(),
 			aastypes.KeyTypesAssetAdministrationShell,
@@ -3433,7 +3519,7 @@ func VerifyAssetAdministrationShell(
 		abort = onError(
 			newVerificationError(
 				"Derived-from must be a model reference to an asset " +
-				"administration shell.",
+					"administration shell.",
 			),
 		)
 		if abort {
@@ -3441,20 +3527,19 @@ func VerifyAssetAdministrationShell(
 		}
 	}
 
-	if !(
-		!(that.Submodels() != nil) ||
+	if !(!(that.Submodels() != nil) ||
 		aascommon.All(
 			func(reference aastypes.IReference) bool {
 				return IsModelReferenceTo(
-						reference,
-						aastypes.KeyTypesSubmodel,
-					)
+					reference,
+					aastypes.KeyTypesSubmodel,
+				)
 			},
 			that.Submodels(),
 		)) {
 		abort = onError(
 			newVerificationError(
-				"All submodels must be model references to a submodel.",),
+				"All submodels must be model references to a submodel."),
 		)
 		if abort {
 			return
@@ -3715,23 +3800,24 @@ func VerifyAssetInformation(
 ) (abort bool) {
 	abort = false
 
-	if !(
-		!(that.SpecificAssetIDs() != nil) ||
+	if !(!(that.SpecificAssetIDs() != nil) ||
 		aascommon.All(
 			func(specificAssetID aastypes.ISpecificAssetID) bool {
 				return specificAssetID.Name() != "globalAssetId" ||
 					((that.GlobalAssetID() != nil) &&
-					specificAssetID.Name() == "globalAssetId" &&
-					specificAssetID.Value() == *that.GlobalAssetID())
+						specificAssetID.Name() == "globalAssetId" &&
+						specificAssetID.Value() == *that.GlobalAssetID())
 			},
 			that.SpecificAssetIDs(),
 		)) {
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-116: ``globalAssetId`` is a reserved key. " +
-				"If used as value for the name of specific asset ID then " +
-				"the value of specific asset ID shall be identical to " +
-				"the global asset ID.",
+					"If used as value for the name of specific asset ID then " +
+					"the value of specific asset ID shall be identical to " +
+					"the global asset ID with semantics as defined in " +
+					"https://admin-shell.io/aas/3/x/AssetInformation/globalAssetId, " +
+					"x being the minor version of the used specification.",
 			),
 		)
 		if abort {
@@ -3739,15 +3825,14 @@ func VerifyAssetInformation(
 		}
 	}
 
-	if !(
-		((that.GlobalAssetID() != nil) ||
+	if !(((that.GlobalAssetID() != nil) ||
 		(that.SpecificAssetIDs() != nil)) &&
 		(!(that.SpecificAssetIDs() != nil) ||
-		(len(that.SpecificAssetIDs()) >= 1))) {
+			(len(that.SpecificAssetIDs()) >= 1))) {
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-131: Either the global asset ID shall be " +
-				"defined or at least one specific asset ID.",
+					"defined or at least one specific asset ID.",
 			),
 		)
 		if abort {
@@ -3755,13 +3840,12 @@ func VerifyAssetInformation(
 		}
 	}
 
-	if !(
-		!(that.SpecificAssetIDs() != nil) ||
+	if !(!(that.SpecificAssetIDs() != nil) ||
 		(len(that.SpecificAssetIDs()) >= 1)) {
 		abort = onError(
 			newVerificationError(
 				"Specific asset IDs must be either not set or have at least " +
-				"one item.",
+					"one item.",
 			),
 		)
 		if abort {
@@ -3769,8 +3853,7 @@ func VerifyAssetInformation(
 		}
 	}
 
-	if
-		that.AssetKind() < aastypes.AssetKindType ||
+	if that.AssetKind() < aastypes.AssetKindType ||
 		that.AssetKind() > aastypes.AssetKindNotApplicable {
 		err := newVerificationError(
 			fmt.Sprintf(
@@ -3928,13 +4011,12 @@ func VerifySpecificAssetID(
 ) (abort bool) {
 	abort = false
 
-	if !(
-		!(that.SupplementalSemanticIDs() != nil) ||
+	if !(!(that.SupplementalSemanticIDs() != nil) ||
 		(len(that.SupplementalSemanticIDs()) >= 1)) {
 		abort = onError(
 			newVerificationError(
 				"Supplemental semantic IDs must be either not set or have at " +
-				"least one item.",
+					"least one item.",
 			),
 		)
 		if abort {
@@ -3942,13 +4024,12 @@ func VerifySpecificAssetID(
 		}
 	}
 
-	if !(
-		!(that.SupplementalSemanticIDs() != nil) ||
+	if !(!(that.SupplementalSemanticIDs() != nil) ||
 		(that.SemanticID() != nil)) {
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-118: If there are supplemental semantic IDs " +
-				"defined then there shall be also a main semantic ID.",
+					"defined then there shall be also a main semantic ID.",
 			),
 		)
 		if abort {
@@ -3956,13 +4037,12 @@ func VerifySpecificAssetID(
 		}
 	}
 
-	if !(
-		!(that.ExternalSubjectID() != nil) ||
+	if !(!(that.ExternalSubjectID() != nil) ||
 		(that.ExternalSubjectID().Type() == aastypes.ReferenceTypesExternalReference)) {
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-133: External subject ID shall be " +
-				"an external reference.",
+					"an external reference.",
 			),
 		)
 		if abort {
@@ -4075,25 +4155,23 @@ func VerifySubmodel(
 ) (abort bool) {
 	abort = false
 
-	if !(
-		!(that.Extensions() != nil) ||
+	if !(!(that.Extensions() != nil) ||
 		(len(that.Extensions()) >= 1)) {
 		abort = onError(
 			newVerificationError(
-				"Extensions must be either not set or have at least one item.",),
+				"Extensions must be either not set or have at least one item."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		!(that.Extensions() != nil) ||
+	if !(!(that.Extensions() != nil) ||
 		ExtensionNamesAreUnique(that.Extensions())) {
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-077: The name of an extension within " +
-				"Has-Extensions needs to be unique.",
+					"Has-Extensions needs to be unique.",
 			),
 		)
 		if abort {
@@ -4101,13 +4179,12 @@ func VerifySubmodel(
 		}
 	}
 
-	if !(
-		!(that.Description() != nil) ||
+	if !(!(that.Description() != nil) ||
 		(len(that.Description()) >= 1)) {
 		abort = onError(
 			newVerificationError(
 				"Description must be either not set or have at least one " +
-				"item.",
+					"item.",
 			),
 		)
 		if abort {
@@ -4115,25 +4192,23 @@ func VerifySubmodel(
 		}
 	}
 
-	if !(
-		!(that.Description() != nil) ||
+	if !(!(that.Description() != nil) ||
 		LangStringsHaveUniqueLanguages(that.Description())) {
 		abort = onError(
 			newVerificationError(
-				"Description must specify unique languages.",),
+				"Description must specify unique languages."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		!(that.DisplayName() != nil) ||
+	if !(!(that.DisplayName() != nil) ||
 		(len(that.DisplayName()) >= 1)) {
 		abort = onError(
 			newVerificationError(
 				"Display name must be either not set or have at least one " +
-				"item.",
+					"item.",
 			),
 		)
 		if abort {
@@ -4141,25 +4216,23 @@ func VerifySubmodel(
 		}
 	}
 
-	if !(
-		!(that.DisplayName() != nil) ||
+	if !(!(that.DisplayName() != nil) ||
 		LangStringsHaveUniqueLanguages(that.DisplayName())) {
 		abort = onError(
 			newVerificationError(
-				"Display name must specify unique languages.",),
+				"Display name must specify unique languages."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		!(that.SupplementalSemanticIDs() != nil) ||
+	if !(!(that.SupplementalSemanticIDs() != nil) ||
 		(len(that.SupplementalSemanticIDs()) >= 1)) {
 		abort = onError(
 			newVerificationError(
 				"Supplemental semantic IDs must be either not set or have at " +
-				"least one item.",
+					"least one item.",
 			),
 		)
 		if abort {
@@ -4167,13 +4240,12 @@ func VerifySubmodel(
 		}
 	}
 
-	if !(
-		!(that.SupplementalSemanticIDs() != nil) ||
+	if !(!(that.SupplementalSemanticIDs() != nil) ||
 		(that.SemanticID() != nil)) {
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-118: If there are supplemental semantic IDs " +
-				"defined then there shall be also a main semantic ID.",
+					"defined then there shall be also a main semantic ID.",
 			),
 		)
 		if abort {
@@ -4181,25 +4253,23 @@ func VerifySubmodel(
 		}
 	}
 
-	if !(
-		!(that.Qualifiers() != nil) ||
+	if !(!(that.Qualifiers() != nil) ||
 		(len(that.Qualifiers()) >= 1)) {
 		abort = onError(
 			newVerificationError(
-				"Qualifiers must be either not set or have at least one item.",),
+				"Qualifiers must be either not set or have at least one item."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		!(that.Qualifiers() != nil) ||
+	if !(!(that.Qualifiers() != nil) ||
 		QualifierTypesAreUnique(that.Qualifiers())) {
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-021: Every qualifiable can only have one " +
-				"qualifier with the same type.",
+					"qualifier with the same type.",
 			),
 		)
 		if abort {
@@ -4207,13 +4277,12 @@ func VerifySubmodel(
 		}
 	}
 
-	if !(
-		!(that.EmbeddedDataSpecifications() != nil) ||
+	if !(!(that.EmbeddedDataSpecifications() != nil) ||
 		(len(that.EmbeddedDataSpecifications()) >= 1)) {
 		abort = onError(
 			newVerificationError(
 				"Embedded data specifications must be either not set or have " +
-				"at least one item.",
+					"at least one item.",
 			),
 		)
 		if abort {
@@ -4221,13 +4290,12 @@ func VerifySubmodel(
 		}
 	}
 
-	if !(
-		!(that.SubmodelElements() != nil) ||
+	if !(!(that.SubmodelElements() != nil) ||
 		(len(that.SubmodelElements()) >= 1)) {
 		abort = onError(
 			newVerificationError(
 				"Submodel elements must be either not set or have at least " +
-				"one item.",
+					"one item.",
 			),
 		)
 		if abort {
@@ -4235,8 +4303,7 @@ func VerifySubmodel(
 		}
 	}
 
-	if !(
-		!(that.SubmodelElements() != nil) ||
+	if !(!(that.SubmodelElements() != nil) ||
 		aascommon.All(
 			func(item aastypes.ISubmodelElement) bool {
 				return item.IDShort() != nil
@@ -4246,9 +4313,9 @@ func VerifySubmodel(
 		abort = onError(
 			newVerificationError(
 				"ID-shorts need to be defined for all the items of submodel " +
-				"elements according to AASd-117 (ID-short of Referables not " +
-				"being a direct child of a Submodel element list shall be " +
-				"specified).",
+					"elements according to AASd-117 (ID-short of Referables not " +
+					"being a direct child of a Submodel element list shall be " +
+					"specified).",
 			),
 		)
 		if abort {
@@ -4256,14 +4323,13 @@ func VerifySubmodel(
 		}
 	}
 
-	if !(
-		!(that.SubmodelElements() != nil) ||
+	if !(!(that.SubmodelElements() != nil) ||
 		IDShortsAreUnique(that.SubmodelElements())) {
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-022: ID-short of non-identifiable " +
-				"referables within the same name space shall be unique " +
-				"(case-sensitive).",
+					"referables within the same name space shall be unique " +
+					"(case-sensitive).",
 			),
 		)
 		if abort {
@@ -4271,29 +4337,16 @@ func VerifySubmodel(
 		}
 	}
 
-	if !(
-		!(that.SubmodelElements() != nil) ||
-		(!(that.KindOrDefault() != aastypes.ModellingKindTemplate) ||
-		aascommon.All(
-			func(submodelElement aastypes.ISubmodelElement) bool {
-				return !(submodelElement.Qualifiers() != nil) ||
-					aascommon.All(
-						func(qualifier aastypes.IQualifier) bool {
-							return qualifier.KindOrDefault() != aastypes.QualifierKindTemplateQualifier
-						},
-						submodelElement.Qualifiers(),
-					)
-			},
+	if !((!(that.KindOrDefault() == aastypes.ModellingKindTemplate)) ||
+		(!(that.SubmodelElements() != nil)) ||
+		SubmodelElementListsInSubmodelElementsHaveExactlyOneElement(
 			that.SubmodelElements(),
-		))) {
+		)) {
 		abort = onError(
 			newVerificationError(
-				"Constraint AASd-129: If any qualifier kind value of " +
-				"a Submodel element qualifier (attribute qualifier inherited " +
-				"via Qualifiable) is equal to Template Qualifier then " +
-				"the submodel element shall be part of a submodel template, " +
-				"i.e. a Submodel with submodel kind (attribute kind " +
-				"inherited via Has-Kind) value is equal to Template.",
+				"Constraint AASd-138: A SubmodelElementList within " +
+					"a Submodel of kind=Template or as part of " +
+					"an OperationVariable shall have exactly one element.",
 			),
 		)
 		if abort {
@@ -4301,21 +4354,49 @@ func VerifySubmodel(
 		}
 	}
 
-	if !(
-		!(that.Qualifiers() != nil) ||
+	if !(!(that.SubmodelElements() != nil) ||
+		(!(that.KindOrDefault() != aastypes.ModellingKindTemplate) ||
+			aascommon.All(
+				func(submodelElement aastypes.ISubmodelElement) bool {
+					return !(submodelElement.Qualifiers() != nil) ||
+						aascommon.All(
+							func(qualifier aastypes.IQualifier) bool {
+								return qualifier.KindOrDefault() != aastypes.QualifierKindTemplateQualifier
+							},
+							submodelElement.Qualifiers(),
+						)
+				},
+				that.SubmodelElements(),
+			))) {
+		abort = onError(
+			newVerificationError(
+				"Constraint AASd-129: If any Qualifier/kind value of " +
+					"a SubmodelElement/qualifier (attribute qualifier inherited " +
+					"via Qualifiable) is equal to TemplateQualifier then " +
+					"the SubmodelElement shall be part of a Submodel with " +
+					"Submodel/kind = Template. Exception: the SubmodelElement is " +
+					"part of an OperationVariable.",
+			),
+		)
+		if abort {
+			return
+		}
+	}
+
+	if !(!(that.Qualifiers() != nil) ||
 		(!aascommon.Some(
 			func(qualifier aastypes.IQualifier) bool {
 				return qualifier.KindOrDefault() == aastypes.QualifierKindTemplateQualifier
 			},
 			that.Qualifiers(),
 		) ||
-		(that.KindOrDefault() == aastypes.ModellingKindTemplate))) {
+			(that.KindOrDefault() == aastypes.ModellingKindTemplate))) {
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-119: If any qualifier kind value of " +
-				"a qualifiable qualifier is equal to template qualifier and " +
-				"the qualified element has kind then the qualified element " +
-				"shall be of kind template.",
+					"a qualifiable qualifier is equal to template qualifier and " +
+					"the qualified element has kind then the qualified element " +
+					"shall be of kind template.",
 			),
 		)
 		if abort {
@@ -4468,8 +4549,7 @@ func VerifySubmodel(
 	}
 
 	if that.Kind() != nil {
-		if
-			*that.Kind() < aastypes.ModellingKindTemplate ||
+		if *that.Kind() < aastypes.ModellingKindTemplate ||
 			*that.Kind() > aastypes.ModellingKindInstance {
 			err := newVerificationError(
 				fmt.Sprintf(
@@ -4625,25 +4705,23 @@ func VerifyRelationshipElement(
 ) (abort bool) {
 	abort = false
 
-	if !(
-		!(that.Extensions() != nil) ||
+	if !(!(that.Extensions() != nil) ||
 		(len(that.Extensions()) >= 1)) {
 		abort = onError(
 			newVerificationError(
-				"Extensions must be either not set or have at least one item.",),
+				"Extensions must be either not set or have at least one item."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		!(that.Extensions() != nil) ||
+	if !(!(that.Extensions() != nil) ||
 		ExtensionNamesAreUnique(that.Extensions())) {
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-077: The name of an extension within " +
-				"Has-Extensions needs to be unique.",
+					"Has-Extensions needs to be unique.",
 			),
 		)
 		if abort {
@@ -4651,13 +4729,12 @@ func VerifyRelationshipElement(
 		}
 	}
 
-	if !(
-		!(that.Description() != nil) ||
+	if !(!(that.Description() != nil) ||
 		(len(that.Description()) >= 1)) {
 		abort = onError(
 			newVerificationError(
 				"Description must be either not set or have at least one " +
-				"item.",
+					"item.",
 			),
 		)
 		if abort {
@@ -4665,25 +4742,23 @@ func VerifyRelationshipElement(
 		}
 	}
 
-	if !(
-		!(that.Description() != nil) ||
+	if !(!(that.Description() != nil) ||
 		LangStringsHaveUniqueLanguages(that.Description())) {
 		abort = onError(
 			newVerificationError(
-				"Description must specify unique languages.",),
+				"Description must specify unique languages."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		!(that.DisplayName() != nil) ||
+	if !(!(that.DisplayName() != nil) ||
 		(len(that.DisplayName()) >= 1)) {
 		abort = onError(
 			newVerificationError(
 				"Display name must be either not set or have at least one " +
-				"item.",
+					"item.",
 			),
 		)
 		if abort {
@@ -4691,25 +4766,23 @@ func VerifyRelationshipElement(
 		}
 	}
 
-	if !(
-		!(that.DisplayName() != nil) ||
+	if !(!(that.DisplayName() != nil) ||
 		LangStringsHaveUniqueLanguages(that.DisplayName())) {
 		abort = onError(
 			newVerificationError(
-				"Display name must specify unique languages.",),
+				"Display name must specify unique languages."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		!(that.SupplementalSemanticIDs() != nil) ||
+	if !(!(that.SupplementalSemanticIDs() != nil) ||
 		(len(that.SupplementalSemanticIDs()) >= 1)) {
 		abort = onError(
 			newVerificationError(
 				"Supplemental semantic IDs must be either not set or have at " +
-				"least one item.",
+					"least one item.",
 			),
 		)
 		if abort {
@@ -4717,13 +4790,12 @@ func VerifyRelationshipElement(
 		}
 	}
 
-	if !(
-		!(that.SupplementalSemanticIDs() != nil) ||
+	if !(!(that.SupplementalSemanticIDs() != nil) ||
 		(that.SemanticID() != nil)) {
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-118: If there are supplemental semantic IDs " +
-				"defined then there shall be also a main semantic ID.",
+					"defined then there shall be also a main semantic ID.",
 			),
 		)
 		if abort {
@@ -4731,25 +4803,23 @@ func VerifyRelationshipElement(
 		}
 	}
 
-	if !(
-		!(that.Qualifiers() != nil) ||
+	if !(!(that.Qualifiers() != nil) ||
 		(len(that.Qualifiers()) >= 1)) {
 		abort = onError(
 			newVerificationError(
-				"Qualifiers must be either not set or have at least one item.",),
+				"Qualifiers must be either not set or have at least one item."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		!(that.Qualifiers() != nil) ||
+	if !(!(that.Qualifiers() != nil) ||
 		QualifierTypesAreUnique(that.Qualifiers())) {
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-021: Every qualifiable can only have one " +
-				"qualifier with the same type.",
+					"qualifier with the same type.",
 			),
 		)
 		if abort {
@@ -4757,13 +4827,12 @@ func VerifyRelationshipElement(
 		}
 	}
 
-	if !(
-		!(that.EmbeddedDataSpecifications() != nil) ||
+	if !(!(that.EmbeddedDataSpecifications() != nil) ||
 		(len(that.EmbeddedDataSpecifications()) >= 1)) {
 		abort = onError(
 			newVerificationError(
 				"Embedded data specifications must be either not set or have " +
-				"at least one item.",
+					"at least one item.",
 			),
 		)
 		if abort {
@@ -5027,25 +5096,23 @@ func VerifySubmodelElementList(
 ) (abort bool) {
 	abort = false
 
-	if !(
-		!(that.Extensions() != nil) ||
+	if !(!(that.Extensions() != nil) ||
 		(len(that.Extensions()) >= 1)) {
 		abort = onError(
 			newVerificationError(
-				"Extensions must be either not set or have at least one item.",),
+				"Extensions must be either not set or have at least one item."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		!(that.Extensions() != nil) ||
+	if !(!(that.Extensions() != nil) ||
 		ExtensionNamesAreUnique(that.Extensions())) {
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-077: The name of an extension within " +
-				"Has-Extensions needs to be unique.",
+					"Has-Extensions needs to be unique.",
 			),
 		)
 		if abort {
@@ -5053,13 +5120,12 @@ func VerifySubmodelElementList(
 		}
 	}
 
-	if !(
-		!(that.Description() != nil) ||
+	if !(!(that.Description() != nil) ||
 		(len(that.Description()) >= 1)) {
 		abort = onError(
 			newVerificationError(
 				"Description must be either not set or have at least one " +
-				"item.",
+					"item.",
 			),
 		)
 		if abort {
@@ -5067,25 +5133,23 @@ func VerifySubmodelElementList(
 		}
 	}
 
-	if !(
-		!(that.Description() != nil) ||
+	if !(!(that.Description() != nil) ||
 		LangStringsHaveUniqueLanguages(that.Description())) {
 		abort = onError(
 			newVerificationError(
-				"Description must specify unique languages.",),
+				"Description must specify unique languages."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		!(that.DisplayName() != nil) ||
+	if !(!(that.DisplayName() != nil) ||
 		(len(that.DisplayName()) >= 1)) {
 		abort = onError(
 			newVerificationError(
 				"Display name must be either not set or have at least one " +
-				"item.",
+					"item.",
 			),
 		)
 		if abort {
@@ -5093,25 +5157,23 @@ func VerifySubmodelElementList(
 		}
 	}
 
-	if !(
-		!(that.DisplayName() != nil) ||
+	if !(!(that.DisplayName() != nil) ||
 		LangStringsHaveUniqueLanguages(that.DisplayName())) {
 		abort = onError(
 			newVerificationError(
-				"Display name must specify unique languages.",),
+				"Display name must specify unique languages."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		!(that.SupplementalSemanticIDs() != nil) ||
+	if !(!(that.SupplementalSemanticIDs() != nil) ||
 		(len(that.SupplementalSemanticIDs()) >= 1)) {
 		abort = onError(
 			newVerificationError(
 				"Supplemental semantic IDs must be either not set or have at " +
-				"least one item.",
+					"least one item.",
 			),
 		)
 		if abort {
@@ -5119,13 +5181,12 @@ func VerifySubmodelElementList(
 		}
 	}
 
-	if !(
-		!(that.SupplementalSemanticIDs() != nil) ||
+	if !(!(that.SupplementalSemanticIDs() != nil) ||
 		(that.SemanticID() != nil)) {
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-118: If there are supplemental semantic IDs " +
-				"defined then there shall be also a main semantic ID.",
+					"defined then there shall be also a main semantic ID.",
 			),
 		)
 		if abort {
@@ -5133,25 +5194,23 @@ func VerifySubmodelElementList(
 		}
 	}
 
-	if !(
-		!(that.Qualifiers() != nil) ||
+	if !(!(that.Qualifiers() != nil) ||
 		(len(that.Qualifiers()) >= 1)) {
 		abort = onError(
 			newVerificationError(
-				"Qualifiers must be either not set or have at least one item.",),
+				"Qualifiers must be either not set or have at least one item."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		!(that.Qualifiers() != nil) ||
+	if !(!(that.Qualifiers() != nil) ||
 		QualifierTypesAreUnique(that.Qualifiers())) {
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-021: Every qualifiable can only have one " +
-				"qualifier with the same type.",
+					"qualifier with the same type.",
 			),
 		)
 		if abort {
@@ -5159,13 +5218,12 @@ func VerifySubmodelElementList(
 		}
 	}
 
-	if !(
-		!(that.EmbeddedDataSpecifications() != nil) ||
+	if !(!(that.EmbeddedDataSpecifications() != nil) ||
 		(len(that.EmbeddedDataSpecifications()) >= 1)) {
 		abort = onError(
 			newVerificationError(
 				"Embedded data specifications must be either not set or have " +
-				"at least one item.",
+					"at least one item.",
 			),
 		)
 		if abort {
@@ -5173,20 +5231,18 @@ func VerifySubmodelElementList(
 		}
 	}
 
-	if !(
-		!(that.Value() != nil) ||
+	if !(!(that.Value() != nil) ||
 		(len(that.Value()) >= 1)) {
 		abort = onError(
 			newVerificationError(
-				"Value must be either not set or have at least one item.",),
+				"Value must be either not set or have at least one item."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		!((that.Value() != nil) &&
+	if !(!((that.Value() != nil) &&
 		(that.SemanticIDListElement() != nil)) ||
 		aascommon.All(
 			func(child aastypes.ISubmodelElement) bool {
@@ -5201,8 +5257,8 @@ func VerifySubmodelElementList(
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-107: If a first level child element has " +
-				"a semantic ID it shall be identical to semantic ID list " +
-				"element.",
+					"a semantic ID it shall be identical to semantic ID list " +
+					"element.",
 			),
 		)
 		if abort {
@@ -5210,15 +5266,14 @@ func VerifySubmodelElementList(
 		}
 	}
 
-	if !(
-		!(that.Value() != nil) ||
+	if !(!(that.Value() != nil) ||
 		SubmodelElementsHaveIdenticalSemanticIDs(
 			that.Value(),
 		)) {
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-114: If two first level child elements have " +
-				"a semantic ID then they shall be identical.",
+					"a semantic ID then they shall be identical.",
 			),
 		)
 		if abort {
@@ -5226,22 +5281,21 @@ func VerifySubmodelElementList(
 		}
 	}
 
-	if !(
-		!(that.Value() != nil) ||
+	if !(!(that.Value() != nil) ||
 		aascommon.All(
 			func(element aastypes.ISubmodelElement) bool {
 				return SubmodelElementIsOfType(
-						element,
-						that.TypeValueListElement(),
-					)
+					element,
+					that.TypeValueListElement(),
+				)
 			},
 			that.Value(),
 		)) {
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-108: All first level child elements shall " +
-				"have the same submodel element type as specified in type " +
-				"value list element.",
+					"have the same submodel element type as specified in type " +
+					"value list element.",
 			),
 		)
 		if abort {
@@ -5249,21 +5303,20 @@ func VerifySubmodelElementList(
 		}
 	}
 
-	if !(
-		!((that.Value() != nil) &&
+	if !(!((that.Value() != nil) &&
 		(that.TypeValueListElement() == aastypes.AASSubmodelElementsProperty ||
-		that.TypeValueListElement() == aastypes.AASSubmodelElementsRange)) ||
+			that.TypeValueListElement() == aastypes.AASSubmodelElementsRange)) ||
 		((that.ValueTypeListElement() != nil) &&
-		PropertiesOrRangesHaveValueType(
-			that.Value(),
-			*that.ValueTypeListElement(),
-		))) {
+			PropertiesOrRangesHaveValueType(
+				that.Value(),
+				*that.ValueTypeListElement(),
+			))) {
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-109: If type value list element is equal to " +
-				"Property or Range value type list element shall be set and " +
-				"all first level child elements shall have the value type as " +
-				"specified in value type list element.",
+					"Property or Range value type list element shall be set and " +
+					"all first level child elements shall have the value type as " +
+					"specified in value type list element.",
 			),
 		)
 		if abort {
@@ -5271,12 +5324,11 @@ func VerifySubmodelElementList(
 		}
 	}
 
-	if !(
-		!(that.Value() != nil) ||
+	if !(!(that.Value() != nil) ||
 		IDShortsAreUnique(that.Value())) {
 		abort = onError(
 			newVerificationError(
-				"ID-shorts of the value must be unique.",),
+				"ID-shorts of the value must be unique."),
 		)
 		if abort {
 			return
@@ -5507,8 +5559,7 @@ func VerifySubmodelElementList(
 		}
 	}
 
-	if
-		that.TypeValueListElement() < aastypes.AASSubmodelElementsAnnotatedRelationshipElement ||
+	if that.TypeValueListElement() < aastypes.AASSubmodelElementsAnnotatedRelationshipElement ||
 		that.TypeValueListElement() > aastypes.AASSubmodelElementsSubmodelElementCollection {
 		err := newVerificationError(
 			fmt.Sprintf(
@@ -5528,8 +5579,7 @@ func VerifySubmodelElementList(
 	}
 
 	if that.ValueTypeListElement() != nil {
-		if
-			*that.ValueTypeListElement() < aastypes.DataTypeDefXSDAnyURI ||
+		if *that.ValueTypeListElement() < aastypes.DataTypeDefXSDAnyURI ||
 			*that.ValueTypeListElement() > aastypes.DataTypeDefXSDUnsignedShort {
 			err := newVerificationError(
 				fmt.Sprintf(
@@ -5590,25 +5640,23 @@ func VerifySubmodelElementCollection(
 ) (abort bool) {
 	abort = false
 
-	if !(
-		!(that.Extensions() != nil) ||
+	if !(!(that.Extensions() != nil) ||
 		(len(that.Extensions()) >= 1)) {
 		abort = onError(
 			newVerificationError(
-				"Extensions must be either not set or have at least one item.",),
+				"Extensions must be either not set or have at least one item."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		!(that.Extensions() != nil) ||
+	if !(!(that.Extensions() != nil) ||
 		ExtensionNamesAreUnique(that.Extensions())) {
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-077: The name of an extension within " +
-				"Has-Extensions needs to be unique.",
+					"Has-Extensions needs to be unique.",
 			),
 		)
 		if abort {
@@ -5616,13 +5664,12 @@ func VerifySubmodelElementCollection(
 		}
 	}
 
-	if !(
-		!(that.Description() != nil) ||
+	if !(!(that.Description() != nil) ||
 		(len(that.Description()) >= 1)) {
 		abort = onError(
 			newVerificationError(
 				"Description must be either not set or have at least one " +
-				"item.",
+					"item.",
 			),
 		)
 		if abort {
@@ -5630,25 +5677,23 @@ func VerifySubmodelElementCollection(
 		}
 	}
 
-	if !(
-		!(that.Description() != nil) ||
+	if !(!(that.Description() != nil) ||
 		LangStringsHaveUniqueLanguages(that.Description())) {
 		abort = onError(
 			newVerificationError(
-				"Description must specify unique languages.",),
+				"Description must specify unique languages."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		!(that.DisplayName() != nil) ||
+	if !(!(that.DisplayName() != nil) ||
 		(len(that.DisplayName()) >= 1)) {
 		abort = onError(
 			newVerificationError(
 				"Display name must be either not set or have at least one " +
-				"item.",
+					"item.",
 			),
 		)
 		if abort {
@@ -5656,25 +5701,23 @@ func VerifySubmodelElementCollection(
 		}
 	}
 
-	if !(
-		!(that.DisplayName() != nil) ||
+	if !(!(that.DisplayName() != nil) ||
 		LangStringsHaveUniqueLanguages(that.DisplayName())) {
 		abort = onError(
 			newVerificationError(
-				"Display name must specify unique languages.",),
+				"Display name must specify unique languages."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		!(that.SupplementalSemanticIDs() != nil) ||
+	if !(!(that.SupplementalSemanticIDs() != nil) ||
 		(len(that.SupplementalSemanticIDs()) >= 1)) {
 		abort = onError(
 			newVerificationError(
 				"Supplemental semantic IDs must be either not set or have at " +
-				"least one item.",
+					"least one item.",
 			),
 		)
 		if abort {
@@ -5682,13 +5725,12 @@ func VerifySubmodelElementCollection(
 		}
 	}
 
-	if !(
-		!(that.SupplementalSemanticIDs() != nil) ||
+	if !(!(that.SupplementalSemanticIDs() != nil) ||
 		(that.SemanticID() != nil)) {
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-118: If there are supplemental semantic IDs " +
-				"defined then there shall be also a main semantic ID.",
+					"defined then there shall be also a main semantic ID.",
 			),
 		)
 		if abort {
@@ -5696,25 +5738,23 @@ func VerifySubmodelElementCollection(
 		}
 	}
 
-	if !(
-		!(that.Qualifiers() != nil) ||
+	if !(!(that.Qualifiers() != nil) ||
 		(len(that.Qualifiers()) >= 1)) {
 		abort = onError(
 			newVerificationError(
-				"Qualifiers must be either not set or have at least one item.",),
+				"Qualifiers must be either not set or have at least one item."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		!(that.Qualifiers() != nil) ||
+	if !(!(that.Qualifiers() != nil) ||
 		QualifierTypesAreUnique(that.Qualifiers())) {
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-021: Every qualifiable can only have one " +
-				"qualifier with the same type.",
+					"qualifier with the same type.",
 			),
 		)
 		if abort {
@@ -5722,13 +5762,12 @@ func VerifySubmodelElementCollection(
 		}
 	}
 
-	if !(
-		!(that.EmbeddedDataSpecifications() != nil) ||
+	if !(!(that.EmbeddedDataSpecifications() != nil) ||
 		(len(that.EmbeddedDataSpecifications()) >= 1)) {
 		abort = onError(
 			newVerificationError(
 				"Embedded data specifications must be either not set or have " +
-				"at least one item.",
+					"at least one item.",
 			),
 		)
 		if abort {
@@ -5736,20 +5775,18 @@ func VerifySubmodelElementCollection(
 		}
 	}
 
-	if !(
-		!(that.Value() != nil) ||
+	if !(!(that.Value() != nil) ||
 		(len(that.Value()) >= 1)) {
 		abort = onError(
 			newVerificationError(
-				"Value must be either not set or have at least one item.",),
+				"Value must be either not set or have at least one item."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		!(that.Value() != nil) ||
+	if !(!(that.Value() != nil) ||
 		aascommon.All(
 			func(item aastypes.ISubmodelElement) bool {
 				return item.IDShort() != nil
@@ -5759,9 +5796,9 @@ func VerifySubmodelElementCollection(
 		abort = onError(
 			newVerificationError(
 				"ID-shorts need to be defined for all the items of value " +
-				"according to AASd-117 (ID-short of Referables not being " +
-				"a direct child of a Submodel element list shall be " +
-				"specified).",
+					"according to AASd-117 (ID-short of Referables not being " +
+					"a direct child of a Submodel element list shall be " +
+					"specified).",
 			),
 		)
 		if abort {
@@ -5769,12 +5806,11 @@ func VerifySubmodelElementCollection(
 		}
 	}
 
-	if !(
-		!(that.Value() != nil) ||
+	if !(!(that.Value() != nil) ||
 		IDShortsAreUnique(that.Value())) {
 		abort = onError(
 			newVerificationError(
-				"ID-shorts of the value must be unique.",),
+				"ID-shorts of the value must be unique."),
 		)
 		if abort {
 			return
@@ -6029,25 +6065,23 @@ func VerifyProperty(
 ) (abort bool) {
 	abort = false
 
-	if !(
-		!(that.Extensions() != nil) ||
+	if !(!(that.Extensions() != nil) ||
 		(len(that.Extensions()) >= 1)) {
 		abort = onError(
 			newVerificationError(
-				"Extensions must be either not set or have at least one item.",),
+				"Extensions must be either not set or have at least one item."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		!(that.Extensions() != nil) ||
+	if !(!(that.Extensions() != nil) ||
 		ExtensionNamesAreUnique(that.Extensions())) {
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-077: The name of an extension within " +
-				"Has-Extensions needs to be unique.",
+					"Has-Extensions needs to be unique.",
 			),
 		)
 		if abort {
@@ -6055,13 +6089,12 @@ func VerifyProperty(
 		}
 	}
 
-	if !(
-		!(that.Description() != nil) ||
+	if !(!(that.Description() != nil) ||
 		(len(that.Description()) >= 1)) {
 		abort = onError(
 			newVerificationError(
 				"Description must be either not set or have at least one " +
-				"item.",
+					"item.",
 			),
 		)
 		if abort {
@@ -6069,25 +6102,23 @@ func VerifyProperty(
 		}
 	}
 
-	if !(
-		!(that.Description() != nil) ||
+	if !(!(that.Description() != nil) ||
 		LangStringsHaveUniqueLanguages(that.Description())) {
 		abort = onError(
 			newVerificationError(
-				"Description must specify unique languages.",),
+				"Description must specify unique languages."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		!(that.DisplayName() != nil) ||
+	if !(!(that.DisplayName() != nil) ||
 		(len(that.DisplayName()) >= 1)) {
 		abort = onError(
 			newVerificationError(
 				"Display name must be either not set or have at least one " +
-				"item.",
+					"item.",
 			),
 		)
 		if abort {
@@ -6095,25 +6126,23 @@ func VerifyProperty(
 		}
 	}
 
-	if !(
-		!(that.DisplayName() != nil) ||
+	if !(!(that.DisplayName() != nil) ||
 		LangStringsHaveUniqueLanguages(that.DisplayName())) {
 		abort = onError(
 			newVerificationError(
-				"Display name must specify unique languages.",),
+				"Display name must specify unique languages."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		!(that.SupplementalSemanticIDs() != nil) ||
+	if !(!(that.SupplementalSemanticIDs() != nil) ||
 		(len(that.SupplementalSemanticIDs()) >= 1)) {
 		abort = onError(
 			newVerificationError(
 				"Supplemental semantic IDs must be either not set or have at " +
-				"least one item.",
+					"least one item.",
 			),
 		)
 		if abort {
@@ -6121,13 +6150,12 @@ func VerifyProperty(
 		}
 	}
 
-	if !(
-		!(that.SupplementalSemanticIDs() != nil) ||
+	if !(!(that.SupplementalSemanticIDs() != nil) ||
 		(that.SemanticID() != nil)) {
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-118: If there are supplemental semantic IDs " +
-				"defined then there shall be also a main semantic ID.",
+					"defined then there shall be also a main semantic ID.",
 			),
 		)
 		if abort {
@@ -6135,25 +6163,23 @@ func VerifyProperty(
 		}
 	}
 
-	if !(
-		!(that.Qualifiers() != nil) ||
+	if !(!(that.Qualifiers() != nil) ||
 		(len(that.Qualifiers()) >= 1)) {
 		abort = onError(
 			newVerificationError(
-				"Qualifiers must be either not set or have at least one item.",),
+				"Qualifiers must be either not set or have at least one item."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		!(that.Qualifiers() != nil) ||
+	if !(!(that.Qualifiers() != nil) ||
 		QualifierTypesAreUnique(that.Qualifiers())) {
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-021: Every qualifiable can only have one " +
-				"qualifier with the same type.",
+					"qualifier with the same type.",
 			),
 		)
 		if abort {
@@ -6161,13 +6187,12 @@ func VerifyProperty(
 		}
 	}
 
-	if !(
-		!(that.EmbeddedDataSpecifications() != nil) ||
+	if !(!(that.EmbeddedDataSpecifications() != nil) ||
 		(len(that.EmbeddedDataSpecifications()) >= 1)) {
 		abort = onError(
 			newVerificationError(
 				"Embedded data specifications must be either not set or have " +
-				"at least one item.",
+					"at least one item.",
 			),
 		)
 		if abort {
@@ -6175,15 +6200,14 @@ func VerifyProperty(
 		}
 	}
 
-	if !(
-		!(that.Value() != nil) ||
+	if !(!(that.Value() != nil) ||
 		ValueConsistentWithXSDType(
 			*that.Value(),
 			that.ValueType(),
 		)) {
 		abort = onError(
 			newVerificationError(
-				"Value must be consistent with the value type.",),
+				"Value must be consistent with the value type."),
 		)
 		if abort {
 			return
@@ -6397,8 +6421,7 @@ func VerifyProperty(
 		}
 	}
 
-	if
-		that.ValueType() < aastypes.DataTypeDefXSDAnyURI ||
+	if that.ValueType() < aastypes.DataTypeDefXSDAnyURI ||
 		that.ValueType() > aastypes.DataTypeDefXSDUnsignedShort {
 		err := newVerificationError(
 			fmt.Sprintf(
@@ -6466,25 +6489,23 @@ func VerifyMultiLanguageProperty(
 ) (abort bool) {
 	abort = false
 
-	if !(
-		!(that.Extensions() != nil) ||
+	if !(!(that.Extensions() != nil) ||
 		(len(that.Extensions()) >= 1)) {
 		abort = onError(
 			newVerificationError(
-				"Extensions must be either not set or have at least one item.",),
+				"Extensions must be either not set or have at least one item."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		!(that.Extensions() != nil) ||
+	if !(!(that.Extensions() != nil) ||
 		ExtensionNamesAreUnique(that.Extensions())) {
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-077: The name of an extension within " +
-				"Has-Extensions needs to be unique.",
+					"Has-Extensions needs to be unique.",
 			),
 		)
 		if abort {
@@ -6492,13 +6513,12 @@ func VerifyMultiLanguageProperty(
 		}
 	}
 
-	if !(
-		!(that.Description() != nil) ||
+	if !(!(that.Description() != nil) ||
 		(len(that.Description()) >= 1)) {
 		abort = onError(
 			newVerificationError(
 				"Description must be either not set or have at least one " +
-				"item.",
+					"item.",
 			),
 		)
 		if abort {
@@ -6506,25 +6526,23 @@ func VerifyMultiLanguageProperty(
 		}
 	}
 
-	if !(
-		!(that.Description() != nil) ||
+	if !(!(that.Description() != nil) ||
 		LangStringsHaveUniqueLanguages(that.Description())) {
 		abort = onError(
 			newVerificationError(
-				"Description must specify unique languages.",),
+				"Description must specify unique languages."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		!(that.DisplayName() != nil) ||
+	if !(!(that.DisplayName() != nil) ||
 		(len(that.DisplayName()) >= 1)) {
 		abort = onError(
 			newVerificationError(
 				"Display name must be either not set or have at least one " +
-				"item.",
+					"item.",
 			),
 		)
 		if abort {
@@ -6532,25 +6550,23 @@ func VerifyMultiLanguageProperty(
 		}
 	}
 
-	if !(
-		!(that.DisplayName() != nil) ||
+	if !(!(that.DisplayName() != nil) ||
 		LangStringsHaveUniqueLanguages(that.DisplayName())) {
 		abort = onError(
 			newVerificationError(
-				"Display name must specify unique languages.",),
+				"Display name must specify unique languages."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		!(that.SupplementalSemanticIDs() != nil) ||
+	if !(!(that.SupplementalSemanticIDs() != nil) ||
 		(len(that.SupplementalSemanticIDs()) >= 1)) {
 		abort = onError(
 			newVerificationError(
 				"Supplemental semantic IDs must be either not set or have at " +
-				"least one item.",
+					"least one item.",
 			),
 		)
 		if abort {
@@ -6558,13 +6574,12 @@ func VerifyMultiLanguageProperty(
 		}
 	}
 
-	if !(
-		!(that.SupplementalSemanticIDs() != nil) ||
+	if !(!(that.SupplementalSemanticIDs() != nil) ||
 		(that.SemanticID() != nil)) {
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-118: If there are supplemental semantic IDs " +
-				"defined then there shall be also a main semantic ID.",
+					"defined then there shall be also a main semantic ID.",
 			),
 		)
 		if abort {
@@ -6572,25 +6587,23 @@ func VerifyMultiLanguageProperty(
 		}
 	}
 
-	if !(
-		!(that.Qualifiers() != nil) ||
+	if !(!(that.Qualifiers() != nil) ||
 		(len(that.Qualifiers()) >= 1)) {
 		abort = onError(
 			newVerificationError(
-				"Qualifiers must be either not set or have at least one item.",),
+				"Qualifiers must be either not set or have at least one item."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		!(that.Qualifiers() != nil) ||
+	if !(!(that.Qualifiers() != nil) ||
 		QualifierTypesAreUnique(that.Qualifiers())) {
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-021: Every qualifiable can only have one " +
-				"qualifier with the same type.",
+					"qualifier with the same type.",
 			),
 		)
 		if abort {
@@ -6598,13 +6611,12 @@ func VerifyMultiLanguageProperty(
 		}
 	}
 
-	if !(
-		!(that.EmbeddedDataSpecifications() != nil) ||
+	if !(!(that.EmbeddedDataSpecifications() != nil) ||
 		(len(that.EmbeddedDataSpecifications()) >= 1)) {
 		abort = onError(
 			newVerificationError(
 				"Embedded data specifications must be either not set or have " +
-				"at least one item.",
+					"at least one item.",
 			),
 		)
 		if abort {
@@ -6612,24 +6624,22 @@ func VerifyMultiLanguageProperty(
 		}
 	}
 
-	if !(
-		!(that.Value() != nil) ||
+	if !(!(that.Value() != nil) ||
 		LangStringsHaveUniqueLanguages(that.Value())) {
 		abort = onError(
 			newVerificationError(
-				"Value must specify unique languages.",),
+				"Value must specify unique languages."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		!(that.Value() != nil) ||
+	if !(!(that.Value() != nil) ||
 		(len(that.Value()) >= 1)) {
 		abort = onError(
 			newVerificationError(
-				"Value must be either not set or have at least one item.",),
+				"Value must be either not set or have at least one item."),
 		)
 		if abort {
 			return
@@ -6901,25 +6911,23 @@ func VerifyRange(
 ) (abort bool) {
 	abort = false
 
-	if !(
-		!(that.Extensions() != nil) ||
+	if !(!(that.Extensions() != nil) ||
 		(len(that.Extensions()) >= 1)) {
 		abort = onError(
 			newVerificationError(
-				"Extensions must be either not set or have at least one item.",),
+				"Extensions must be either not set or have at least one item."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		!(that.Extensions() != nil) ||
+	if !(!(that.Extensions() != nil) ||
 		ExtensionNamesAreUnique(that.Extensions())) {
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-077: The name of an extension within " +
-				"Has-Extensions needs to be unique.",
+					"Has-Extensions needs to be unique.",
 			),
 		)
 		if abort {
@@ -6927,13 +6935,12 @@ func VerifyRange(
 		}
 	}
 
-	if !(
-		!(that.Description() != nil) ||
+	if !(!(that.Description() != nil) ||
 		(len(that.Description()) >= 1)) {
 		abort = onError(
 			newVerificationError(
 				"Description must be either not set or have at least one " +
-				"item.",
+					"item.",
 			),
 		)
 		if abort {
@@ -6941,25 +6948,23 @@ func VerifyRange(
 		}
 	}
 
-	if !(
-		!(that.Description() != nil) ||
+	if !(!(that.Description() != nil) ||
 		LangStringsHaveUniqueLanguages(that.Description())) {
 		abort = onError(
 			newVerificationError(
-				"Description must specify unique languages.",),
+				"Description must specify unique languages."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		!(that.DisplayName() != nil) ||
+	if !(!(that.DisplayName() != nil) ||
 		(len(that.DisplayName()) >= 1)) {
 		abort = onError(
 			newVerificationError(
 				"Display name must be either not set or have at least one " +
-				"item.",
+					"item.",
 			),
 		)
 		if abort {
@@ -6967,25 +6972,23 @@ func VerifyRange(
 		}
 	}
 
-	if !(
-		!(that.DisplayName() != nil) ||
+	if !(!(that.DisplayName() != nil) ||
 		LangStringsHaveUniqueLanguages(that.DisplayName())) {
 		abort = onError(
 			newVerificationError(
-				"Display name must specify unique languages.",),
+				"Display name must specify unique languages."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		!(that.SupplementalSemanticIDs() != nil) ||
+	if !(!(that.SupplementalSemanticIDs() != nil) ||
 		(len(that.SupplementalSemanticIDs()) >= 1)) {
 		abort = onError(
 			newVerificationError(
 				"Supplemental semantic IDs must be either not set or have at " +
-				"least one item.",
+					"least one item.",
 			),
 		)
 		if abort {
@@ -6993,13 +6996,12 @@ func VerifyRange(
 		}
 	}
 
-	if !(
-		!(that.SupplementalSemanticIDs() != nil) ||
+	if !(!(that.SupplementalSemanticIDs() != nil) ||
 		(that.SemanticID() != nil)) {
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-118: If there are supplemental semantic IDs " +
-				"defined then there shall be also a main semantic ID.",
+					"defined then there shall be also a main semantic ID.",
 			),
 		)
 		if abort {
@@ -7007,25 +7009,23 @@ func VerifyRange(
 		}
 	}
 
-	if !(
-		!(that.Qualifiers() != nil) ||
+	if !(!(that.Qualifiers() != nil) ||
 		(len(that.Qualifiers()) >= 1)) {
 		abort = onError(
 			newVerificationError(
-				"Qualifiers must be either not set or have at least one item.",),
+				"Qualifiers must be either not set or have at least one item."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		!(that.Qualifiers() != nil) ||
+	if !(!(that.Qualifiers() != nil) ||
 		QualifierTypesAreUnique(that.Qualifiers())) {
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-021: Every qualifiable can only have one " +
-				"qualifier with the same type.",
+					"qualifier with the same type.",
 			),
 		)
 		if abort {
@@ -7033,13 +7033,12 @@ func VerifyRange(
 		}
 	}
 
-	if !(
-		!(that.EmbeddedDataSpecifications() != nil) ||
+	if !(!(that.EmbeddedDataSpecifications() != nil) ||
 		(len(that.EmbeddedDataSpecifications()) >= 1)) {
 		abort = onError(
 			newVerificationError(
 				"Embedded data specifications must be either not set or have " +
-				"at least one item.",
+					"at least one item.",
 			),
 		)
 		if abort {
@@ -7047,30 +7046,28 @@ func VerifyRange(
 		}
 	}
 
-	if !(
-		!(that.Max() != nil) ||
+	if !(!(that.Max() != nil) ||
 		ValueConsistentWithXSDType(
 			*that.Max(),
 			that.ValueType(),
 		)) {
 		abort = onError(
 			newVerificationError(
-				"Max must be consistent with the value type.",),
+				"Max must be consistent with the value type."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		!(that.Min() != nil) ||
+	if !(!(that.Min() != nil) ||
 		ValueConsistentWithXSDType(
 			*that.Min(),
 			that.ValueType(),
 		)) {
 		abort = onError(
 			newVerificationError(
-				"Min must be consistent with the value type.",),
+				"Min must be consistent with the value type."),
 		)
 		if abort {
 			return
@@ -7284,8 +7281,7 @@ func VerifyRange(
 		}
 	}
 
-	if
-		that.ValueType() < aastypes.DataTypeDefXSDAnyURI ||
+	if that.ValueType() < aastypes.DataTypeDefXSDAnyURI ||
 		that.ValueType() > aastypes.DataTypeDefXSDUnsignedShort {
 		err := newVerificationError(
 			fmt.Sprintf(
@@ -7353,25 +7349,23 @@ func VerifyReferenceElement(
 ) (abort bool) {
 	abort = false
 
-	if !(
-		!(that.Extensions() != nil) ||
+	if !(!(that.Extensions() != nil) ||
 		(len(that.Extensions()) >= 1)) {
 		abort = onError(
 			newVerificationError(
-				"Extensions must be either not set or have at least one item.",),
+				"Extensions must be either not set or have at least one item."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		!(that.Extensions() != nil) ||
+	if !(!(that.Extensions() != nil) ||
 		ExtensionNamesAreUnique(that.Extensions())) {
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-077: The name of an extension within " +
-				"Has-Extensions needs to be unique.",
+					"Has-Extensions needs to be unique.",
 			),
 		)
 		if abort {
@@ -7379,13 +7373,12 @@ func VerifyReferenceElement(
 		}
 	}
 
-	if !(
-		!(that.Description() != nil) ||
+	if !(!(that.Description() != nil) ||
 		(len(that.Description()) >= 1)) {
 		abort = onError(
 			newVerificationError(
 				"Description must be either not set or have at least one " +
-				"item.",
+					"item.",
 			),
 		)
 		if abort {
@@ -7393,25 +7386,23 @@ func VerifyReferenceElement(
 		}
 	}
 
-	if !(
-		!(that.Description() != nil) ||
+	if !(!(that.Description() != nil) ||
 		LangStringsHaveUniqueLanguages(that.Description())) {
 		abort = onError(
 			newVerificationError(
-				"Description must specify unique languages.",),
+				"Description must specify unique languages."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		!(that.DisplayName() != nil) ||
+	if !(!(that.DisplayName() != nil) ||
 		(len(that.DisplayName()) >= 1)) {
 		abort = onError(
 			newVerificationError(
 				"Display name must be either not set or have at least one " +
-				"item.",
+					"item.",
 			),
 		)
 		if abort {
@@ -7419,25 +7410,23 @@ func VerifyReferenceElement(
 		}
 	}
 
-	if !(
-		!(that.DisplayName() != nil) ||
+	if !(!(that.DisplayName() != nil) ||
 		LangStringsHaveUniqueLanguages(that.DisplayName())) {
 		abort = onError(
 			newVerificationError(
-				"Display name must specify unique languages.",),
+				"Display name must specify unique languages."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		!(that.SupplementalSemanticIDs() != nil) ||
+	if !(!(that.SupplementalSemanticIDs() != nil) ||
 		(len(that.SupplementalSemanticIDs()) >= 1)) {
 		abort = onError(
 			newVerificationError(
 				"Supplemental semantic IDs must be either not set or have at " +
-				"least one item.",
+					"least one item.",
 			),
 		)
 		if abort {
@@ -7445,13 +7434,12 @@ func VerifyReferenceElement(
 		}
 	}
 
-	if !(
-		!(that.SupplementalSemanticIDs() != nil) ||
+	if !(!(that.SupplementalSemanticIDs() != nil) ||
 		(that.SemanticID() != nil)) {
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-118: If there are supplemental semantic IDs " +
-				"defined then there shall be also a main semantic ID.",
+					"defined then there shall be also a main semantic ID.",
 			),
 		)
 		if abort {
@@ -7459,25 +7447,23 @@ func VerifyReferenceElement(
 		}
 	}
 
-	if !(
-		!(that.Qualifiers() != nil) ||
+	if !(!(that.Qualifiers() != nil) ||
 		(len(that.Qualifiers()) >= 1)) {
 		abort = onError(
 			newVerificationError(
-				"Qualifiers must be either not set or have at least one item.",),
+				"Qualifiers must be either not set or have at least one item."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		!(that.Qualifiers() != nil) ||
+	if !(!(that.Qualifiers() != nil) ||
 		QualifierTypesAreUnique(that.Qualifiers())) {
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-021: Every qualifiable can only have one " +
-				"qualifier with the same type.",
+					"qualifier with the same type.",
 			),
 		)
 		if abort {
@@ -7485,13 +7471,12 @@ func VerifyReferenceElement(
 		}
 	}
 
-	if !(
-		!(that.EmbeddedDataSpecifications() != nil) ||
+	if !(!(that.EmbeddedDataSpecifications() != nil) ||
 		(len(that.EmbeddedDataSpecifications()) >= 1)) {
 		abort = onError(
 			newVerificationError(
 				"Embedded data specifications must be either not set or have " +
-				"at least one item.",
+					"at least one item.",
 			),
 		)
 		if abort {
@@ -7738,25 +7723,23 @@ func VerifyBlob(
 ) (abort bool) {
 	abort = false
 
-	if !(
-		!(that.Extensions() != nil) ||
+	if !(!(that.Extensions() != nil) ||
 		(len(that.Extensions()) >= 1)) {
 		abort = onError(
 			newVerificationError(
-				"Extensions must be either not set or have at least one item.",),
+				"Extensions must be either not set or have at least one item."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		!(that.Extensions() != nil) ||
+	if !(!(that.Extensions() != nil) ||
 		ExtensionNamesAreUnique(that.Extensions())) {
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-077: The name of an extension within " +
-				"Has-Extensions needs to be unique.",
+					"Has-Extensions needs to be unique.",
 			),
 		)
 		if abort {
@@ -7764,13 +7747,12 @@ func VerifyBlob(
 		}
 	}
 
-	if !(
-		!(that.Description() != nil) ||
+	if !(!(that.Description() != nil) ||
 		(len(that.Description()) >= 1)) {
 		abort = onError(
 			newVerificationError(
 				"Description must be either not set or have at least one " +
-				"item.",
+					"item.",
 			),
 		)
 		if abort {
@@ -7778,25 +7760,23 @@ func VerifyBlob(
 		}
 	}
 
-	if !(
-		!(that.Description() != nil) ||
+	if !(!(that.Description() != nil) ||
 		LangStringsHaveUniqueLanguages(that.Description())) {
 		abort = onError(
 			newVerificationError(
-				"Description must specify unique languages.",),
+				"Description must specify unique languages."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		!(that.DisplayName() != nil) ||
+	if !(!(that.DisplayName() != nil) ||
 		(len(that.DisplayName()) >= 1)) {
 		abort = onError(
 			newVerificationError(
 				"Display name must be either not set or have at least one " +
-				"item.",
+					"item.",
 			),
 		)
 		if abort {
@@ -7804,25 +7784,23 @@ func VerifyBlob(
 		}
 	}
 
-	if !(
-		!(that.DisplayName() != nil) ||
+	if !(!(that.DisplayName() != nil) ||
 		LangStringsHaveUniqueLanguages(that.DisplayName())) {
 		abort = onError(
 			newVerificationError(
-				"Display name must specify unique languages.",),
+				"Display name must specify unique languages."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		!(that.SupplementalSemanticIDs() != nil) ||
+	if !(!(that.SupplementalSemanticIDs() != nil) ||
 		(len(that.SupplementalSemanticIDs()) >= 1)) {
 		abort = onError(
 			newVerificationError(
 				"Supplemental semantic IDs must be either not set or have at " +
-				"least one item.",
+					"least one item.",
 			),
 		)
 		if abort {
@@ -7830,13 +7808,12 @@ func VerifyBlob(
 		}
 	}
 
-	if !(
-		!(that.SupplementalSemanticIDs() != nil) ||
+	if !(!(that.SupplementalSemanticIDs() != nil) ||
 		(that.SemanticID() != nil)) {
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-118: If there are supplemental semantic IDs " +
-				"defined then there shall be also a main semantic ID.",
+					"defined then there shall be also a main semantic ID.",
 			),
 		)
 		if abort {
@@ -7844,25 +7821,23 @@ func VerifyBlob(
 		}
 	}
 
-	if !(
-		!(that.Qualifiers() != nil) ||
+	if !(!(that.Qualifiers() != nil) ||
 		(len(that.Qualifiers()) >= 1)) {
 		abort = onError(
 			newVerificationError(
-				"Qualifiers must be either not set or have at least one item.",),
+				"Qualifiers must be either not set or have at least one item."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		!(that.Qualifiers() != nil) ||
+	if !(!(that.Qualifiers() != nil) ||
 		QualifierTypesAreUnique(that.Qualifiers())) {
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-021: Every qualifiable can only have one " +
-				"qualifier with the same type.",
+					"qualifier with the same type.",
 			),
 		)
 		if abort {
@@ -7870,13 +7845,12 @@ func VerifyBlob(
 		}
 	}
 
-	if !(
-		!(that.EmbeddedDataSpecifications() != nil) ||
+	if !(!(that.EmbeddedDataSpecifications() != nil) ||
 		(len(that.EmbeddedDataSpecifications()) >= 1)) {
 		abort = onError(
 			newVerificationError(
 				"Embedded data specifications must be either not set or have " +
-				"at least one item.",
+					"at least one item.",
 			),
 		)
 		if abort {
@@ -8140,25 +8114,23 @@ func VerifyFile(
 ) (abort bool) {
 	abort = false
 
-	if !(
-		!(that.Extensions() != nil) ||
+	if !(!(that.Extensions() != nil) ||
 		(len(that.Extensions()) >= 1)) {
 		abort = onError(
 			newVerificationError(
-				"Extensions must be either not set or have at least one item.",),
+				"Extensions must be either not set or have at least one item."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		!(that.Extensions() != nil) ||
+	if !(!(that.Extensions() != nil) ||
 		ExtensionNamesAreUnique(that.Extensions())) {
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-077: The name of an extension within " +
-				"Has-Extensions needs to be unique.",
+					"Has-Extensions needs to be unique.",
 			),
 		)
 		if abort {
@@ -8166,13 +8138,12 @@ func VerifyFile(
 		}
 	}
 
-	if !(
-		!(that.Description() != nil) ||
+	if !(!(that.Description() != nil) ||
 		(len(that.Description()) >= 1)) {
 		abort = onError(
 			newVerificationError(
 				"Description must be either not set or have at least one " +
-				"item.",
+					"item.",
 			),
 		)
 		if abort {
@@ -8180,25 +8151,23 @@ func VerifyFile(
 		}
 	}
 
-	if !(
-		!(that.Description() != nil) ||
+	if !(!(that.Description() != nil) ||
 		LangStringsHaveUniqueLanguages(that.Description())) {
 		abort = onError(
 			newVerificationError(
-				"Description must specify unique languages.",),
+				"Description must specify unique languages."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		!(that.DisplayName() != nil) ||
+	if !(!(that.DisplayName() != nil) ||
 		(len(that.DisplayName()) >= 1)) {
 		abort = onError(
 			newVerificationError(
 				"Display name must be either not set or have at least one " +
-				"item.",
+					"item.",
 			),
 		)
 		if abort {
@@ -8206,25 +8175,23 @@ func VerifyFile(
 		}
 	}
 
-	if !(
-		!(that.DisplayName() != nil) ||
+	if !(!(that.DisplayName() != nil) ||
 		LangStringsHaveUniqueLanguages(that.DisplayName())) {
 		abort = onError(
 			newVerificationError(
-				"Display name must specify unique languages.",),
+				"Display name must specify unique languages."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		!(that.SupplementalSemanticIDs() != nil) ||
+	if !(!(that.SupplementalSemanticIDs() != nil) ||
 		(len(that.SupplementalSemanticIDs()) >= 1)) {
 		abort = onError(
 			newVerificationError(
 				"Supplemental semantic IDs must be either not set or have at " +
-				"least one item.",
+					"least one item.",
 			),
 		)
 		if abort {
@@ -8232,13 +8199,12 @@ func VerifyFile(
 		}
 	}
 
-	if !(
-		!(that.SupplementalSemanticIDs() != nil) ||
+	if !(!(that.SupplementalSemanticIDs() != nil) ||
 		(that.SemanticID() != nil)) {
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-118: If there are supplemental semantic IDs " +
-				"defined then there shall be also a main semantic ID.",
+					"defined then there shall be also a main semantic ID.",
 			),
 		)
 		if abort {
@@ -8246,25 +8212,23 @@ func VerifyFile(
 		}
 	}
 
-	if !(
-		!(that.Qualifiers() != nil) ||
+	if !(!(that.Qualifiers() != nil) ||
 		(len(that.Qualifiers()) >= 1)) {
 		abort = onError(
 			newVerificationError(
-				"Qualifiers must be either not set or have at least one item.",),
+				"Qualifiers must be either not set or have at least one item."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		!(that.Qualifiers() != nil) ||
+	if !(!(that.Qualifiers() != nil) ||
 		QualifierTypesAreUnique(that.Qualifiers())) {
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-021: Every qualifiable can only have one " +
-				"qualifier with the same type.",
+					"qualifier with the same type.",
 			),
 		)
 		if abort {
@@ -8272,13 +8236,12 @@ func VerifyFile(
 		}
 	}
 
-	if !(
-		!(that.EmbeddedDataSpecifications() != nil) ||
+	if !(!(that.EmbeddedDataSpecifications() != nil) ||
 		(len(that.EmbeddedDataSpecifications()) >= 1)) {
 		abort = onError(
 			newVerificationError(
 				"Embedded data specifications must be either not set or have " +
-				"at least one item.",
+					"at least one item.",
 			),
 		)
 		if abort {
@@ -8542,25 +8505,23 @@ func VerifyAnnotatedRelationshipElement(
 ) (abort bool) {
 	abort = false
 
-	if !(
-		!(that.Extensions() != nil) ||
+	if !(!(that.Extensions() != nil) ||
 		(len(that.Extensions()) >= 1)) {
 		abort = onError(
 			newVerificationError(
-				"Extensions must be either not set or have at least one item.",),
+				"Extensions must be either not set or have at least one item."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		!(that.Extensions() != nil) ||
+	if !(!(that.Extensions() != nil) ||
 		ExtensionNamesAreUnique(that.Extensions())) {
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-077: The name of an extension within " +
-				"Has-Extensions needs to be unique.",
+					"Has-Extensions needs to be unique.",
 			),
 		)
 		if abort {
@@ -8568,13 +8529,12 @@ func VerifyAnnotatedRelationshipElement(
 		}
 	}
 
-	if !(
-		!(that.Description() != nil) ||
+	if !(!(that.Description() != nil) ||
 		(len(that.Description()) >= 1)) {
 		abort = onError(
 			newVerificationError(
 				"Description must be either not set or have at least one " +
-				"item.",
+					"item.",
 			),
 		)
 		if abort {
@@ -8582,25 +8542,23 @@ func VerifyAnnotatedRelationshipElement(
 		}
 	}
 
-	if !(
-		!(that.Description() != nil) ||
+	if !(!(that.Description() != nil) ||
 		LangStringsHaveUniqueLanguages(that.Description())) {
 		abort = onError(
 			newVerificationError(
-				"Description must specify unique languages.",),
+				"Description must specify unique languages."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		!(that.DisplayName() != nil) ||
+	if !(!(that.DisplayName() != nil) ||
 		(len(that.DisplayName()) >= 1)) {
 		abort = onError(
 			newVerificationError(
 				"Display name must be either not set or have at least one " +
-				"item.",
+					"item.",
 			),
 		)
 		if abort {
@@ -8608,25 +8566,23 @@ func VerifyAnnotatedRelationshipElement(
 		}
 	}
 
-	if !(
-		!(that.DisplayName() != nil) ||
+	if !(!(that.DisplayName() != nil) ||
 		LangStringsHaveUniqueLanguages(that.DisplayName())) {
 		abort = onError(
 			newVerificationError(
-				"Display name must specify unique languages.",),
+				"Display name must specify unique languages."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		!(that.SupplementalSemanticIDs() != nil) ||
+	if !(!(that.SupplementalSemanticIDs() != nil) ||
 		(len(that.SupplementalSemanticIDs()) >= 1)) {
 		abort = onError(
 			newVerificationError(
 				"Supplemental semantic IDs must be either not set or have at " +
-				"least one item.",
+					"least one item.",
 			),
 		)
 		if abort {
@@ -8634,13 +8590,12 @@ func VerifyAnnotatedRelationshipElement(
 		}
 	}
 
-	if !(
-		!(that.SupplementalSemanticIDs() != nil) ||
+	if !(!(that.SupplementalSemanticIDs() != nil) ||
 		(that.SemanticID() != nil)) {
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-118: If there are supplemental semantic IDs " +
-				"defined then there shall be also a main semantic ID.",
+					"defined then there shall be also a main semantic ID.",
 			),
 		)
 		if abort {
@@ -8648,25 +8603,23 @@ func VerifyAnnotatedRelationshipElement(
 		}
 	}
 
-	if !(
-		!(that.Qualifiers() != nil) ||
+	if !(!(that.Qualifiers() != nil) ||
 		(len(that.Qualifiers()) >= 1)) {
 		abort = onError(
 			newVerificationError(
-				"Qualifiers must be either not set or have at least one item.",),
+				"Qualifiers must be either not set or have at least one item."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		!(that.Qualifiers() != nil) ||
+	if !(!(that.Qualifiers() != nil) ||
 		QualifierTypesAreUnique(that.Qualifiers())) {
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-021: Every qualifiable can only have one " +
-				"qualifier with the same type.",
+					"qualifier with the same type.",
 			),
 		)
 		if abort {
@@ -8674,13 +8627,12 @@ func VerifyAnnotatedRelationshipElement(
 		}
 	}
 
-	if !(
-		!(that.EmbeddedDataSpecifications() != nil) ||
+	if !(!(that.EmbeddedDataSpecifications() != nil) ||
 		(len(that.EmbeddedDataSpecifications()) >= 1)) {
 		abort = onError(
 			newVerificationError(
 				"Embedded data specifications must be either not set or have " +
-				"at least one item.",
+					"at least one item.",
 			),
 		)
 		if abort {
@@ -8688,13 +8640,12 @@ func VerifyAnnotatedRelationshipElement(
 		}
 	}
 
-	if !(
-		!(that.Annotations() != nil) ||
+	if !(!(that.Annotations() != nil) ||
 		(len(that.Annotations()) >= 1)) {
 		abort = onError(
 			newVerificationError(
 				"Annotations must be either not set or have at least one " +
-				"item.",
+					"item.",
 			),
 		)
 		if abort {
@@ -8702,8 +8653,7 @@ func VerifyAnnotatedRelationshipElement(
 		}
 	}
 
-	if !(
-		!(that.Annotations() != nil) ||
+	if !(!(that.Annotations() != nil) ||
 		aascommon.All(
 			func(item aastypes.IDataElement) bool {
 				return item.IDShort() != nil
@@ -8713,9 +8663,9 @@ func VerifyAnnotatedRelationshipElement(
 		abort = onError(
 			newVerificationError(
 				"ID-shorts need to be defined for all the items of " +
-				"annotations according to AASd-117 (ID-short of Referables " +
-				"not being a direct child of a Submodel element list shall " +
-				"be specified).",
+					"annotations according to AASd-117 (ID-short of Referables " +
+					"not being a direct child of a Submodel element list shall " +
+					"be specified).",
 			),
 		)
 		if abort {
@@ -9005,25 +8955,23 @@ func VerifyEntity(
 ) (abort bool) {
 	abort = false
 
-	if !(
-		!(that.Extensions() != nil) ||
+	if !(!(that.Extensions() != nil) ||
 		(len(that.Extensions()) >= 1)) {
 		abort = onError(
 			newVerificationError(
-				"Extensions must be either not set or have at least one item.",),
+				"Extensions must be either not set or have at least one item."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		!(that.Extensions() != nil) ||
+	if !(!(that.Extensions() != nil) ||
 		ExtensionNamesAreUnique(that.Extensions())) {
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-077: The name of an extension within " +
-				"Has-Extensions needs to be unique.",
+					"Has-Extensions needs to be unique.",
 			),
 		)
 		if abort {
@@ -9031,13 +8979,12 @@ func VerifyEntity(
 		}
 	}
 
-	if !(
-		!(that.Description() != nil) ||
+	if !(!(that.Description() != nil) ||
 		(len(that.Description()) >= 1)) {
 		abort = onError(
 			newVerificationError(
 				"Description must be either not set or have at least one " +
-				"item.",
+					"item.",
 			),
 		)
 		if abort {
@@ -9045,25 +8992,23 @@ func VerifyEntity(
 		}
 	}
 
-	if !(
-		!(that.Description() != nil) ||
+	if !(!(that.Description() != nil) ||
 		LangStringsHaveUniqueLanguages(that.Description())) {
 		abort = onError(
 			newVerificationError(
-				"Description must specify unique languages.",),
+				"Description must specify unique languages."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		!(that.DisplayName() != nil) ||
+	if !(!(that.DisplayName() != nil) ||
 		(len(that.DisplayName()) >= 1)) {
 		abort = onError(
 			newVerificationError(
 				"Display name must be either not set or have at least one " +
-				"item.",
+					"item.",
 			),
 		)
 		if abort {
@@ -9071,25 +9016,23 @@ func VerifyEntity(
 		}
 	}
 
-	if !(
-		!(that.DisplayName() != nil) ||
+	if !(!(that.DisplayName() != nil) ||
 		LangStringsHaveUniqueLanguages(that.DisplayName())) {
 		abort = onError(
 			newVerificationError(
-				"Display name must specify unique languages.",),
+				"Display name must specify unique languages."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		!(that.SupplementalSemanticIDs() != nil) ||
+	if !(!(that.SupplementalSemanticIDs() != nil) ||
 		(len(that.SupplementalSemanticIDs()) >= 1)) {
 		abort = onError(
 			newVerificationError(
 				"Supplemental semantic IDs must be either not set or have at " +
-				"least one item.",
+					"least one item.",
 			),
 		)
 		if abort {
@@ -9097,13 +9040,12 @@ func VerifyEntity(
 		}
 	}
 
-	if !(
-		!(that.SupplementalSemanticIDs() != nil) ||
+	if !(!(that.SupplementalSemanticIDs() != nil) ||
 		(that.SemanticID() != nil)) {
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-118: If there are supplemental semantic IDs " +
-				"defined then there shall be also a main semantic ID.",
+					"defined then there shall be also a main semantic ID.",
 			),
 		)
 		if abort {
@@ -9111,25 +9053,23 @@ func VerifyEntity(
 		}
 	}
 
-	if !(
-		!(that.Qualifiers() != nil) ||
+	if !(!(that.Qualifiers() != nil) ||
 		(len(that.Qualifiers()) >= 1)) {
 		abort = onError(
 			newVerificationError(
-				"Qualifiers must be either not set or have at least one item.",),
+				"Qualifiers must be either not set or have at least one item."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		!(that.Qualifiers() != nil) ||
+	if !(!(that.Qualifiers() != nil) ||
 		QualifierTypesAreUnique(that.Qualifiers())) {
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-021: Every qualifiable can only have one " +
-				"qualifier with the same type.",
+					"qualifier with the same type.",
 			),
 		)
 		if abort {
@@ -9137,13 +9077,12 @@ func VerifyEntity(
 		}
 	}
 
-	if !(
-		!(that.EmbeddedDataSpecifications() != nil) ||
+	if !(!(that.EmbeddedDataSpecifications() != nil) ||
 		(len(that.EmbeddedDataSpecifications()) >= 1)) {
 		abort = onError(
 			newVerificationError(
 				"Embedded data specifications must be either not set or have " +
-				"at least one item.",
+					"at least one item.",
 			),
 		)
 		if abort {
@@ -9151,20 +9090,18 @@ func VerifyEntity(
 		}
 	}
 
-	if !(
-		!(that.Statements() != nil) ||
+	if !(!(that.Statements() != nil) ||
 		(len(that.Statements()) >= 1)) {
 		abort = onError(
 			newVerificationError(
-				"Statements must be either not set or have at least one item.",),
+				"Statements must be either not set or have at least one item."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		!(that.Statements() != nil) ||
+	if !(!(that.Statements() != nil) ||
 		aascommon.All(
 			func(item aastypes.ISubmodelElement) bool {
 				return item.IDShort() != nil
@@ -9174,9 +9111,9 @@ func VerifyEntity(
 		abort = onError(
 			newVerificationError(
 				"ID-shorts need to be defined for all the items of " +
-				"statements according to AASd-117 (ID-short of Referables " +
-				"not being a direct child of a Submodel element list shall " +
-				"be specified).",
+					"statements according to AASd-117 (ID-short of Referables " +
+					"not being a direct child of a Submodel element list shall " +
+					"be specified).",
 			),
 		)
 		if abort {
@@ -9184,19 +9121,18 @@ func VerifyEntity(
 		}
 	}
 
-	if !(
-		!(that.EntityType() != nil) ||
+	if !(!(that.EntityType() != nil) ||
 		(!(*that.EntityType() == aastypes.EntityTypeSelfManagedEntity) ||
-		(((that.GlobalAssetID() != nil) &&
-		(that.SpecificAssetIDs() == nil)) ||
-		((that.GlobalAssetID() == nil) &&
-		(that.SpecificAssetIDs() != nil) &&
-		len(that.SpecificAssetIDs()) >= 1)))) {
+			(((that.GlobalAssetID() != nil) &&
+				(that.SpecificAssetIDs() == nil)) ||
+				((that.GlobalAssetID() == nil) &&
+					(that.SpecificAssetIDs() != nil) &&
+					len(that.SpecificAssetIDs()) >= 1)))) {
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-014: Either the attribute global asset ID " +
-				"or specific asset ID must be set if Entity/entityType is " +
-				"set to :attr:`Entity_type.Self_managed_entity`.",
+					"or specific asset ID must be set if Entity/entityType is " +
+					"set to :attr:`Entity_type.Self_managed_entity`.",
 			),
 		)
 		if abort {
@@ -9204,13 +9140,12 @@ func VerifyEntity(
 		}
 	}
 
-	if !(
-		!(that.SpecificAssetIDs() != nil) ||
+	if !(!(that.SpecificAssetIDs() != nil) ||
 		(len(that.SpecificAssetIDs()) >= 1)) {
 		abort = onError(
 			newVerificationError(
 				"Specific asset IDs must be either not set or have at least " +
-				"one item.",
+					"one item.",
 			),
 		)
 		if abort {
@@ -9452,8 +9387,7 @@ func VerifyEntity(
 	}
 
 	if that.EntityType() != nil {
-		if
-			*that.EntityType() < aastypes.EntityTypeCoManagedEntity ||
+		if *that.EntityType() < aastypes.EntityTypeCoManagedEntity ||
 			*that.EntityType() > aastypes.EntityTypeSelfManagedEntity {
 			err := newVerificationError(
 				fmt.Sprintf(
@@ -9531,32 +9465,30 @@ func VerifyEventPayload(
 ) (abort bool) {
 	abort = false
 
-	if !(
-		IsModelReferenceTo(
-			that.Source(),
-			aastypes.KeyTypesEventElement,
-		) ||
+	if !(IsModelReferenceTo(
+		that.Source(),
+		aastypes.KeyTypesEventElement,
+	) ||
 		IsModelReferenceTo(
 			that.Source(),
 			aastypes.KeyTypesBasicEventElement,
 		)) {
 		abort = onError(
 			newVerificationError(
-				"Source must be a model reference to an Event element.",),
+				"Source must be a model reference to an Event element."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		IsModelReferenceToReferable(
-			that.ObservableReference(),
-		)) {
+	if !(IsModelReferenceToReferable(
+		that.ObservableReference(),
+	)) {
 		abort = onError(
 			newVerificationError(
 				"Observable reference must be a model reference to " +
-				"a referable.",
+					"a referable.",
 			),
 		)
 		if abort {
@@ -9731,25 +9663,23 @@ func VerifyBasicEventElement(
 ) (abort bool) {
 	abort = false
 
-	if !(
-		!(that.Extensions() != nil) ||
+	if !(!(that.Extensions() != nil) ||
 		(len(that.Extensions()) >= 1)) {
 		abort = onError(
 			newVerificationError(
-				"Extensions must be either not set or have at least one item.",),
+				"Extensions must be either not set or have at least one item."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		!(that.Extensions() != nil) ||
+	if !(!(that.Extensions() != nil) ||
 		ExtensionNamesAreUnique(that.Extensions())) {
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-077: The name of an extension within " +
-				"Has-Extensions needs to be unique.",
+					"Has-Extensions needs to be unique.",
 			),
 		)
 		if abort {
@@ -9757,13 +9687,12 @@ func VerifyBasicEventElement(
 		}
 	}
 
-	if !(
-		!(that.Description() != nil) ||
+	if !(!(that.Description() != nil) ||
 		(len(that.Description()) >= 1)) {
 		abort = onError(
 			newVerificationError(
 				"Description must be either not set or have at least one " +
-				"item.",
+					"item.",
 			),
 		)
 		if abort {
@@ -9771,25 +9700,23 @@ func VerifyBasicEventElement(
 		}
 	}
 
-	if !(
-		!(that.Description() != nil) ||
+	if !(!(that.Description() != nil) ||
 		LangStringsHaveUniqueLanguages(that.Description())) {
 		abort = onError(
 			newVerificationError(
-				"Description must specify unique languages.",),
+				"Description must specify unique languages."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		!(that.DisplayName() != nil) ||
+	if !(!(that.DisplayName() != nil) ||
 		(len(that.DisplayName()) >= 1)) {
 		abort = onError(
 			newVerificationError(
 				"Display name must be either not set or have at least one " +
-				"item.",
+					"item.",
 			),
 		)
 		if abort {
@@ -9797,25 +9724,23 @@ func VerifyBasicEventElement(
 		}
 	}
 
-	if !(
-		!(that.DisplayName() != nil) ||
+	if !(!(that.DisplayName() != nil) ||
 		LangStringsHaveUniqueLanguages(that.DisplayName())) {
 		abort = onError(
 			newVerificationError(
-				"Display name must specify unique languages.",),
+				"Display name must specify unique languages."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		!(that.SupplementalSemanticIDs() != nil) ||
+	if !(!(that.SupplementalSemanticIDs() != nil) ||
 		(len(that.SupplementalSemanticIDs()) >= 1)) {
 		abort = onError(
 			newVerificationError(
 				"Supplemental semantic IDs must be either not set or have at " +
-				"least one item.",
+					"least one item.",
 			),
 		)
 		if abort {
@@ -9823,13 +9748,12 @@ func VerifyBasicEventElement(
 		}
 	}
 
-	if !(
-		!(that.SupplementalSemanticIDs() != nil) ||
+	if !(!(that.SupplementalSemanticIDs() != nil) ||
 		(that.SemanticID() != nil)) {
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-118: If there are supplemental semantic IDs " +
-				"defined then there shall be also a main semantic ID.",
+					"defined then there shall be also a main semantic ID.",
 			),
 		)
 		if abort {
@@ -9837,25 +9761,23 @@ func VerifyBasicEventElement(
 		}
 	}
 
-	if !(
-		!(that.Qualifiers() != nil) ||
+	if !(!(that.Qualifiers() != nil) ||
 		(len(that.Qualifiers()) >= 1)) {
 		abort = onError(
 			newVerificationError(
-				"Qualifiers must be either not set or have at least one item.",),
+				"Qualifiers must be either not set or have at least one item."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		!(that.Qualifiers() != nil) ||
+	if !(!(that.Qualifiers() != nil) ||
 		QualifierTypesAreUnique(that.Qualifiers())) {
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-021: Every qualifiable can only have one " +
-				"qualifier with the same type.",
+					"qualifier with the same type.",
 			),
 		)
 		if abort {
@@ -9863,13 +9785,12 @@ func VerifyBasicEventElement(
 		}
 	}
 
-	if !(
-		!(that.EmbeddedDataSpecifications() != nil) ||
+	if !(!(that.EmbeddedDataSpecifications() != nil) ||
 		(len(that.EmbeddedDataSpecifications()) >= 1)) {
 		abort = onError(
 			newVerificationError(
 				"Embedded data specifications must be either not set or have " +
-				"at least one item.",
+					"at least one item.",
 			),
 		)
 		if abort {
@@ -9877,12 +9798,11 @@ func VerifyBasicEventElement(
 		}
 	}
 
-	if !(
-		!(that.Direction() == aastypes.DirectionInput) ||
+	if !(!(that.Direction() == aastypes.DirectionInput) ||
 		(that.MaxInterval() == nil)) {
 		abort = onError(
 			newVerificationError(
-				"Max. interval is not applicable for input direction.",),
+				"Max. interval is not applicable for input direction."),
 		)
 		if abort {
 			return
@@ -9892,19 +9812,18 @@ func VerifyBasicEventElement(
 	if !IsModelReferenceToReferable(that.Observed()) {
 		abort = onError(
 			newVerificationError(
-				"Observed must be a model reference to a referable.",),
+				"Observed must be a model reference to a referable."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		!(that.MessageBroker() != nil) ||
+	if !(!(that.MessageBroker() != nil) ||
 		IsModelReferenceToReferable(that.MessageBroker())) {
 		abort = onError(
 			newVerificationError(
-				"Message broker must be a model reference to a referable.",),
+				"Message broker must be a model reference to a referable."),
 		)
 		if abort {
 			return
@@ -10144,8 +10063,7 @@ func VerifyBasicEventElement(
 		}
 	}
 
-	if
-		that.Direction() < aastypes.DirectionInput ||
+	if that.Direction() < aastypes.DirectionInput ||
 		that.Direction() > aastypes.DirectionOutput {
 		err := newVerificationError(
 			fmt.Sprintf(
@@ -10164,8 +10082,7 @@ func VerifyBasicEventElement(
 		}
 	}
 
-	if
-		that.State() < aastypes.StateOfEventOn ||
+	if that.State() < aastypes.StateOfEventOn ||
 		that.State() > aastypes.StateOfEventOff {
 		err := newVerificationError(
 			fmt.Sprintf(
@@ -10284,25 +10201,23 @@ func VerifyOperation(
 ) (abort bool) {
 	abort = false
 
-	if !(
-		!(that.Extensions() != nil) ||
+	if !(!(that.Extensions() != nil) ||
 		(len(that.Extensions()) >= 1)) {
 		abort = onError(
 			newVerificationError(
-				"Extensions must be either not set or have at least one item.",),
+				"Extensions must be either not set or have at least one item."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		!(that.Extensions() != nil) ||
+	if !(!(that.Extensions() != nil) ||
 		ExtensionNamesAreUnique(that.Extensions())) {
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-077: The name of an extension within " +
-				"Has-Extensions needs to be unique.",
+					"Has-Extensions needs to be unique.",
 			),
 		)
 		if abort {
@@ -10310,13 +10225,12 @@ func VerifyOperation(
 		}
 	}
 
-	if !(
-		!(that.Description() != nil) ||
+	if !(!(that.Description() != nil) ||
 		(len(that.Description()) >= 1)) {
 		abort = onError(
 			newVerificationError(
 				"Description must be either not set or have at least one " +
-				"item.",
+					"item.",
 			),
 		)
 		if abort {
@@ -10324,25 +10238,23 @@ func VerifyOperation(
 		}
 	}
 
-	if !(
-		!(that.Description() != nil) ||
+	if !(!(that.Description() != nil) ||
 		LangStringsHaveUniqueLanguages(that.Description())) {
 		abort = onError(
 			newVerificationError(
-				"Description must specify unique languages.",),
+				"Description must specify unique languages."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		!(that.DisplayName() != nil) ||
+	if !(!(that.DisplayName() != nil) ||
 		(len(that.DisplayName()) >= 1)) {
 		abort = onError(
 			newVerificationError(
 				"Display name must be either not set or have at least one " +
-				"item.",
+					"item.",
 			),
 		)
 		if abort {
@@ -10350,25 +10262,23 @@ func VerifyOperation(
 		}
 	}
 
-	if !(
-		!(that.DisplayName() != nil) ||
+	if !(!(that.DisplayName() != nil) ||
 		LangStringsHaveUniqueLanguages(that.DisplayName())) {
 		abort = onError(
 			newVerificationError(
-				"Display name must specify unique languages.",),
+				"Display name must specify unique languages."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		!(that.SupplementalSemanticIDs() != nil) ||
+	if !(!(that.SupplementalSemanticIDs() != nil) ||
 		(len(that.SupplementalSemanticIDs()) >= 1)) {
 		abort = onError(
 			newVerificationError(
 				"Supplemental semantic IDs must be either not set or have at " +
-				"least one item.",
+					"least one item.",
 			),
 		)
 		if abort {
@@ -10376,13 +10286,12 @@ func VerifyOperation(
 		}
 	}
 
-	if !(
-		!(that.SupplementalSemanticIDs() != nil) ||
+	if !(!(that.SupplementalSemanticIDs() != nil) ||
 		(that.SemanticID() != nil)) {
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-118: If there are supplemental semantic IDs " +
-				"defined then there shall be also a main semantic ID.",
+					"defined then there shall be also a main semantic ID.",
 			),
 		)
 		if abort {
@@ -10390,25 +10299,23 @@ func VerifyOperation(
 		}
 	}
 
-	if !(
-		!(that.Qualifiers() != nil) ||
+	if !(!(that.Qualifiers() != nil) ||
 		(len(that.Qualifiers()) >= 1)) {
 		abort = onError(
 			newVerificationError(
-				"Qualifiers must be either not set or have at least one item.",),
+				"Qualifiers must be either not set or have at least one item."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		!(that.Qualifiers() != nil) ||
+	if !(!(that.Qualifiers() != nil) ||
 		QualifierTypesAreUnique(that.Qualifiers())) {
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-021: Every qualifiable can only have one " +
-				"qualifier with the same type.",
+					"qualifier with the same type.",
 			),
 		)
 		if abort {
@@ -10416,13 +10323,12 @@ func VerifyOperation(
 		}
 	}
 
-	if !(
-		!(that.EmbeddedDataSpecifications() != nil) ||
+	if !(!(that.EmbeddedDataSpecifications() != nil) ||
 		(len(that.EmbeddedDataSpecifications()) >= 1)) {
 		abort = onError(
 			newVerificationError(
 				"Embedded data specifications must be either not set or have " +
-				"at least one item.",
+					"at least one item.",
 			),
 		)
 		if abort {
@@ -10430,17 +10336,33 @@ func VerifyOperation(
 		}
 	}
 
-	if !(
-		IDShortsOfVariablesAreUnique(
-			that.InputVariables(),
-			that.OutputVariables(),
-			that.InoutputVariables(),
-		)) {
+	if !(SubmodelElementListsInOperationVariablesHaveExactlyOneElement(
+		that.InputVariables(),
+		that.OutputVariables(),
+		that.InoutputVariables(),
+	)) {
+		abort = onError(
+			newVerificationError(
+				"Constraint AASd-138: A SubmodelElementList within " +
+					"a Submodel of kind=Template or as part of " +
+					"an OperationVariable shall have exactly one element.",
+			),
+		)
+		if abort {
+			return
+		}
+	}
+
+	if !(IDShortsOfVariablesAreUnique(
+		that.InputVariables(),
+		that.OutputVariables(),
+		that.InoutputVariables(),
+	)) {
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-134: For an Operation the ID-short of all " +
-				"values of input, output and in/output variables shall be " +
-				"unique.",
+					"values of input, output and in/output variables shall be " +
+					"unique.",
 			),
 		)
 		if abort {
@@ -10448,13 +10370,12 @@ func VerifyOperation(
 		}
 	}
 
-	if !(
-		!(that.InputVariables() != nil) ||
+	if !(!(that.InputVariables() != nil) ||
 		(len(that.InputVariables()) >= 1)) {
 		abort = onError(
 			newVerificationError(
 				"Input variables must be either not set or have at least one " +
-				"item.",
+					"item.",
 			),
 		)
 		if abort {
@@ -10462,13 +10383,12 @@ func VerifyOperation(
 		}
 	}
 
-	if !(
-		!(that.OutputVariables() != nil) ||
+	if !(!(that.OutputVariables() != nil) ||
 		(len(that.OutputVariables()) >= 1)) {
 		abort = onError(
 			newVerificationError(
 				"Output variables must be either not set or have at least " +
-				"one item.",
+					"one item.",
 			),
 		)
 		if abort {
@@ -10476,13 +10396,12 @@ func VerifyOperation(
 		}
 	}
 
-	if !(
-		!(that.InoutputVariables() != nil) ||
+	if !(!(that.InoutputVariables() != nil) ||
 		(len(that.InoutputVariables()) >= 1)) {
 		abort = onError(
 			newVerificationError(
 				"Inoutput variables must be either not set or have at least " +
-				"one item.",
+					"one item.",
 			),
 		)
 		if abort {
@@ -10794,9 +10713,9 @@ func VerifyOperationVariable(
 		abort = onError(
 			newVerificationError(
 				"Value must have the ID-short specified according to " +
-				"Constraint AASd-117 (ID-short of Referables not being " +
-				"a direct child of a Submodel element list shall be " +
-				"specified).",
+					"Constraint AASd-117 (ID-short of Referables not being " +
+					"a direct child of a Submodel element list shall be " +
+					"specified).",
 			),
 		)
 		if abort {
@@ -10845,25 +10764,23 @@ func VerifyCapability(
 ) (abort bool) {
 	abort = false
 
-	if !(
-		!(that.Extensions() != nil) ||
+	if !(!(that.Extensions() != nil) ||
 		(len(that.Extensions()) >= 1)) {
 		abort = onError(
 			newVerificationError(
-				"Extensions must be either not set or have at least one item.",),
+				"Extensions must be either not set or have at least one item."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		!(that.Extensions() != nil) ||
+	if !(!(that.Extensions() != nil) ||
 		ExtensionNamesAreUnique(that.Extensions())) {
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-077: The name of an extension within " +
-				"Has-Extensions needs to be unique.",
+					"Has-Extensions needs to be unique.",
 			),
 		)
 		if abort {
@@ -10871,13 +10788,12 @@ func VerifyCapability(
 		}
 	}
 
-	if !(
-		!(that.Description() != nil) ||
+	if !(!(that.Description() != nil) ||
 		(len(that.Description()) >= 1)) {
 		abort = onError(
 			newVerificationError(
 				"Description must be either not set or have at least one " +
-				"item.",
+					"item.",
 			),
 		)
 		if abort {
@@ -10885,25 +10801,23 @@ func VerifyCapability(
 		}
 	}
 
-	if !(
-		!(that.Description() != nil) ||
+	if !(!(that.Description() != nil) ||
 		LangStringsHaveUniqueLanguages(that.Description())) {
 		abort = onError(
 			newVerificationError(
-				"Description must specify unique languages.",),
+				"Description must specify unique languages."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		!(that.DisplayName() != nil) ||
+	if !(!(that.DisplayName() != nil) ||
 		(len(that.DisplayName()) >= 1)) {
 		abort = onError(
 			newVerificationError(
 				"Display name must be either not set or have at least one " +
-				"item.",
+					"item.",
 			),
 		)
 		if abort {
@@ -10911,25 +10825,23 @@ func VerifyCapability(
 		}
 	}
 
-	if !(
-		!(that.DisplayName() != nil) ||
+	if !(!(that.DisplayName() != nil) ||
 		LangStringsHaveUniqueLanguages(that.DisplayName())) {
 		abort = onError(
 			newVerificationError(
-				"Display name must specify unique languages.",),
+				"Display name must specify unique languages."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		!(that.SupplementalSemanticIDs() != nil) ||
+	if !(!(that.SupplementalSemanticIDs() != nil) ||
 		(len(that.SupplementalSemanticIDs()) >= 1)) {
 		abort = onError(
 			newVerificationError(
 				"Supplemental semantic IDs must be either not set or have at " +
-				"least one item.",
+					"least one item.",
 			),
 		)
 		if abort {
@@ -10937,13 +10849,12 @@ func VerifyCapability(
 		}
 	}
 
-	if !(
-		!(that.SupplementalSemanticIDs() != nil) ||
+	if !(!(that.SupplementalSemanticIDs() != nil) ||
 		(that.SemanticID() != nil)) {
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-118: If there are supplemental semantic IDs " +
-				"defined then there shall be also a main semantic ID.",
+					"defined then there shall be also a main semantic ID.",
 			),
 		)
 		if abort {
@@ -10951,25 +10862,23 @@ func VerifyCapability(
 		}
 	}
 
-	if !(
-		!(that.Qualifiers() != nil) ||
+	if !(!(that.Qualifiers() != nil) ||
 		(len(that.Qualifiers()) >= 1)) {
 		abort = onError(
 			newVerificationError(
-				"Qualifiers must be either not set or have at least one item.",),
+				"Qualifiers must be either not set or have at least one item."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		!(that.Qualifiers() != nil) ||
+	if !(!(that.Qualifiers() != nil) ||
 		QualifierTypesAreUnique(that.Qualifiers())) {
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-021: Every qualifiable can only have one " +
-				"qualifier with the same type.",
+					"qualifier with the same type.",
 			),
 		)
 		if abort {
@@ -10977,13 +10886,12 @@ func VerifyCapability(
 		}
 	}
 
-	if !(
-		!(that.EmbeddedDataSpecifications() != nil) ||
+	if !(!(that.EmbeddedDataSpecifications() != nil) ||
 		(len(that.EmbeddedDataSpecifications()) >= 1)) {
 		abort = onError(
 			newVerificationError(
 				"Embedded data specifications must be either not set or have " +
-				"at least one item.",
+					"at least one item.",
 			),
 		)
 		if abort {
@@ -11213,25 +11121,23 @@ func VerifyConceptDescription(
 ) (abort bool) {
 	abort = false
 
-	if !(
-		!(that.Extensions() != nil) ||
+	if !(!(that.Extensions() != nil) ||
 		(len(that.Extensions()) >= 1)) {
 		abort = onError(
 			newVerificationError(
-				"Extensions must be either not set or have at least one item.",),
+				"Extensions must be either not set or have at least one item."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		!(that.Extensions() != nil) ||
+	if !(!(that.Extensions() != nil) ||
 		ExtensionNamesAreUnique(that.Extensions())) {
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-077: The name of an extension within " +
-				"Has-Extensions needs to be unique.",
+					"Has-Extensions needs to be unique.",
 			),
 		)
 		if abort {
@@ -11239,13 +11145,12 @@ func VerifyConceptDescription(
 		}
 	}
 
-	if !(
-		!(that.Description() != nil) ||
+	if !(!(that.Description() != nil) ||
 		(len(that.Description()) >= 1)) {
 		abort = onError(
 			newVerificationError(
 				"Description must be either not set or have at least one " +
-				"item.",
+					"item.",
 			),
 		)
 		if abort {
@@ -11253,25 +11158,23 @@ func VerifyConceptDescription(
 		}
 	}
 
-	if !(
-		!(that.Description() != nil) ||
+	if !(!(that.Description() != nil) ||
 		LangStringsHaveUniqueLanguages(that.Description())) {
 		abort = onError(
 			newVerificationError(
-				"Description must specify unique languages.",),
+				"Description must specify unique languages."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		!(that.DisplayName() != nil) ||
+	if !(!(that.DisplayName() != nil) ||
 		(len(that.DisplayName()) >= 1)) {
 		abort = onError(
 			newVerificationError(
 				"Display name must be either not set or have at least one " +
-				"item.",
+					"item.",
 			),
 		)
 		if abort {
@@ -11279,25 +11182,23 @@ func VerifyConceptDescription(
 		}
 	}
 
-	if !(
-		!(that.DisplayName() != nil) ||
+	if !(!(that.DisplayName() != nil) ||
 		LangStringsHaveUniqueLanguages(that.DisplayName())) {
 		abort = onError(
 			newVerificationError(
-				"Display name must specify unique languages.",),
+				"Display name must specify unique languages."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		!(that.EmbeddedDataSpecifications() != nil) ||
+	if !(!(that.EmbeddedDataSpecifications() != nil) ||
 		(len(that.EmbeddedDataSpecifications()) >= 1)) {
 		abort = onError(
 			newVerificationError(
 				"Embedded data specifications must be either not set or have " +
-				"at least one item.",
+					"at least one item.",
 			),
 		)
 		if abort {
@@ -11305,32 +11206,30 @@ func VerifyConceptDescription(
 		}
 	}
 
-	if !(
-		!(that.IsCaseOf() != nil) ||
+	if !(!(that.IsCaseOf() != nil) ||
 		(len(that.IsCaseOf()) >= 1)) {
 		abort = onError(
 			newVerificationError(
-				"Is-case-of must be either not set or have at least one item.",),
+				"Is-case-of must be either not set or have at least one item."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		!(that.EmbeddedDataSpecifications() != nil) ||
+	if !(!(that.EmbeddedDataSpecifications() != nil) ||
 		(DataSpecificationIEC61360sHaveDefinitionAtLeastInEnglish(
 			that.EmbeddedDataSpecifications(),
 		) ||
-		DataSpecificationIEC61360sHaveValue(
-			that.EmbeddedDataSpecifications(),
-		))) {
+			DataSpecificationIEC61360sHaveValue(
+				that.EmbeddedDataSpecifications(),
+			))) {
 		abort = onError(
 			newVerificationError(
 				"Constraint AASc-3a-008: For a concept description using " +
-				"data specification template IEC 61360, the definition is " +
-				"mandatory and shall be defined at least in English. " +
-				"Exception: The concept description describes a value.",
+					"data specification template IEC 61360, the definition is " +
+					"mandatory and shall be defined at least in English. " +
+					"Exception: The concept description describes a value.",
 			),
 		)
 		if abort {
@@ -11338,8 +11237,7 @@ func VerifyConceptDescription(
 		}
 	}
 
-	if !(
-		!((that.Category() != nil) &&
+	if !(!((that.Category() != nil) &&
 		*that.Category() == "QUALIFIER_TYPE" &&
 		(that.EmbeddedDataSpecifications() != nil)) ||
 		DataSpecificationIEC61360sHaveDataType(
@@ -11348,9 +11246,9 @@ func VerifyConceptDescription(
 		abort = onError(
 			newVerificationError(
 				"Constraint AASc-3a-007: For a concept description with " +
-				"category QUALIFIER_TYPE using data specification IEC 61360, " +
-				"the data type of the data specification is mandatory and " +
-				"shall be defined.",
+					"category QUALIFIER_TYPE using data specification IEC 61360, " +
+					"the data type of the data specification is mandatory and " +
+					"shall be defined.",
 			),
 		)
 		if abort {
@@ -11358,8 +11256,7 @@ func VerifyConceptDescription(
 		}
 	}
 
-	if !(
-		!((that.Category() != nil) &&
+	if !(!((that.Category() != nil) &&
 		*that.Category() == "DOCUMENT" &&
 		(that.EmbeddedDataSpecifications() != nil)) ||
 		DataSpecificationIEC61360sForDocumentHaveAppropriateDataType(
@@ -11368,9 +11265,9 @@ func VerifyConceptDescription(
 		abort = onError(
 			newVerificationError(
 				"Constraint AASc-3a-006: For a concept description with " +
-				"category DOCUMENT using data specification IEC 61360, " +
-				"the data type of the data specification shall be one of: " +
-				"FILE, BLOB, HTML.",
+					"category DOCUMENT using data specification IEC 61360, " +
+					"the data type of the data specification shall be one of: " +
+					"FILE, BLOB, HTML.",
 			),
 		)
 		if abort {
@@ -11378,8 +11275,7 @@ func VerifyConceptDescription(
 		}
 	}
 
-	if !(
-		!((that.Category() != nil) &&
+	if !(!((that.Category() != nil) &&
 		*that.Category() == "REFERENCE" &&
 		(that.EmbeddedDataSpecifications() != nil)) ||
 		DataSpecificationIEC61360sForReferenceHaveAppropriateDataType(
@@ -11388,9 +11284,9 @@ func VerifyConceptDescription(
 		abort = onError(
 			newVerificationError(
 				"Constraint AASc-3a-005: For a concept description with " +
-				"category REFERENCE using data specification IEC 61360, " +
-				"the data type of the data specification shall be one of: " +
-				"STRING, IRI, IRDI.",
+					"category REFERENCE using data specification IEC 61360, " +
+					"the data type of the data specification shall be one of: " +
+					"STRING, IRI, IRDI.",
 			),
 		)
 		if abort {
@@ -11398,10 +11294,9 @@ func VerifyConceptDescription(
 		}
 	}
 
-	if !(
-		!((that.Category() != nil) &&
+	if !(!((that.Category() != nil) &&
 		(*that.Category() == "PROPERTY" ||
-		*that.Category() == "VALUE") &&
+			*that.Category() == "VALUE") &&
 		(that.EmbeddedDataSpecifications() != nil)) ||
 		DataSpecificationIEC61360sForPropertyOrValueHaveAppropriateDataType(
 			that.EmbeddedDataSpecifications(),
@@ -11409,12 +11304,12 @@ func VerifyConceptDescription(
 		abort = onError(
 			newVerificationError(
 				"Constraint AASc-3a-004: For a concept description with " +
-				"category PROPERTY or VALUE using data specification IEC " +
-				"61360, the data type of the data specification is mandatory " +
-				"and shall be one of: DATE, STRING, STRING_TRANSLATABLE, " +
-				"INTEGER_MEASURE, INTEGER_COUNT, INTEGER_CURRENCY, " +
-				"REAL_MEASURE, REAL_COUNT, REAL_CURRENCY, BOOLEAN, RATIONAL, " +
-				"RATIONAL_MEASURE, TIME, TIMESTAMP.",
+					"category PROPERTY or VALUE using data specification IEC " +
+					"61360, the data type of the data specification is mandatory " +
+					"and shall be one of: DATE, STRING, STRING_TRANSLATABLE, " +
+					"INTEGER_MEASURE, INTEGER_COUNT, INTEGER_CURRENCY, " +
+					"REAL_MEASURE, REAL_COUNT, REAL_CURRENCY, BOOLEAN, RATIONAL, " +
+					"RATIONAL_MEASURE, TIME, TIMESTAMP.",
 			),
 		)
 		if abort {
@@ -11636,15 +11531,14 @@ func VerifyReference(
 	if !(len(that.Keys()) >= 1) {
 		abort = onError(
 			newVerificationError(
-				"Keys must contain at least one item.",),
+				"Keys must contain at least one item."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		!(len(that.Keys()) >= 1) ||
+	if !(!(len(that.Keys()) >= 1) ||
 		aascommon.MapContains(
 			aasconstants.GloballyIdentifiables,
 			that.Keys()[0].Type(),
@@ -11652,8 +11546,8 @@ func VerifyReference(
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-121: For References the value of type of " +
-				"the first key of keys shall be one of Globally " +
-				"Identifiables.",
+					"the first key of keys shall be one of Globally " +
+					"Identifiables.",
 			),
 		)
 		if abort {
@@ -11661,8 +11555,7 @@ func VerifyReference(
 		}
 	}
 
-	if !(
-		!(that.Type() == aastypes.ReferenceTypesExternalReference &&
+	if !(!(that.Type() == aastypes.ReferenceTypesExternalReference &&
 		len(that.Keys()) >= 1) ||
 		aascommon.MapContains(
 			aasconstants.GenericGloballyIdentifiables,
@@ -11671,8 +11564,8 @@ func VerifyReference(
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-122: For external references the value of " +
-				"type of the first key of keys shall be one of Generic " +
-				"Globally Identifiables.",
+					"type of the first key of keys shall be one of Generic " +
+					"Globally Identifiables.",
 			),
 		)
 		if abort {
@@ -11680,8 +11573,7 @@ func VerifyReference(
 		}
 	}
 
-	if !(
-		!(that.Type() == aastypes.ReferenceTypesModelReference &&
+	if !(!(that.Type() == aastypes.ReferenceTypesModelReference &&
 		len(that.Keys()) >= 1) ||
 		aascommon.MapContains(
 			aasconstants.AASIdentifiables,
@@ -11690,7 +11582,7 @@ func VerifyReference(
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-123: For model references the value of type " +
-				"of the first key of keys shall be one of AAS identifiables.",
+					"of the first key of keys shall be one of AAS identifiables.",
 			),
 		)
 		if abort {
@@ -11698,22 +11590,45 @@ func VerifyReference(
 		}
 	}
 
-	if !(
-		!(that.Type() == aastypes.ReferenceTypesExternalReference &&
+	if !(!(that.Type() == aastypes.ReferenceTypesExternalReference) ||
+		aascommon.AllRange(
+			func(i int) bool {
+				return !aascommon.MapContains(
+					aasconstants.AASReferables,
+					that.Keys()[i].Type(),
+				)
+			},
+			0,
+			len(that.Keys()),
+		)) {
+		abort = onError(
+			newVerificationError(
+				"Constraint AASd-137: For external references, i.e. " +
+					"References with Reference/type = ExternalReference, " +
+					"the value of Key/type of any key in Reference/keys shall " +
+					"not be one of AasReferables.",
+			),
+		)
+		if abort {
+			return
+		}
+	}
+
+	if !(!(that.Type() == aastypes.ReferenceTypesExternalReference &&
 		len(that.Keys()) >= 1) ||
 		(aascommon.MapContains(
 			aasconstants.GenericGloballyIdentifiables,
-			that.Keys()[len(that.Keys()) - 1].Type(),
+			that.Keys()[len(that.Keys())-1].Type(),
 		) ||
-		aascommon.MapContains(
-			aasconstants.GenericFragmentKeys,
-			that.Keys()[len(that.Keys()) - 1].Type(),
-		))) {
+			aascommon.MapContains(
+				aasconstants.GenericFragmentKeys,
+				that.Keys()[len(that.Keys())-1].Type(),
+			))) {
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-124: For external references the last key " +
-				"of keys shall be either one of Generic Globally " +
-				"Identifiables or one of Generic Fragment Keys.",
+					"of keys shall be either one of Generic Globally " +
+					"Identifiables or one of Generic Fragment Keys.",
 			),
 		)
 		if abort {
@@ -11721,15 +11636,14 @@ func VerifyReference(
 		}
 	}
 
-	if !(
-		!(that.Type() == aastypes.ReferenceTypesModelReference &&
+	if !(!(that.Type() == aastypes.ReferenceTypesModelReference &&
 		len(that.Keys()) > 1) ||
 		aascommon.AllRange(
 			func(i int) bool {
 				return aascommon.MapContains(
-						aasconstants.FragmentKeys,
-						that.Keys()[i].Type(),
-					)
+					aasconstants.FragmentKeys,
+					that.Keys()[i].Type(),
+				)
 			},
 			1,
 			len(that.Keys()),
@@ -11737,9 +11651,9 @@ func VerifyReference(
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-125: For model references with more than " +
-				"one key in keys the value of type of each of the keys " +
-				"following the first key of keys shall be one of Fragment " +
-				"Keys.",
+					"one key in keys the value of type of each of the keys " +
+					"following the first key of keys shall be one of Fragment " +
+					"Keys.",
 			),
 		)
 		if abort {
@@ -11747,26 +11661,25 @@ func VerifyReference(
 		}
 	}
 
-	if !(
-		!(that.Type() == aastypes.ReferenceTypesModelReference &&
+	if !(!(that.Type() == aastypes.ReferenceTypesModelReference &&
 		len(that.Keys()) > 1) ||
 		aascommon.AllRange(
 			func(i int) bool {
 				return !aascommon.MapContains(
-						aasconstants.GenericFragmentKeys,
-						that.Keys()[i].Type(),
-					)
+					aasconstants.GenericFragmentKeys,
+					that.Keys()[i].Type(),
+				)
 			},
 			0,
-			len(that.Keys()) - 1,
+			len(that.Keys())-1,
 		)) {
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-126: For model references with more than " +
-				"one key in keys the value of type of the last key in " +
-				"the reference key chain may be one of Generic Fragment Keys " +
-				"or no key at all shall have a value out of Generic Fragment " +
-				"Keys.",
+					"one key in keys the value of type of the last key in " +
+					"the reference key chain may be one of Generic Fragment Keys " +
+					"or no key at all shall have a value out of Generic Fragment " +
+					"Keys.",
 			),
 		)
 		if abort {
@@ -11774,17 +11687,16 @@ func VerifyReference(
 		}
 	}
 
-	if !(
-		!(that.Type() == aastypes.ReferenceTypesModelReference &&
+	if !(!(that.Type() == aastypes.ReferenceTypesModelReference &&
 		len(that.Keys()) > 1 &&
-		that.Keys()[len(that.Keys()) - 1].Type() == aastypes.KeyTypesFragmentReference) ||
-		(that.Keys()[len(that.Keys()) - 2].Type() == aastypes.KeyTypesFile ||
-		that.Keys()[len(that.Keys()) - 2].Type() == aastypes.KeyTypesBlob)) {
+		that.Keys()[len(that.Keys())-1].Type() == aastypes.KeyTypesFragmentReference) ||
+		(that.Keys()[len(that.Keys())-2].Type() == aastypes.KeyTypesFile ||
+			that.Keys()[len(that.Keys())-2].Type() == aastypes.KeyTypesBlob)) {
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-127: For model references, with more than " +
-				"one key in keys a key with type Fragment Reference shall be " +
-				"preceded by a key with type File or Blob.",
+					"one key in keys a key with type Fragment Reference shall be " +
+					"preceded by a key with type File or Blob.",
 			),
 		)
 		if abort {
@@ -11792,25 +11704,24 @@ func VerifyReference(
 		}
 	}
 
-	if !(
-		!(that.Type() == aastypes.ReferenceTypesModelReference &&
+	if !(!(that.Type() == aastypes.ReferenceTypesModelReference &&
 		len(that.Keys()) > 2) ||
 		aascommon.AllRange(
 			func(i int) bool {
 				return !(that.Keys()[i].Type() == aastypes.KeyTypesSubmodelElementList) ||
 					MatchesXsNonNegativeInteger(
-						that.Keys()[i + 1].Value(),
+						that.Keys()[i+1].Value(),
 					)
 			},
 			0,
-			len(that.Keys()) - 1,
+			len(that.Keys())-1,
 		)) {
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-128: For model references, the value of " +
-				"a key preceded by a key with type Submodel element list is " +
-				"an integer number denoting the position in the array of " +
-				"the submodel element list.",
+					"a key preceded by a key with type Submodel element list is " +
+					"an integer number denoting the position in the array of " +
+					"the submodel element list.",
 			),
 		)
 		if abort {
@@ -11818,8 +11729,7 @@ func VerifyReference(
 		}
 	}
 
-	if
-		that.Type() < aastypes.ReferenceTypesExternalReference ||
+	if that.Type() < aastypes.ReferenceTypesExternalReference ||
 		that.Type() > aastypes.ReferenceTypesModelReference {
 		err := newVerificationError(
 			fmt.Sprintf(
@@ -11905,8 +11815,7 @@ func VerifyKey(
 ) (abort bool) {
 	abort = false
 
-	if
-		that.Type() < aastypes.KeyTypesAnnotatedRelationshipElement ||
+	if that.Type() < aastypes.KeyTypesAnnotatedRelationshipElement ||
 		that.Type() > aastypes.KeyTypesSubmodelElementList {
 		err := newVerificationError(
 			fmt.Sprintf(
@@ -11958,7 +11867,7 @@ func VerifyLangStringNameType(
 	if !(len(that.Text()) <= 128) {
 		abort = onError(
 			newVerificationError(
-				"String shall have a maximum length of 128 characters.",),
+				"String shall have a maximum length of 128 characters."),
 		)
 		if abort {
 			return
@@ -12013,7 +11922,7 @@ func VerifyLangStringTextType(
 	if !(len(that.Text()) <= 1023) {
 		abort = onError(
 			newVerificationError(
-				"String shall have a maximum length of 1023 characters.",),
+				"String shall have a maximum length of 1023 characters."),
 		)
 		if abort {
 			return
@@ -12065,13 +11974,12 @@ func VerifyEnvironment(
 ) (abort bool) {
 	abort = false
 
-	if !(
-		!(that.ConceptDescriptions() != nil) ||
+	if !(!(that.ConceptDescriptions() != nil) ||
 		(len(that.ConceptDescriptions()) >= 1)) {
 		abort = onError(
 			newVerificationError(
 				"Concept descriptions must be either not set or have at " +
-				"least one item.",
+					"least one item.",
 			),
 		)
 		if abort {
@@ -12079,25 +11987,23 @@ func VerifyEnvironment(
 		}
 	}
 
-	if !(
-		!(that.Submodels() != nil) ||
+	if !(!(that.Submodels() != nil) ||
 		(len(that.Submodels()) >= 1)) {
 		abort = onError(
 			newVerificationError(
-				"Submodels must be either not set or have at least one item.",),
+				"Submodels must be either not set or have at least one item."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		!(that.AssetAdministrationShells() != nil) ||
+	if !(!(that.AssetAdministrationShells() != nil) ||
 		(len(that.AssetAdministrationShells()) >= 1)) {
 		abort = onError(
 			newVerificationError(
 				"Asset administration shells must be either not set or have " +
-				"at least one item.",
+					"at least one item.",
 			),
 		)
 		if abort {
@@ -12332,7 +12238,7 @@ func VerifyValueList(
 	if !(len(that.ValueReferencePairs()) >= 1) {
 		abort = onError(
 			newVerificationError(
-				"Value reference pair types must contain at least one item.",),
+				"Value reference pair types must contain at least one item."),
 		)
 		if abort {
 			return
@@ -12392,7 +12298,7 @@ func VerifyLangStringPreferredNameTypeIEC61360(
 	if !(len(that.Text()) <= 255) {
 		abort = onError(
 			newVerificationError(
-				"String shall have a maximum length of 255 characters.",),
+				"String shall have a maximum length of 255 characters."),
 		)
 		if abort {
 			return
@@ -12447,7 +12353,7 @@ func VerifyLangStringShortNameTypeIEC61360(
 	if !(len(that.Text()) <= 18) {
 		abort = onError(
 			newVerificationError(
-				"String shall have a maximum length of 18 characters.",),
+				"String shall have a maximum length of 18 characters."),
 		)
 		if abort {
 			return
@@ -12502,7 +12408,7 @@ func VerifyLangStringDefinitionTypeIEC61360(
 	if !(len(that.Text()) <= 1023) {
 		abort = onError(
 			newVerificationError(
-				"String shall have a maximum length of 1023 characters.",),
+				"String shall have a maximum length of 1023 characters."),
 		)
 		if abort {
 			return
@@ -12554,13 +12460,12 @@ func VerifyDataSpecificationIEC61360(
 ) (abort bool) {
 	abort = false
 
-	if !(
-		!((that.Value() != nil) &&
+	if !(!((that.Value() != nil) &&
 		(that.ValueList() != nil))) {
 		abort = onError(
 			newVerificationError(
 				"Constraint AASc-3a-010: If value is not empty then value " +
-				"list shall be empty and vice versa.",
+					"list shall be empty and vice versa.",
 			),
 		)
 		if abort {
@@ -12568,19 +12473,18 @@ func VerifyDataSpecificationIEC61360(
 		}
 	}
 
-	if !(
-		!((that.DataType() != nil) &&
+	if !(!((that.DataType() != nil) &&
 		aascommon.MapContains(
 			aasconstants.IEC61360DataTypesWithUnit,
 			*that.DataType(),
 		)) ||
 		((that.Unit() != nil) ||
-		(that.UnitID() != nil))) {
+			(that.UnitID() != nil))) {
 		abort = onError(
 			newVerificationError(
 				"Constraint AASc-3a-009: If data type is a an integer, real " +
-				"or rational with a measure or currency, unit or unit ID " +
-				"shall be defined.",
+					"or rational with a measure or currency, unit or unit ID " +
+					"shall be defined.",
 			),
 		)
 		if abort {
@@ -12588,48 +12492,44 @@ func VerifyDataSpecificationIEC61360(
 		}
 	}
 
-	if !(
-		!(that.Definition() != nil) ||
+	if !(!(that.Definition() != nil) ||
 		(len(that.Definition()) >= 1)) {
 		abort = onError(
 			newVerificationError(
-				"Definition must be either not set or have at least one item.",),
+				"Definition must be either not set or have at least one item."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		!(that.Definition() != nil) ||
+	if !(!(that.Definition() != nil) ||
 		LangStringsHaveUniqueLanguages(that.Definition())) {
 		abort = onError(
 			newVerificationError(
-				"Definition must specify unique languages.",),
+				"Definition must specify unique languages."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		!(that.ShortName() != nil) ||
+	if !(!(that.ShortName() != nil) ||
 		(len(that.ShortName()) >= 1)) {
 		abort = onError(
 			newVerificationError(
-				"Short name must be either not set or have at least one item.",),
+				"Short name must be either not set or have at least one item."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		!(that.ShortName() != nil) ||
+	if !(!(that.ShortName() != nil) ||
 		LangStringsHaveUniqueLanguages(that.ShortName())) {
 		abort = onError(
 			newVerificationError(
-				"Short name must specify unique languages.",),
+				"Short name must specify unique languages."),
 		)
 		if abort {
 			return
@@ -12639,35 +12539,33 @@ func VerifyDataSpecificationIEC61360(
 	if !(len(that.PreferredName()) >= 1) {
 		abort = onError(
 			newVerificationError(
-				"Preferred name must have at least one item.",),
+				"Preferred name must have at least one item."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		LangStringsHaveUniqueLanguages(that.PreferredName())) {
+	if !(LangStringsHaveUniqueLanguages(that.PreferredName())) {
 		abort = onError(
 			newVerificationError(
-				"Preferred name must specify unique languages.",),
+				"Preferred name must specify unique languages."),
 		)
 		if abort {
 			return
 		}
 	}
 
-	if !(
-		aascommon.Some(
-			func(langString aastypes.ILangStringPreferredNameTypeIEC61360) bool {
-				return IsBCP47ForEnglish(langString.Language())
-			},
-			that.PreferredName(),
-		)) {
+	if !(aascommon.Some(
+		func(langString aastypes.ILangStringPreferredNameTypeIEC61360) bool {
+			return IsBCP47ForEnglish(langString.Language())
+		},
+		that.PreferredName(),
+	)) {
 		abort = onError(
 			newVerificationError(
 				"Constraint AASc-002: preferred name shall be provided at " +
-				"least in English.",
+					"least in English.",
 			),
 		)
 		if abort {
@@ -12805,8 +12703,7 @@ func VerifyDataSpecificationIEC61360(
 	}
 
 	if that.DataType() != nil {
-		if
-			*that.DataType() < aastypes.DataTypeIEC61360Date ||
+		if *that.DataType() < aastypes.DataTypeIEC61360Date ||
 			*that.DataType() > aastypes.DataTypeIEC61360Blob {
 			err := newVerificationError(
 				fmt.Sprintf(
@@ -12939,8 +12836,8 @@ func VerifyXMLSerializableString(
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-130: An attribute with data type 'string' " +
-				"shall consist of these characters only: " +
-				"^[\\x09\\x0A\\x0D\\x20-\\uD7FF\\uE000-\\uFFFD\\U00010000-\\U0010FFFF]*$.",
+					"shall consist of these characters only: " +
+					"^[\\x09\\x0A\\x0D\\x20-\\uD7FF\\uE000-\\uFFFD\\U00010000-\\U0010FFFF]*$.",
 			),
 		)
 		if abort {
@@ -12967,8 +12864,8 @@ func VerifyNonEmptyXMLSerializableString(
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-130: An attribute with data type 'string' " +
-				"shall consist of these characters only: " +
-				"^[\\x09\\x0A\\x0D\\x20-\\uD7FF\\uE000-\\uFFFD\\U00010000-\\U0010FFFF]*$.",
+					"shall consist of these characters only: " +
+					"^[\\x09\\x0A\\x0D\\x20-\\uD7FF\\uE000-\\uFFFD\\U00010000-\\U0010FFFF]*$.",
 			),
 		)
 		if abort {
@@ -12979,7 +12876,7 @@ func VerifyNonEmptyXMLSerializableString(
 	if !(len(that) >= 1) {
 		abort = onError(
 			newVerificationError(
-				"The value must not be empty.",),
+				"The value must not be empty."),
 		)
 		if abort {
 			return
@@ -13005,7 +12902,7 @@ func VerifyDateTimeUTC(
 		abort = onError(
 			newVerificationError(
 				"The value must match the pattern of xs:dateTime with " +
-				"the time zone fixed to UTC.",
+					"the time zone fixed to UTC.",
 			),
 		)
 		if abort {
@@ -13017,7 +12914,7 @@ func VerifyDateTimeUTC(
 		abort = onError(
 			newVerificationError(
 				"The value must represent a valid xs:dateTime with the time " +
-				"zone fixed to UTC.",
+					"zone fixed to UTC.",
 			),
 		)
 		if abort {
@@ -13043,7 +12940,7 @@ func VerifyDuration(
 	if !MatchesXsDuration(that) {
 		abort = onError(
 			newVerificationError(
-				"The value must match the pattern of xs:duration.",),
+				"The value must match the pattern of xs:duration."),
 		)
 		if abort {
 			return
@@ -13086,8 +12983,8 @@ func VerifyIdentifier(
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-130: An attribute with data type 'string' " +
-				"shall consist of these characters only: " +
-				"^[\\x09\\x0A\\x0D\\x20-\\uD7FF\\uE000-\\uFFFD\\U00010000-\\U0010FFFF]*$.",
+					"shall consist of these characters only: " +
+					"^[\\x09\\x0A\\x0D\\x20-\\uD7FF\\uE000-\\uFFFD\\U00010000-\\U0010FFFF]*$.",
 			),
 		)
 		if abort {
@@ -13098,7 +12995,7 @@ func VerifyIdentifier(
 	if !(len(that) >= 1) {
 		abort = onError(
 			newVerificationError(
-				"The value must not be empty.",),
+				"The value must not be empty."),
 		)
 		if abort {
 			return
@@ -13108,7 +13005,7 @@ func VerifyIdentifier(
 	if !(len(that) <= 2048) {
 		abort = onError(
 			newVerificationError(
-				"Identifier shall have a maximum length of 2048 characters.",),
+				"Identifier shall have a maximum length of 2048 characters."),
 		)
 		if abort {
 			return
@@ -13134,8 +13031,8 @@ func VerifyValueTypeIEC61360(
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-130: An attribute with data type 'string' " +
-				"shall consist of these characters only: " +
-				"^[\\x09\\x0A\\x0D\\x20-\\uD7FF\\uE000-\\uFFFD\\U00010000-\\U0010FFFF]*$.",
+					"shall consist of these characters only: " +
+					"^[\\x09\\x0A\\x0D\\x20-\\uD7FF\\uE000-\\uFFFD\\U00010000-\\U0010FFFF]*$.",
 			),
 		)
 		if abort {
@@ -13146,7 +13043,7 @@ func VerifyValueTypeIEC61360(
 	if !(len(that) >= 1) {
 		abort = onError(
 			newVerificationError(
-				"The value must not be empty.",),
+				"The value must not be empty."),
 		)
 		if abort {
 			return
@@ -13157,7 +13054,7 @@ func VerifyValueTypeIEC61360(
 		abort = onError(
 			newVerificationError(
 				"Value type IEC 61360 shall have a maximum length of 2048 " +
-				"characters.",
+					"characters.",
 			),
 		)
 		if abort {
@@ -13184,8 +13081,8 @@ func VerifyNameType(
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-130: An attribute with data type 'string' " +
-				"shall consist of these characters only: " +
-				"^[\\x09\\x0A\\x0D\\x20-\\uD7FF\\uE000-\\uFFFD\\U00010000-\\U0010FFFF]*$.",
+					"shall consist of these characters only: " +
+					"^[\\x09\\x0A\\x0D\\x20-\\uD7FF\\uE000-\\uFFFD\\U00010000-\\U0010FFFF]*$.",
 			),
 		)
 		if abort {
@@ -13196,7 +13093,7 @@ func VerifyNameType(
 	if !(len(that) >= 1) {
 		abort = onError(
 			newVerificationError(
-				"The value must not be empty.",),
+				"The value must not be empty."),
 		)
 		if abort {
 			return
@@ -13206,7 +13103,7 @@ func VerifyNameType(
 	if !(len(that) <= 128) {
 		abort = onError(
 			newVerificationError(
-				"Name type shall have a maximum length of 128 characters.",),
+				"Name type shall have a maximum length of 128 characters."),
 		)
 		if abort {
 			return
@@ -13232,8 +13129,8 @@ func VerifyVersionType(
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-130: An attribute with data type 'string' " +
-				"shall consist of these characters only: " +
-				"^[\\x09\\x0A\\x0D\\x20-\\uD7FF\\uE000-\\uFFFD\\U00010000-\\U0010FFFF]*$.",
+					"shall consist of these characters only: " +
+					"^[\\x09\\x0A\\x0D\\x20-\\uD7FF\\uE000-\\uFFFD\\U00010000-\\U0010FFFF]*$.",
 			),
 		)
 		if abort {
@@ -13244,7 +13141,7 @@ func VerifyVersionType(
 	if !(len(that) >= 1) {
 		abort = onError(
 			newVerificationError(
-				"The value must not be empty.",),
+				"The value must not be empty."),
 		)
 		if abort {
 			return
@@ -13254,7 +13151,7 @@ func VerifyVersionType(
 	if !MatchesVersionType(that) {
 		abort = onError(
 			newVerificationError(
-				"Version type shall match the version pattern.",),
+				"Version type shall match the version pattern."),
 		)
 		if abort {
 			return
@@ -13264,7 +13161,7 @@ func VerifyVersionType(
 	if !(len(that) <= 4) {
 		abort = onError(
 			newVerificationError(
-				"Version type shall have a maximum length of 4 characters.",),
+				"Version type shall have a maximum length of 4 characters."),
 		)
 		if abort {
 			return
@@ -13290,8 +13187,8 @@ func VerifyRevisionType(
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-130: An attribute with data type 'string' " +
-				"shall consist of these characters only: " +
-				"^[\\x09\\x0A\\x0D\\x20-\\uD7FF\\uE000-\\uFFFD\\U00010000-\\U0010FFFF]*$.",
+					"shall consist of these characters only: " +
+					"^[\\x09\\x0A\\x0D\\x20-\\uD7FF\\uE000-\\uFFFD\\U00010000-\\U0010FFFF]*$.",
 			),
 		)
 		if abort {
@@ -13302,7 +13199,7 @@ func VerifyRevisionType(
 	if !(len(that) >= 1) {
 		abort = onError(
 			newVerificationError(
-				"The value must not be empty.",),
+				"The value must not be empty."),
 		)
 		if abort {
 			return
@@ -13312,7 +13209,7 @@ func VerifyRevisionType(
 	if !MatchesRevisionType(that) {
 		abort = onError(
 			newVerificationError(
-				"Revision type shall match the revision pattern.",),
+				"Revision type shall match the revision pattern."),
 		)
 		if abort {
 			return
@@ -13322,7 +13219,7 @@ func VerifyRevisionType(
 	if !(len(that) <= 4) {
 		abort = onError(
 			newVerificationError(
-				"Revision type shall have a maximum length of 4 characters.",),
+				"Revision type shall have a maximum length of 4 characters."),
 		)
 		if abort {
 			return
@@ -13348,8 +13245,8 @@ func VerifyLabelType(
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-130: An attribute with data type 'string' " +
-				"shall consist of these characters only: " +
-				"^[\\x09\\x0A\\x0D\\x20-\\uD7FF\\uE000-\\uFFFD\\U00010000-\\U0010FFFF]*$.",
+					"shall consist of these characters only: " +
+					"^[\\x09\\x0A\\x0D\\x20-\\uD7FF\\uE000-\\uFFFD\\U00010000-\\U0010FFFF]*$.",
 			),
 		)
 		if abort {
@@ -13360,7 +13257,7 @@ func VerifyLabelType(
 	if !(len(that) >= 1) {
 		abort = onError(
 			newVerificationError(
-				"The value must not be empty.",),
+				"The value must not be empty."),
 		)
 		if abort {
 			return
@@ -13370,7 +13267,7 @@ func VerifyLabelType(
 	if !(len(that) <= 64) {
 		abort = onError(
 			newVerificationError(
-				"Label type shall have a maximum length of 64 characters.",),
+				"Label type shall have a maximum length of 64 characters."),
 		)
 		if abort {
 			return
@@ -13396,8 +13293,8 @@ func VerifyMessageTopicType(
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-130: An attribute with data type 'string' " +
-				"shall consist of these characters only: " +
-				"^[\\x09\\x0A\\x0D\\x20-\\uD7FF\\uE000-\\uFFFD\\U00010000-\\U0010FFFF]*$.",
+					"shall consist of these characters only: " +
+					"^[\\x09\\x0A\\x0D\\x20-\\uD7FF\\uE000-\\uFFFD\\U00010000-\\U0010FFFF]*$.",
 			),
 		)
 		if abort {
@@ -13408,7 +13305,7 @@ func VerifyMessageTopicType(
 	if !(len(that) >= 1) {
 		abort = onError(
 			newVerificationError(
-				"The value must not be empty.",),
+				"The value must not be empty."),
 		)
 		if abort {
 			return
@@ -13419,7 +13316,7 @@ func VerifyMessageTopicType(
 		abort = onError(
 			newVerificationError(
 				"Message topic type shall have a maximum length of 255 " +
-				"characters.",
+					"characters.",
 			),
 		)
 		if abort {
@@ -13446,7 +13343,7 @@ func VerifyBCP47LanguageTag(
 		abort = onError(
 			newVerificationError(
 				"The value must represent a value language tag conformant to " +
-				"BCP 47.",
+					"BCP 47.",
 			),
 		)
 		if abort {
@@ -13473,8 +13370,8 @@ func VerifyContentType(
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-130: An attribute with data type 'string' " +
-				"shall consist of these characters only: " +
-				"^[\\x09\\x0A\\x0D\\x20-\\uD7FF\\uE000-\\uFFFD\\U00010000-\\U0010FFFF]*$.",
+					"shall consist of these characters only: " +
+					"^[\\x09\\x0A\\x0D\\x20-\\uD7FF\\uE000-\\uFFFD\\U00010000-\\U0010FFFF]*$.",
 			),
 		)
 		if abort {
@@ -13485,7 +13382,7 @@ func VerifyContentType(
 	if !(len(that) >= 1) {
 		abort = onError(
 			newVerificationError(
-				"The value must not be empty.",),
+				"The value must not be empty."),
 		)
 		if abort {
 			return
@@ -13495,7 +13392,7 @@ func VerifyContentType(
 	if !(len(that) <= 128) {
 		abort = onError(
 			newVerificationError(
-				"Content type shall have a maximum length of 128 characters.",),
+				"Content type shall have a maximum length of 128 characters."),
 		)
 		if abort {
 			return
@@ -13506,7 +13403,7 @@ func VerifyContentType(
 		abort = onError(
 			newVerificationError(
 				"The value must represent a valid content MIME type " +
-				"according to RFC 2046.",
+					"according to RFC 2046.",
 			),
 		)
 		if abort {
@@ -13533,8 +13430,8 @@ func VerifyPathType(
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-130: An attribute with data type 'string' " +
-				"shall consist of these characters only: " +
-				"^[\\x09\\x0A\\x0D\\x20-\\uD7FF\\uE000-\\uFFFD\\U00010000-\\U0010FFFF]*$.",
+					"shall consist of these characters only: " +
+					"^[\\x09\\x0A\\x0D\\x20-\\uD7FF\\uE000-\\uFFFD\\U00010000-\\U0010FFFF]*$.",
 			),
 		)
 		if abort {
@@ -13545,7 +13442,7 @@ func VerifyPathType(
 	if !(len(that) >= 1) {
 		abort = onError(
 			newVerificationError(
-				"The value must not be empty.",),
+				"The value must not be empty."),
 		)
 		if abort {
 			return
@@ -13555,7 +13452,7 @@ func VerifyPathType(
 	if !(len(that) <= 2048) {
 		abort = onError(
 			newVerificationError(
-				"Identifier shall have a maximum length of 2048 characters.",),
+				"Identifier shall have a maximum length of 2048 characters."),
 		)
 		if abort {
 			return
@@ -13566,7 +13463,7 @@ func VerifyPathType(
 		abort = onError(
 			newVerificationError(
 				"String with max 2048 and min 1 characters conformant to " +
-				"a URI as per RFC 2396.",
+					"a URI as per RFC 2396.",
 			),
 		)
 		if abort {
@@ -13593,8 +13490,8 @@ func VerifyQualifierType(
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-130: An attribute with data type 'string' " +
-				"shall consist of these characters only: " +
-				"^[\\x09\\x0A\\x0D\\x20-\\uD7FF\\uE000-\\uFFFD\\U00010000-\\U0010FFFF]*$.",
+					"shall consist of these characters only: " +
+					"^[\\x09\\x0A\\x0D\\x20-\\uD7FF\\uE000-\\uFFFD\\U00010000-\\U0010FFFF]*$.",
 			),
 		)
 		if abort {
@@ -13605,7 +13502,7 @@ func VerifyQualifierType(
 	if !(len(that) >= 1) {
 		abort = onError(
 			newVerificationError(
-				"The value must not be empty.",),
+				"The value must not be empty."),
 		)
 		if abort {
 			return
@@ -13615,7 +13512,7 @@ func VerifyQualifierType(
 	if !(len(that) <= 128) {
 		abort = onError(
 			newVerificationError(
-				"Name type shall have a maximum length of 128 characters.",),
+				"Name type shall have a maximum length of 128 characters."),
 		)
 		if abort {
 			return
@@ -13641,8 +13538,8 @@ func VerifyValueDataType(
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-130: An attribute with data type 'string' " +
-				"shall consist of these characters only: " +
-				"^[\\x09\\x0A\\x0D\\x20-\\uD7FF\\uE000-\\uFFFD\\U00010000-\\U0010FFFF]*$.",
+					"shall consist of these characters only: " +
+					"^[\\x09\\x0A\\x0D\\x20-\\uD7FF\\uE000-\\uFFFD\\U00010000-\\U0010FFFF]*$.",
 			),
 		)
 		if abort {
@@ -13669,8 +13566,8 @@ func VerifyIDShortType(
 		abort = onError(
 			newVerificationError(
 				"Constraint AASd-130: An attribute with data type 'string' " +
-				"shall consist of these characters only: " +
-				"^[\\x09\\x0A\\x0D\\x20-\\uD7FF\\uE000-\\uFFFD\\U00010000-\\U0010FFFF]*$.",
+					"shall consist of these characters only: " +
+					"^[\\x09\\x0A\\x0D\\x20-\\uD7FF\\uE000-\\uFFFD\\U00010000-\\U0010FFFF]*$.",
 			),
 		)
 		if abort {
@@ -13681,7 +13578,7 @@ func VerifyIDShortType(
 	if !(len(that) >= 1) {
 		abort = onError(
 			newVerificationError(
-				"The value must not be empty.",),
+				"The value must not be empty."),
 		)
 		if abort {
 			return
@@ -13691,7 +13588,7 @@ func VerifyIDShortType(
 	if !(len(that) <= 128) {
 		abort = onError(
 			newVerificationError(
-				"Name type shall have a maximum length of 128 characters.",),
+				"Name type shall have a maximum length of 128 characters."),
 		)
 		if abort {
 			return
@@ -13701,10 +13598,11 @@ func VerifyIDShortType(
 	if !MatchesIDShort(that) {
 		abort = onError(
 			newVerificationError(
-				"ID-short of Referables shall only feature letters, digits, " +
-				"hyphen (``-``) and  underscore (``_``); starting mandatory " +
-				"with a letter, and not ending with a hyphen, *I.e.* " +
-				"``^[a-zA-Z][a-zA-Z0-9_-]*[a-zA-Z0-9_]+$``.",
+				"ID-short of Referables shall consist of at least two " +
+					"characters and shall only feature letters, digits, hyphen " +
+					"(``-``) and underscore (``_``); starting mandatory with " +
+					"a letter, and not ending with a hyphen, *I.e.* " +
+					"``^[a-zA-Z][a-zA-Z0-9_-]*[a-zA-Z0-9_]+$``.",
 			),
 		)
 		if abort {
@@ -13715,7 +13613,7 @@ func VerifyIDShortType(
 	return
 }
 
-// Verify ``that`` instance.
+// Verify “that“ instance.
 //
 // You have to supply the callback `onError` to iterate over the errors.
 // If `onError` returns abort `true`, this function will abort

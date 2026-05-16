@@ -6,22 +6,22 @@ package reporting
 
 import (
 	"fmt"
-	"strings"
 	"strconv"
+	"strings"
 )
 
-type NameSegment struct{
+type NameSegment struct {
 	Name string
 }
 
-type IndexSegment struct{
+type IndexSegment struct {
 	Index int
 }
 
-type Path struct{
+type Path struct {
 	// A segments is expected to be either a name segment or an index segment.
 	segments []interface{}
-	start int
+	start    int
 }
 
 // Prepend the segment to the path.
@@ -37,7 +37,7 @@ func (p *Path) prepend(segment interface{}) {
 		p.start--
 		p.segments[p.start] = segment
 	} else {
-		s := make([]interface{}, len(p.segments) * 2)
+		s := make([]interface{}, len(p.segments)*2)
 		copy(s[len(p.segments):], p.segments)
 		p.start = len(p.segments) - 1
 		p.segments = s
@@ -143,15 +143,15 @@ func ToRelativeXPath(
 		}
 
 		switch v := s.(type) {
-			case *NameSegment:
-				b.WriteString(escapeForXPath(v.Name))
-			case *IndexSegment:
-				b.WriteString(fmt.Sprintf("*[%d]", v.Index))
-						
-			default:
-				panic(fmt.Sprintf("Unexpected segment of type %T: %v", s, s))
+		case *NameSegment:
+			b.WriteString(escapeForXPath(v.Name))
+		case *IndexSegment:
+			b.WriteString(fmt.Sprintf("*[%d]", v.Index))
+
+		default:
+			panic(fmt.Sprintf("Unexpected segment of type %T: %v", s, s))
 		}
-		
+
 		i++
 	})
 	return b.String()
